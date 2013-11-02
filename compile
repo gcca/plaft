@@ -1,0 +1,71 @@
+#!/bin/bash
+if [ -a ./static ]; then
+        px=".."
+        pw=".."
+        py="."
+else
+        px="./lac"
+        pw="."
+        py=$px
+fi
+src=$1
+srcdir=$px/frontend
+dstdir=$py/static
+thirdparty=$srcdir/3rdparty
+setup=$pw/setup.pyo
+cssc=$pw/cssc.jar
+jsc=$pw/jsc.jar
+ext3=zepto,underscore,ink,backbone,typeahead
+int3=ink
+if [ '0' == "$3" ]; then opt=-O; fi
+if [ '@' == "$4" ]; then dep=--depurar; fi
+
+fc_less () {
+        echo Compilando $src.less
+        python -O $setup $srcdir/$src.less --salida $dstdir/ $opt --internas $int3 --3rdparty $thirdparty --compresor_css $cssc
+}
+
+fc_ls () {
+        echo Compilando $src.ls
+        pext="--externas $ext3"
+        # if [ none == "$1" ]; then pext=; else int="--internas prelude"; fi
+        python -O $setup $srcdir/$src.ls --salida $dstdir/ $pext $opt --3rdparty $thirdparty --compresor_js $jsc $int $dep
+}
+
+fc_ll () {
+        case $1 in
+        less) fc_less ;;
+        ls)   fc_ls   ;;
+        esac
+        if [ "" == "$1" ]; then fc_less; fc_ls; fi
+}
+
+case $src in
+
+signin)
+		if [ "" == "$2" ]; then fc_ll; elif [ ls == "$2" ]; then fc_ls none; else fc_less; fi
+        ;;
+
+customer-form)
+        fc_ll $2
+        ;;
+
+dashboard)
+        fc_ll $2
+        ;;
+all)
+		ext3=''
+        opt=-O
+        src=signin
+        fc_less
+		fc_ls none
+		ext3=zepto,underscore,ink,backbone
+        src=customer-form
+        fc_ll
+        src=dashboard
+        fc_ll
+        ;;
+*)
+        echo Error: No existe \"$1\""  " .less"  ".ls
+        ;;
+esac
