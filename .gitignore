@@ -42,6 +42,6 @@ reportlab
 tests/gztest.py
 tests/ls
 .bzr
-.js
-.css
-.json
+*.js
+*.css
+*.json
