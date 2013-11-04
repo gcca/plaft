@@ -15,3 +15,6 @@ backend/static/doc
 base
 Makefile
 backend/static/doc
+.git
+.gitignore
+*.json
