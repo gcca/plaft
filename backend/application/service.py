@@ -286,6 +286,9 @@ class DispatchService(object):
         Raises:
             StoreFailedError:
                 A error occurred storing entity.
+            NotFoundError:
+                A error occurred searching for nonexistent reference like
+                customer.
             BadValueError:
                 A error ocurred creating a dispatch with bad attributes
                 value or types.

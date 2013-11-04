@@ -39,3 +39,6 @@ nosetests.xml
 *~*~
 reportlab
 *-src*
+tests/gztest.py
+tests/ls
+.bzr

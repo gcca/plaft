@@ -158,6 +158,8 @@ class DispatchHandler(BaseHandler):
             self.status.INTERNAL_ERROR(e)
         except BadValueError as e:
             self.status.BAD_REQUEST(e)
+        except NotFoundError as e:
+            self.status.NOT_FOUND(e)
         else:
             self.write_json('{"id":%s}' % dispatch.id)
 

@@ -62,9 +62,9 @@ class GModel extends window .\Backbone .\Model
       a = m.attributes
       o.url = m.url! + '?' + (["#k=#{a[k]}" for k of a].join '&')
     else if t is \create or t is \update
-      a = m.attributes
-      a <<<< {[k, a[k].get \id] for k of a when a[k] instanceof GModel}
-      o[\attrs] = a
+      a = m.toJSON!
+      a <<<< {[k, a[k].\id] for k of a when a[k].'id'?}
+      o.\attrs = a
     super ...
 
 class GCollection extends window .\Backbone .\Collection

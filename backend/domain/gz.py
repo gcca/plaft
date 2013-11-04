@@ -123,10 +123,11 @@ class EntityMixIn(object):
         if t is DateProperty or type(t) is DateTimeProperty:
             value = datetime.date(*(int(v) for v in value.split('-')))
         elif t is ReferenceProperty:
-            cls = p.reference_class
-            value = cls.by(value)
-            if value is None:
-                raise ValueError('`gz::cast` Reference must not be None')
+            c = p.reference_class
+            id = value
+            value = c.by(id)
+            # if value is None:
+            #     raise NotFoundError('Reference `%s`: %s' % (c.__name__, id))
         elif t is FloatProperty:
             value = float(value)
         return value

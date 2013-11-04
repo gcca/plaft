@@ -26,8 +26,7 @@ class SearchView extends gz.GView
      * @private
      */
     'keyup': !(evt) ->
-      @trigger (gz.Css \search), evt.currentTarget.value \
-        if evt.keyCode is 13
+      @trigger (gz.Css \search), evt.currentTarget.value if evt.keyCode is 13
 
   /**
    * Set input placeholder.
@@ -52,6 +51,7 @@ class SearchView extends gz.GView
       <gcca style='display:none'></gcca>"
     @ttip.'options'.'text' = \gcca
     @ttip.'tooltips'[0].'_makeTooltip'!
+    setTimeout (~> @ttip.'tooltips'[0].'_removeTooltip'!), 3000
 
   /**
    * Destroy tooltip.

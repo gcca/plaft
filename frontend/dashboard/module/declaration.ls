@@ -11,13 +11,6 @@ ModuleBaseView = require './base'
 /** @private */ CustomerLastDeclarationModel = model.CustomerLastDeclaration
 /** @private */ DispatchModel                = model.Dispatch
 
-## class larationView extends gz.GView
-
-##   @menuCaption = 'Declaración'
-##   @menuIcon = gz.Css \icon-book
-
-##   tagName: \div
-
 ##   events:
 ##     'submit form#search': (event) ->
 ##       f = event.currentTarget
@@ -57,72 +50,30 @@ ModuleBaseView = require './base'
 
 ##       off
 
-##     "click .#{gz.Css \event-submit-dispatch}" : ->
-
-##       dispatchJSON = $('#dispatchForm').serializeJSON!
-##       dispatchJSON[\declaration] = @declaration
-
-##       dispatch = new Dispatch dispatchJSON
-
-##       dispatch.save {}, do
-##         \success : @newDeclarationView
-##         \error   : @newDeclarationView
-
-##   newDeclarationView: !(declaration) ->
-
-##       if FormView?
-##       # valid FormView
-##         dispatchForm = @newDeclarationView!
-##         formView = new FormView dispatchForm, declaration
-##         @addDeclarationView formView, dispatchForm
-
-##   addDeclarationView: !(@DeclarationView) ->
-##     @frame-center
-##       ..innerHTML = ''
-##       ..appendChild dispatchForm.el
-##       ..appendChild gz.newel \br
-##       ..appendChild dispatchForm.el
-
-##   initialize: !->
-##     @formSearchHTML = "
-##     #{form.block100}
-##       <form id='search' class='#{gz.Css \ink-form}
-##                  \ #{gz.Css \form-search}
-##                  \ #{gz.Css \push-right}' style='width:40%'>
-##       <div class='#{gz.Css \control-group}'>
-##         <div class='#{gz.Css \column-group}'>
-##         <div class='#{gz.Css \control}
-##                \ #{gz.Css \append-button}'>
-##           <span>
-##           <input type='text' name='query'
-##             placeholder='Código de declaración'>
-##           </span>
-##           <button class='#{gz.Css \ink-button}'>
-##           &nbsp;
-##           <i class='#{gz.Css \icon-search}'></i>
-##           </button>
-##         </div>
-##         </div>
-##       </div>
-##       </form>
-##     </div>"
-##     @el.innerHTML = @formSearchHTML
-
-##   showInfo: (declaration) ->
-##     @el.innerHTML = "
-##     #{@formSearchHTML}"
-
-
 /**
  * @class DeclarationView
  * @extends ModuleBaseView
  */
 module.exports = class DeclarationView extends ModuleBaseView
 
-  ```` # CC
-
-  /** @private */ @menuCaption = 'Declaración'
-  /** @private */ @menuIcon    = gz.Css \icon-book
+  /**
+   * View events.
+   * @type {Object}
+   * @private
+   */
+  events:
+    /**
+     * On click button for commit dispatch form.
+     * @param {Object} evt Event object.
+     * @private
+     */
+    'click button': ->
+      dispatchJSON = $ \form .serializeJSON!
+      dispatchJSON[\declaration] = @declaration
+      dispatch = new DispatchModel dispatchJSON
+      dispatch.save new Object, do
+        \success : -> alert 'OK'
+        \error   : -> alert 'ERROR: new dispatch'
 
   /**
    * On search from searchView event.
@@ -171,6 +122,7 @@ module.exports = class DeclarationView extends ModuleBaseView
       \thirdType : 'person'
       \id : 5770237022568448
       \third : false
+    @declaration = declaration
     @$el.html @template declaration
     @$el.find "##{gz.Css \id-alert}" .on \change !(evt) ~>
       ta = @$el.find '[name=clerkAlert]'
@@ -195,213 +147,217 @@ module.exports = class DeclarationView extends ModuleBaseView
    * @private
    */
   template: (declaration) -> "
-  <form id='dispatchForm' class='#{gz.Css \ink-form} #{gz.Css \ink-form-new}'>
-    #{form.block50}
-      <fieldset>
-        <legend>Cliente</legend>
+    <form id='dispatchForm' class='#{gz.Css \ink-form} #{gz.Css \ink-form-new}'>
+      #{form.block50}
+        <fieldset>
+          <legend>Cliente</legend>
+
+          #{form.control-group}
+            #{form.label}Nombre</label>
+            #{form.control}
+              <input type='text'
+                  value='#{declaration.'customer'.'name'}' disabled>
+            </div>
+          </div>
+
+          #{form.control-group}
+            #{form.label}Monto</label>
+            #{form.control}
+              <input type='text'
+                  value='#{declaration.'amount'}' disabled>
+            </div>
+          </div>
+
+          #{form.control-group}
+            #{form.label}Origen</label>
+            #{form.control}
+              <input type='text'
+                  value='#{declaration.'source'}' disabled>
+            </div>
+          </div>
+
+          #{form.control-group}
+            #{form.label100}Referencias</label>
+            #{form.control100}
+              <input type='text' value='' disabled>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      #{form.block50}
+        <fieldset>
+          <legend>Tercero</legend>
+
+          #{form.control-group}
+            #{form.label}Tipo</label>
+            #{form.control}
+              <input type='text'
+                  value='#{declaration.'thirdType'}' disabled>
+            </div>
+          </div>
+
+          #{form.control-group}
+            #{form.label}Nombre</label>
+            #{form.control}
+              <input type='text'
+                  value='#{declaration.'thirdName'}' disabled>
+            </div>
+          </div>
+
+          <em><h6 class='#{gz.Css \note}'>Documento de identidad</h6><br></em>
+
+          #{form.control-group}
+            #{form.label}Tipo</label>
+            #{form.control}
+              <input type='text'
+                  value='#{declaration.'thirdDocumentType'}' disabled>
+            </div>
+          </div>
+
+          #{form.control-group}
+            #{form.label}Número</label>
+            #{form.control}
+              <input type='text'
+                  value='#{declaration[\thirdDocumentNumber]}' disabled>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      #{form.block100}
+        <fieldset>
+          <legend>Alerta</legend>
+
+          #{form.control-group}
+            <div class='#{gz.Css \control}
+                      \ #{gz.Css \large-100}
+                      \ #{gz.Css \medium-100}
+                      \ #{gz.Css \small-100}'>
+              <label>
+                <span>&nbsp;&nbsp;¿Hay alertas?</span>
+                <input id='#{gz.Css \id-alert}' type='checkbox'>
+              </label>
+            </div>
+          </div>
+
+          #{form.control-group}
+            #{form.control100}
+              <textarea name='clerkAlert' style='display:none'
+                  placeholder='Motivo de la alerta'>
+              </textarea>
+            </div>
+            </div>
+        </fieldset>
+      </div>
+
+      #{form.block50}
+
+        <fieldset>
+        <legend>Datos SO</legend>
 
         #{form.control-group}
-          #{form.label}Nombre</label>
           #{form.control}
-            <input type='text'
-                value='#{declaration.'customer'.'name'}' disabled>
+            Cod. Agente Aduana
+            <input name='customsBrokerCode' type='text' value=''>
           </div>
         </div>
 
         #{form.control-group}
-          #{form.label}Monto</label>
           #{form.control}
-            <input type='text'
-                value='#{declaration.'amount'}' disabled>
+          Fecha Recepción <input name='dateReceived' type='text' value=''>
           </div>
         </div>
 
+
         #{form.control-group}
-          #{form.label}Origen</label>
           #{form.control}
-            <input type='text'
-                value='#{declaration.'source'}' disabled>
+          Refer. Cliente <input name='customerReferences' type='text' value=''>
           </div>
         </div>
 
         #{form.control-group}
-          #{form.label100}Referencias</label>
-          #{form.control100}
-            <input type='text' value='' disabled>
-          </div>
-        </div>
-      </fieldset>
-    </div>
-
-    #{form.block50}
-      <fieldset>
-        <legend>Tercero</legend>
-
-        #{form.control-group}
-          #{form.label}Tipo</label>
           #{form.control}
-            <input type='text'
-                value='#{declaration.'thirdType'}' disabled>
+          Reg. Aduanero <input name='customsRegime' type='text' value=''>
           </div>
         </div>
 
         #{form.control-group}
-          #{form.label}Nombre</label>
           #{form.control}
-            <input type='text'
-                value='#{declaration.'thirdName'}' disabled>
+          Cod. Aduana <input name='customsCode' type='text' value=''>
           </div>
         </div>
 
-        <em><h6 class='#{gz.Css \note}'>Documento de identidad</h6><br></em>
+        </fieldset>
+
+      </div>
+
+      #{form.block50}
+        <fieldset>
+        <legend>Factura Comercial</legend>
 
         #{form.control-group}
-          #{form.label}Tipo</label>
           #{form.control}
-            <input type='text'
-                value='#{declaration.'thirdDocumentType'}' disabled>
+          Num Factura <input name='invoiceNumber' type='text' value=''>
           </div>
         </div>
 
         #{form.control-group}
-          #{form.label}Número</label>
           #{form.control}
-            <input type='text'
-                value='#{declaration[\thirdDocumentNumber]}' disabled>
-          </div>
-        </div>
-      </fieldset>
-    </div>
-
-    #{form.block100}
-      <fieldset>
-        <legend>Alerta</legend>
-
-        #{form.control-group}
-          <div class='#{gz.Css \control}
-                    \ #{gz.Css \large-100}
-                    \ #{gz.Css \medium-100}
-                    \ #{gz.Css \small-100}'>
-            <label>
-              <span>&nbsp;&nbsp;¿Hay alertas?</span>
-              <input id='#{gz.Css \id-alert}' type='checkbox'>
-            </label>
+          Razon Social <input name='businessName' type='text' value=''>
           </div>
         </div>
 
         #{form.control-group}
-          #{form.control100}
-            <textarea name='clerkAlert' style='display:none'
-                placeholder='Motivo de la alerta'>
-            </textarea>
+          #{form.control}
+          Direccion <input name='invoiceAddress' type='text' value=''>
           </div>
+        </div>
+
+        #{form.control-group}
+          #{form.control}
+          Valor/Importe <input name='invoiceValue' type='text' value=''>
           </div>
-      </fieldset>
-    </div>
-
-    #{form.block50}
-
-      <fieldset>
-      <legend>Datos SO</legend>
-
-      #{form.control-group}
-        #{form.control}
-        Cod. Agente Aduana <input name='customsBrokerCode' type='text' value=''>
         </div>
+
+        #{form.control-group}
+          #{form.control}
+          Moneda V/I <input name='invoiceCurrencyValue' type='text' value=''>
+          </div>
+        </div>
+
+        #{form.control-group}
+          #{form.control}
+          Ajuste Valor <input name='invoiceAdjustment' type='text' value=''>
+          </div>
+        </div>
+
+        #{form.control-group}
+          #{form.control}
+          Moneda AV <input name='invoiceCurrencyValue' type='text' value=''>
+          </div>
+        </div>
+
+        #{form.control-group}
+          #{form.control}
+            Orden Despacho <input name='orderNumber' type='text' value=''>
+          </div>
+        </div>
+
+        </fieldset>
+
       </div>
 
-      #{form.control-group}
-        #{form.control}
-        Fecha Recepción <input name='dateReceived' type='text' value=''>
+      #{form.block100}
+        #{form.control-group}
+          #{form.control}
+            <button type='button' class='#{gz.Css \ink-button}'>
+              Generar Despacho
+            </button>
+          </div>
         </div>
       </div>
+    </form>"
 
-
-      #{form.control-group}
-        #{form.control}
-        Refer. Cliente <input name='customerReferences' type='text' value=''>
-        </div>
-      </div>
-
-      #{form.control-group}
-        #{form.control}
-        Reg. Aduanero <input name='customsRegime' type='text' value=''>
-        </div>
-      </div>
-
-      #{form.control-group}
-        #{form.control}
-        Cod. Aduana <input name='customsCode' type='text' value=''>
-        </div>
-      </div>
-
-      </fieldset>
-
-    </div>
-
-    #{form.block50}
-      <fieldset>
-      <legend>Factura Comercial</legend>
-
-      #{form.control-group}
-        #{form.control}
-        Num Factura <input name='invoiceNumber' type='text' value=''>
-        </div>
-      </div>
-
-      #{form.control-group}
-        #{form.control}
-        Razon Social <input name='businessName' type='text' value=''>
-        </div>
-      </div>
-
-      #{form.control-group}
-        #{form.control}
-        Direccion <input name='invoiceAddress' type='text' value=''>
-        </div>
-      </div>
-
-      #{form.control-group}
-        #{form.control}
-        Valor/Importe <input name='invoiceValue' type='text' value=''>
-        </div>
-      </div>
-
-      #{form.control-group}
-        #{form.control}
-        Moneda V/I <input name='invoiceCurrencyValue' type='text' value=''>
-        </div>
-      </div>
-
-      #{form.control-group}
-        #{form.control}
-        Ajuste Valor <input name='invoiceAdjustment' type='text' value=''>
-        </div>
-      </div>
-
-      #{form.control-group}
-        #{form.control}
-        Moneda AV <input name='invoiceCurrencyValue' type='text' value=''>
-        </div>
-      </div>
-
-      #{form.control-group}
-        #{form.control}
-          Orden Despacho <input name='orderNumber' type='text' value=''>
-        </div>
-      </div>
-
-      </fieldset>
-
-    </div>
-
-    #{form.block100}
-      #{form.control-group}
-        #{form.control}
-          <button type='button' class='#{gz.Css \ink-button}'>
-            Generar Despacho
-          </button>
-        </div>
-      </div>
-    </div>
-  </form>"
+  /** @private */ @menuCaption = 'Declaración'
+  /** @private */ @menuIcon    = gz.Css \icon-book
