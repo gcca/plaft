@@ -92,8 +92,8 @@ class BaseHandler(webapp2.RequestHandler):
 
     def set_secure_cookie(self, name, val):
         cookie_val = make_secure_val(val)
-        self.response.headers.add_header(
-            'Set-Cookie', '%s=%s; Path=/' % (name, cookie_val))
+        self.response.headers.add_header('Set-Cookie', '%s=%s; Path=/'
+                                         % (name, cookie_val))
 
     def read_secure_cookie(self, name):
         cookie_val = self.request.cookies.get(name)
@@ -129,6 +129,6 @@ class BaseHandler(webapp2.RequestHandler):
             #key = 666
         except TransactionFailedError as ex:
             logging.error('DataStore Error: ' + ex.message)
-            self.status.INTERNAL_ERROR
+            self.status.INTERNAL_ERROR(ex)
         else:
             return key

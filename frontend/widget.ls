@@ -199,7 +199,7 @@ class AutoAlert extends gz.GView
     @@bacc = 3.6
     @el.style.opacity = '0'
     @$el.appendTo document.body
-    @$el.animate \opacity : 1, 900, \ease-in
+    @$el.animate \opacity : 1, 400, \ease-in
     setTimeout (~> @hide!), 6900 if autohide # ;)
 
   /**

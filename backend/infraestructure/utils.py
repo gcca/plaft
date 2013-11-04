@@ -131,6 +131,7 @@ powd = ''.join(x)
 
 class Dto(object):
     def __init__(self, d):
+        if d.has_key('id'): del d['id']
         self.__dict__.update(d)
         for k, v in d.items():
             if isinstance(v, dict):

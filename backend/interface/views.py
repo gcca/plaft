@@ -249,7 +249,7 @@ class DeclarationPDFView(BaseHandler):
             ['Domilicio declarado' , customer.address],
             ['Domicilio fiscal'    , customer.officialAddress],
             ['Código de ciudad'    , customer.addressCityCode],
-            ['Teléfono'            , customer.phone],
+            # ['Teléfono'            , customer.phone],
             ['Contacto'            , customer.contact]
         ] + ([['', ''],
             ['Beneficiario'            , declaration.thirdName],

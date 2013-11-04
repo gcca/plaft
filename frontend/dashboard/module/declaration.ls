@@ -4,51 +4,13 @@
 
 form  = require '../../form'
 model = require '../../model'
+widget = require '../../widget'
 
 ModuleBaseView = require './base'
 
 /** @private */ DeclarationModel             = model.Declaration
 /** @private */ CustomerLastDeclarationModel = model.CustomerLastDeclaration
 /** @private */ DispatchModel                = model.Dispatch
-
-##   events:
-##     'submit form#search': (event) ->
-##       f = event.currentTarget
-
-##       query = f.elements[\query].value
-
-##       type = null
-
-##       if 8 == query.length
-##         # Código de declaraión jurada
-##         type = 'trackingId'
-##         Model = DeclarationModel
-##       else if 11 == query.length
-##         # RUC
-##         type = 'documentNumber'
-##         Model = CustomerLastDeclarationModel
-##       else if (query)
-##         # Razón social
-##         type = 'name'
-##         Model = CustomerLastDeclarationModel
-##       else
-##         alert('Texto Invalido')
-##         return
-
-##       # (-o-) First find declaration
-##       declaration = new Model "#{type}" : query
-
-##       # (-o-) First find customer
-##       self = @
-##       declaration.fetch do
-##         \success : (declaration) ->
-##           self.showInfo declaration.attributes
-##         \error   : ->
-##           console.log 'ya fue'
-
-##       @declaration = declaration
-
-##       off
 
 /**
  * @class DeclarationView
@@ -77,10 +39,30 @@ module.exports = class DeclarationView extends ModuleBaseView
 
   /**
    * On search from searchView event.
-   * @param {!string} value Query text.
+   * @param {!string} query Query text: declaration trackingId or documentNumber.
    * @private
    */
-  onSearch: !(value) ~> @renderInfo!
+  onSearch: !(query) ~>
+    type = null
+    if query.length is 8
+      type = 'trackingId'
+      Model = DeclarationModel
+    else if query.length is 11
+      type = 'documentNumber'
+      Model = CustomerLastDeclarationModel
+    else
+      (new widget.GAutoAlert (gz.Css \error),
+                            '<b>ERROR</b>: Debe ingresar un código de declaración jurada o
+                            \ un número RUC.').show!
+      return
+    # (-o-) First find declaration
+    @declaration = new Model "#type" : query
+    # (-o-) First find customer
+    @declaration.fetch do
+      \success : (declaration) ~> @renderInfo declaration.attributes
+      \error   : ~>
+        console.log '500:'
+        console.log arguments
 
   /**
    * Initialize view.
@@ -90,39 +72,10 @@ module.exports = class DeclarationView extends ModuleBaseView
 
   /**
    * Render customer info form.
+   * @param {!Object} declaration
    * @private
    */
-  renderInfo: !->
-    declaration =
-      \references : null
-      \trackingId : '2D9B2A7A'
-      \source : null
-      \customer :
-        \contact : null
-        \socialObject : null
-        \legalDocumentType : 'DNI'
-        \legalName : null
-        \shareholders : []
-        \name : 'cristHian Gz.'
-        \documentNumber : '12345678989'
-        \officePhone : null
-        \addressCityCode : null
-        \activity : null
-        \legalDocumentNumber : null
-        \documentType : 'RUC'
-        \address : null
-        \isObliged : false
-        \contactPhone : null
-        \hasOfficier : false
-        \id : 5910974510923776
-        \officialAddress : null
-      \thirdDocumentType : 'DNI'
-      \thirdDocumentNumber : null
-      \thirdName : null
-      \thirdType : 'person'
-      \id : 5770237022568448
-      \third : false
-    @declaration = declaration
+  renderInfo: !(declaration) ->
     @$el.html @template declaration
     @$el.find "##{gz.Css \id-alert}" .on \change !(evt) ~>
       ta = @$el.find '[name=clerkAlert]'
@@ -144,6 +97,8 @@ module.exports = class DeclarationView extends ModuleBaseView
 
   /**
    * Template (Declaration).
+   * @param {!Object} declaration
+   * @return {string}
    * @private
    */
   template: (declaration) -> "
@@ -157,14 +112,6 @@ module.exports = class DeclarationView extends ModuleBaseView
             #{form.control}
               <input type='text'
                   value='#{declaration.'customer'.'name'}' disabled>
-            </div>
-          </div>
-
-          #{form.control-group}
-            #{form.label}Monto</label>
-            #{form.control}
-              <input type='text'
-                  value='#{declaration.'amount'}' disabled>
             </div>
           </div>
 
@@ -188,14 +135,6 @@ module.exports = class DeclarationView extends ModuleBaseView
       #{form.block50}
         <fieldset>
           <legend>Tercero</legend>
-
-          #{form.control-group}
-            #{form.label}Tipo</label>
-            #{form.control}
-              <input type='text'
-                  value='#{declaration.'thirdType'}' disabled>
-            </div>
-          </div>
 
           #{form.control-group}
             #{form.label}Nombre</label>

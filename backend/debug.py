@@ -2,6 +2,7 @@
 import webapp2
 from datetime import date
 from domain.gz import db
+from infraestructure.utils import Dto
 from domain.model import CustomsBrokerUser, CustomsBroker, Business, \
     Dispatch, Declaration
 
@@ -69,6 +70,21 @@ def main():
         invoiceCurrencyAdjustment  = '',
         customer = p2)
     d2.store()
+
+    # Declarations
+    declaration1 = Declaration(
+        trackingId          = 'GGGGG666',
+        source              = '',
+        references          = '',
+        customer            = Dto({
+            'name': 'Massive Dynamic',
+        }),
+        third               = True,
+        thirdType           = 'person',
+        thirdName           = 'TM Fire on Sky',
+        thirdDocumentType   = 'RUC',
+        thirdDocumentNumber = '963963852789')
+    declaration1.put()
 
 
 # Debug View
