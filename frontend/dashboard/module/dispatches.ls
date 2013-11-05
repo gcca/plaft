@@ -29,11 +29,6 @@ DispatchCollection = model.Dispatches
  */
 module.exports = class DispatchesView extends builder.Table
 
-  ```` # CC
-
-  /** @private */ @menuCaption = 'Despachos'
-  /** @private */ @menuIcon    = gz.Css \icon-list-alt
-
   /**
    * View events.
    * @type {Object}
@@ -42,13 +37,14 @@ module.exports = class DispatchesView extends builder.Table
   events:
     /**
      * Show alert signals modal.
-     * @param {Object} event Event object
+     * @param {Object} evt Event object
      * @private
      */
-    "click ##{gz.Css \dispatch-alerts}": !(event) ->
-      btn = event.currentTarget
-      alertModal = new AlertModal (@dispatches.get btn.dataset[\id])
-      ## alertModal.on (gz.Css \dismiss), @render
+    "click ##{gz.Css \dispatch-alerts}": !(evt) ->
+      btn = evt.currentTarget
+      alertModal = new AlertModal @dispatches.get btn.dataset[\id]
+      AlertModal::_events.'dismiss'[0].\ctx = alertModal
+      alertModal.buttonTarget = btn
       alertModal.show!
 
   /**
@@ -109,7 +105,20 @@ module.exports = class DispatchesView extends builder.Table
    * Initialize view.
    * @private
    */
-  initialize: !-> @render!
+  initialize: !->
+    # (-o-) Remove. Improve Dispatch Model, Alert Modal View.
+    # Builder particular alert modal
+    AlertModal::countAlerts = @countAlerts
+    AlertModal::_events =
+      \dismiss : [
+        \callback : ->
+          $ @buttonTarget .parents \tr .children ':nth-child(3)' .html \
+            (@countAlerts @dispatch.get \alerts)
+        \context : void
+        \ctx : void
+      ]
+    # ----
+    @render!
 
   /**
    * Render view.
@@ -119,7 +128,7 @@ module.exports = class DispatchesView extends builder.Table
    */
   render: ->
     @el.innerHTML = '<h3>Lista de despachos</h3>'
-    @createTable <[ Orden Cliente \#Alertas &nbsp; ]>
+    @createTable <[ Orden Cliente Alertas &nbsp; ]>
     @dispatches = new DispatchCollection
     @dispatches.fetch do
       \success : !(_, dispatches) ~>
@@ -133,3 +142,6 @@ module.exports = class DispatchesView extends builder.Table
         @showTable!
         $ '[data-tip-text]' .each (_, el) -> new gz.Ink.UI.Tooltip el
     super!
+
+  /** @private */ @menuCaption = 'Despachos'
+  /** @private */ @menuIcon    = gz.Css \icon-paste

@@ -62,7 +62,8 @@ class Table extends ModuleBaseView
     thead = gz.newel \thead
     tbody = gz.newel \tbody
 
-    table.className = "#{gz.Css \ink-table} #{gz.Css \hover}"
+    table.className = "#{gz.Css \ink-table} #{gz.Css \hover}
+                     \ #{gz.Css \gz-options-toggleable}"
     table.dataset[\pageSize] = \6
 
     tr = gz.newel \tr

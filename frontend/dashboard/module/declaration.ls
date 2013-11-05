@@ -29,7 +29,7 @@ module.exports = class DeclarationView extends ModuleBaseView
      * @param {Object} evt Event object.
      * @private
      */
-    'click button': ->
+    'click button': !(evt) ->
       dispatchJSON = $ \form .serializeJSON!
       dispatchJSON[\declaration] = @declaration
       dispatch = new DispatchModel dispatchJSON
@@ -52,8 +52,8 @@ module.exports = class DeclarationView extends ModuleBaseView
       Model = CustomerLastDeclarationModel
     else
       (new widget.GAutoAlert (gz.Css \error),
-                            '<b>ERROR</b>: Debe ingresar un código de declaración jurada o
-                            \ un número RUC.').show!
+                            '<b>ERROR</b>: Debe ingresar un código
+                            \ de declaración jurada o un número RUC.').show!
       return
     # (-o-) First find declaration
     @declaration = new Model "#type" : query
@@ -299,4 +299,4 @@ module.exports = class DeclarationView extends ModuleBaseView
     </form>"
 
   /** @private */ @menuCaption = 'Declaración'
-  /** @private */ @menuIcon    = gz.Css \icon-book
+  /** @private */ @menuIcon    = gz.Css \icon-file-text

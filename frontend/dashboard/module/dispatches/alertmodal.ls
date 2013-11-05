@@ -103,10 +103,8 @@ module.exports = class AlertModal extends widget.GModal
      */
     onClickOk: !~>
         @dispatch.save (\alerts : @form.serializeJSON!), do
-            \success : ~>
-                @hide!
-            \error : ~>
-                alert 'ERROR: alerts'
+            \success : ~> @hide!
+            \error : ~> alert 'ERROR: alerts'
     # -- end Events --
 
     /**
@@ -118,7 +116,12 @@ module.exports = class AlertModal extends widget.GModal
     !(@dispatch) ->
         super @amHeader, @amBody!, @amFooter!
 
-    /** @private */ alertSignals : [
+    /**
+     * Alert caption list.
+     * @type {Array.<string>}
+     * @private
+     */
+    alertSignals : [
         '1. El cliente, para efectos de su identificación, presenta información inconsistenteo de dificilverificaciónpor parte del sujeto obligado.'
         '2. El cliente declara o registra la misma dirección que la de otras personas con las que no tiene relación o vínculo aparente.'
         '3. Existencia de indicios de que el ordenante (propietario/titulardel bien o derecho) ó el beneficiario (adquirente o receptor del bien o derecho) no actúa por su cuenta y que intentaocultar la identidad del ordenante o beneficiarioreal.'

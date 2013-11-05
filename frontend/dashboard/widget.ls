@@ -46,18 +46,19 @@ class SearchView extends gz.GView
    */
   showTooltip: !(value = 'Buscar...') ->
     @tmplt.innerHTML = "
-      <div class='#{gz.Css \content}'
+      <div class='#{gz.Css \content}' style='font-size:0.92em'
         style='text-align: justify;margin-right:1em'>#value</div>
       <gcca style='display:none'></gcca>"
     @ttip.'options'.'text' = \gcca
     @ttip.'tooltips'[0].'_makeTooltip'!
-    setTimeout (~> @ttip.'tooltips'[0].'_removeTooltip'!), 3000
+    setTimeout (~> @ttip.'tooltips'[0].'_removeTooltip'!), 3600
 
   /**
    * Destroy tooltip.
    */
   destroyTooltip: !->
     if @ttip?
+      @off (gz.Css \search)
       @ttip
         ..'options'.'text' = ''
         ..'tooltips'[0].'_removeTooltip'!

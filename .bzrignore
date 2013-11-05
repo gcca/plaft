@@ -18,3 +18,4 @@ backend/static/doc
 .git
 .gitignore
 *.json
+requirements.txt

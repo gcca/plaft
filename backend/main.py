@@ -24,6 +24,7 @@ app = WSGIApplication([
 
     # Views
     ('/', SignInView),
+    ('/signin', SignInView),  # avoid 302
     ('/customer-form', CustomerFormView),
     ('/dashboard', DashboardView),
 

@@ -144,12 +144,12 @@ class AutoAlert extends gz.GView
   /**
    * @private
    */
-  @acc = 1
+  @acc = 0
 
   /**
    * @private
    */
-  @bacc = 3
+  @bacc = 4
 
   /**
    * @private
@@ -193,10 +193,10 @@ class AutoAlert extends gz.GView
    * @param {boolean=} autohide
    */
   show: !(autohide = on) ->
-    @el.style.top = "#{@@bacc * @@acc}em"
+    @el.style.bottom = "#{@@bacc * @@acc + 1.2}em"
     @@acc++
     @@nacc++
-    @@bacc = 3.6
+    ## @@bacc = 3.6
     @el.style.opacity = '0'
     @$el.appendTo document.body
     @$el.animate \opacity : 1, 400, \ease-in
@@ -208,8 +208,8 @@ class AutoAlert extends gz.GView
   hide: !->
     @@nacc--
     if @@nacc < 1
-      @@acc = 1
-      @@bacc = 3
+      @@acc = 0
+      ## @@bacc = 3
     @$el.off!
     @$el.animate \opacity : 0, 700, \ease-out, ~> @$el.remove!
 

@@ -45,3 +45,5 @@ tests/ls
 *.js
 *.css
 *.json
+requirements.txt
+doc

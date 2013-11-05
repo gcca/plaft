@@ -27,8 +27,7 @@ fc_less () {
 
 fc_ls () {
         echo Compilando $src.ls
-        pext="--externas $ext3"
-        # if [ none == "$1" ]; then pext=; else int="--internas prelude"; fi
+		if [ none != "$1" ]; then pext="--externas $ext3"; fi  # if [ none == "$1" ]; then pext=; else int="--internas prelude"; fi
         python -O $setup $srcdir/$src.ls --salida $dstdir/ $pext $opt --3rdparty $thirdparty --compresor_js $jsc $int $dep
 }
 
@@ -37,13 +36,17 @@ fc_ll () {
         less) fc_less ;;
         ls)   fc_ls   ;;
         esac
-        if [ "" == "$1" ]; then fc_less; fc_ls; fi
+		ALL=$1
+		if [ "0" == "$1" ]; then opt=-O; ALL=; fi
+        if [ "" == "$ALL" ]; then fc_less; fc_ls; fi
 }
 
 case $src in
 
 signin)
-		if [ "" == "$2" ]; then fc_ll; elif [ ls == "$2" ]; then fc_ls none; else fc_less; fi
+		SALL=$2
+		if [ "0" == "$2" ]; then opt=-O; SALL=; fi
+		if [ "" == "$SALL" ]; then fc_ll; elif [ ls == "$2" ]; then fc_ls none; else fc_less; fi
         ;;
 
 customer-form)
@@ -59,7 +62,7 @@ all)
         src=signin
         fc_less
 		fc_ls none
-		ext3=zepto,underscore,ink,backbone
+		ext3=zepto,underscore,ink,backbone,typeahead
         src=customer-form
         fc_ll
         src=dashboard

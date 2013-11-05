@@ -10,6 +10,8 @@ module.exports = class DesktopView extends gz.GView
   tagName: \div
 
   /**
+   * Style.
+   * @type {Object}
    * @private
    */
   className: "#{gz.Css \large-100} #{gz.Css \medium-100} #{gz.Css \small-100}"

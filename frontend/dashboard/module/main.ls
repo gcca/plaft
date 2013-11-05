@@ -13,11 +13,6 @@ ModuleBaseView = require './base'
  */
 module.exports = class MainView extends ModuleBaseView
 
-    ```` # CC
-
-    /** @private  */ @menuCaption = 'Principal'
-    /** @private  */ @menuIcon    = gz.Css \icon-dashboard
-
     /**
      * Html element.
      * @private
@@ -29,4 +24,9 @@ module.exports = class MainView extends ModuleBaseView
      * @private
      */
     initialize: !->
-        @$el.html '<h3>Principal</h3>'
+        @$el.html "
+        <h3>Principal</h3>
+        "
+
+    /** @private  */ @menuCaption = 'Principal'
+    /** @private  */ @menuIcon    = gz.Css \icon-dashboard

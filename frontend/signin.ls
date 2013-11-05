@@ -1,6 +1,22 @@
+#                    __
+#               _--'"  "`--_
+#        /( _--'_.        =":-_
+#       | \___/{          '>_ ".
+#       |-"  ' /\            :  \:
+#      /       { `-_*         \  |
+#     '/        -:='           |  \:
+#     {   '  -___\            |/   |
+#    |   :   / (.             |     /
+#    `.   .  | | \_-'-.     )\|    '
+#     |    :  ` \ __-'-    /      |
+#      \    ".   "'--__-''"       /
+#       \     "--"''   ,.'":     /
+#        `-_        ''" .."   _-'
+#           "'--__      __--'"    cristHian Gz. (gcca)
+#                 ""--""
 errors = window[\params][\e]
 existLoginError = errors? and (errors.indexOf 'login') != -1
-body = "
+document.body.innerHTML = "
 <div class='#{gz.Css \topbar}' style='margin-bottom:1em;'>
 
   <nav class='#{gz.Css \ink-navigation} #{gz.Css \hide-small}'>
@@ -80,7 +96,7 @@ body = "
 
       <br><br>
 
-      <form method='post' class='#{gz.Css \ink-form}'>
+      <form action='/signin' method='post' class='#{gz.Css \ink-form}'>
         <fieldset>
           <div class='#{gz.Css \control-group}
             #{if existLoginError
@@ -194,22 +210,3 @@ body = "
   </nav>
 </footer>
 "
-
-document.body.innerHTML = body
-
-#                    __
-#               _--'"  "`--_
-#        /( _--'_.        =":-_
-#       | \___/{          '>_ ".
-#       |-"  ' /\            :  \:
-#      /       { `-_*         \  |
-#     '/        -:='           |  \:
-#     {   '  -___\            |/   |
-#    |   :   / (.             |     /
-#    `.   .  | | \_-'-.     )\|    '
-#     |    :  ` \ __-'-    /      |
-#      \    ".   "'--__-''"       /
-#       \     "--"''   ,.'":     /
-#        `-_        ''" .."   _-'
-#           "'--__      __--'"    cristHian Gz. (gcca)
-#                 ""--""

@@ -3,20 +3,28 @@
 /**
  * Events
  */
-// @see ./dashboard/desktop
-.change-desktop {filter:none}
-// @see ./dashboard ./dashboard/desktop
-.search {filter:none}
+.change-desktop {filter:none}  // @see dashboard.desktop
+.search {filter:none}  // @see dashboard dashboard.desktop
 
 /**
  * Identifiers
  */
-// @see ./dashboard/module/dispatches
-.dispatch-alerts {filter:none}
+.dispatch-alerts {filter:none}  // @see dashboard.module.dispatches
 .id-alert {filter:none}
 
 /**
  * Options
  */
-// @see ./dashboard/module/operations
-.button-edit {filter:none}
+.button-edit {filter:none}  // @see dashboard.module.operations
+
+.gz-dashboard {
+    table.gz-options-toggleable tr {  // @see dashboard.module.builder
+        td:last-child * {
+            visibility: hidden;
+        }
+
+        &:hover td:last-child * {
+        visibility: visible;
+        }
+    }  // .table.options-toggleable
+}  // .dashboard

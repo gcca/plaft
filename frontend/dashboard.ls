@@ -7,7 +7,7 @@ DesktopView = require './dashboard/desktop'
 
 /**
  * Main view.
- * @class
+ * @class DashboardView
  */
 class DashboardView extends gz.GView
 
@@ -23,6 +23,7 @@ class DashboardView extends gz.GView
    * @private
    */
   initialize: !->
+    @el.className = gz.Css \gz-dashboard
     @el.innerHTML = DashboardView_template
 
     body = @el.lastElementChild.firstElementChild
@@ -84,43 +85,41 @@ class DashboardView extends gz.GView
 /** @private */ right_vTemplate =  "
 <div class='#{gz.Css \large-100} #{gz.Css \medium-100} #{gz.Css \small-100}'>
   <div class='#{gz.Css \large-75} #{gz.Css \medium-75} #{gz.Css \small-100}'>
-  <nav class='#{gz.Css \ink-navigation}'>
-    <ul class='#{gz.Css \breadcrumbs}
-             \ #{gz.Css \flat}
-             \ #{gz.Css \orange}
-             \ #{gz.Css \rounded}
-             \ #{gz.Css \shadowed}'>
-    <li>
-      <a href='#'>
-      <i class='#{gz.Css \icon-home}'></i>
-      &nbsp;
-      &nbsp;
-      Start
-      </a>
-    </li>
-    <li><a href='#'>Level 1</a></li>
-    <li><a href='#'>Level 2</a></li>
-    <li class='#{gz.Css \active}'>
-      <a href='javascript:void(0)'>
-      Current item
-      </a>
-    </li>
-    </ul>
-  </nav>
+    <nav class='#{gz.Css \ink-navigation}'>
+      <ul class='#{gz.Css \breadcrumbs}
+               \ #{gz.Css \flat}
+               \ #{gz.Css \orange}
+               \ #{gz.Css \rounded}
+               \ #{gz.Css \shadowed}'>
+        <li>
+          <a href='#'>
+          <i class='#{gz.Css \icon-home}'></i>
+          &nbsp;
+          &nbsp;
+          Inicio
+          </a>
+        </li>
+        <li class='#{gz.Css \active}'>
+          <a href='javascript:void(0)'>
+          Current item
+          </a>
+        </li>
+      </ul>
+    </nav>
   </div>
   <div class='#{gz.Css \large-25} #{gz.Css \medium-25} #{gz.Css \small-100}'>
-  <form style='margin: 0.29em 0.4em 0;'
-    class='#{gz.Css \ink-form} #{gz.Css \top-space}'
-    onsubmit='return false'>
-    <div class='#{gz.Css \control-group}' style='margin-bottom:0'>
-    <div class='#{gz.Css \control} #{gz.Css \append-symbol}'>
-      <span>
-      <input type='text' placeholder='Buscar...' style='font-size:16px'>
-      <i class='#{gz.Css \icon-search}'></i>
-      </span>
-    </div>
-    </div>
-  </form>
+    <form style='margin: 0.29em 0.4em 0;'
+        class='#{gz.Css \ink-form} #{gz.Css \top-space}'
+        onsubmit='return false'>
+      <div class='#{gz.Css \control-group}' style='margin-bottom:0'>
+        <div class='#{gz.Css \control} #{gz.Css \append-symbol}'>
+          <span>
+            <input type='text' placeholder='Buscar...' style='font-size:16px'>
+            <i class='#{gz.Css \icon-search}'></i>
+          </span>
+        </div>
+      </div>
+    </form>
   </div>
 </div>"
 
@@ -151,7 +150,8 @@ class DashboardView extends gz.GView
 # ---------
 new DashboardView
 
-($ (($ "ul.#{gz.Css \white}") .children! .next! .get 0)).children! .first! .click!
-evt = $.Event \keyup
-  ..keyCode = 13
-$ 'input' .val '123' .trigger evt
+## ($ (($ "ul.#{gz.Css \white}") .children! .next! .get 0)).children! .first! .click!
+## evt = $.Event \keyup
+##   ..keyCode = 13
+## $ 'input' .val '123' .trigger evt
+## ($ (($ "ul.#{gz.Css \white}") .children! .last! .get 0)).children! .first! .click!

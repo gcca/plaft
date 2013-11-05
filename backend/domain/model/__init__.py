@@ -76,7 +76,7 @@ class Declaration(Entity):
         return random[:random.index('-')]
 
     def store(self):
-        self.trackingId = self._nextTrackingId()
+        if not self.trackingId: self.trackingId = self._nextTrackingId()
         return super(Declaration, self).store()
 
 # --------
