@@ -58,7 +58,7 @@ class Customer extends GModel
    * ...         ...  # Error creating declaration
    * >>> customer.createDeclaration declarationJSON, options
    */
-  createDeclaration : (declarationJSON, options) ->
+  createDeclaration: (declarationJSON, options) ->
       declarationJSON <<< \customer : @toJSON!
       declaration = new Declaration declarationJSON, parent : @
       declaration.save new Object, options
@@ -69,14 +69,7 @@ class Customer extends GModel
  */
 class Customers extends gz.GCollection
   url: \customer
-  model : Customer
-
-/**
- * Last declaration of {@code Customer} model
- * @class CustomerLastDeclaration
- */
-class CustomerLastDeclaration extends GModel
-  urlRoot: \customer/lastdeclaration
+  model: Customer
 
 # -----------
 # Declaration
@@ -93,8 +86,18 @@ class Declaration extends GModel
  * @class Declarations
  */
 class Declarations extends gz.GCollection
-  url: \declaration
-  model : Declaration
+  urlRoot: \declaration
+  model: Declaration
+
+# --------------------
+# Customer Declaration
+# --------------------
+/**
+ * Last declaration of {@code Customer} model
+ * @class CustomerLastDeclaration
+ */
+class CustomerLastDeclaration extends Declaration
+  urlRoot: \customer/lastdeclaration
 
 # --------
 # Dispatch
@@ -112,7 +115,7 @@ class Dispatch extends GModel
  */
 class Dispatches extends gz.GCollection
   urlRoot: \dispatch
-  model : Dispatch
+  model: Dispatch
 
 /**
  * @type {Object}

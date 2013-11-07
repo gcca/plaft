@@ -198,6 +198,7 @@ class Business(Customer):
     officePhone         = TextProperty         ()
     contact             = TextProperty         ()
     shareholders        = JsonProperty         ()
+    activityEconomic    = TextProperty         ()
 
     def __init__(self, *a, **k):
         """Init Business """
@@ -248,18 +249,18 @@ class Dispatch(Entity):
 
     Attributes:
         orderDispatch: Código generado por recepcionista para cada despacho.
-        codeAgentAduana: Codigo de Agente de Aduana.
+        customsBrokerCode: Codigo de Agente de Aduana.
         dateReceived: Fecha de Recepción.
-        referencesClient: Referencias del cliente.
-        regimenAduanero: Regimen Aduanero.
-        codeAduana: Codigo de Aduana.
+        customerReferences: Referencias del cliente.
+        customsRegime: Regimen Aduanero.
+        customsCode: Codigo de Aduana.
         numberInvoice: Número de Factura Comercial.
-        reasonSocial: Razón Social.
-        addressInvoice: Dirección.
-        valueInvoice: Valor / Importe.
-        currencyValueInvoice : Moneda Valor / Importe.
-        settingValueInvoice: Ajuste Valor.
-        currencySettingInvoice: Moneda Ajuste Valor.
+        businessName: Razón Social.
+        invoiceAddress: Dirección.
+        invoiceValue: Valor / Importe.
+        invoiceCurrencyValue : Moneda Valor / Importe.
+        invoiceAdjustment: Ajuste Valor.
+        invoiceCurrencyAdjustment: Moneda Ajuste Valor.
 
         TODO(...): Update doc.
     """
@@ -278,5 +279,4 @@ class Dispatch(Entity):
     invoiceCurrencyValue       = TextProperty ()
     invoiceCurrencyAdjustment  = TextProperty ()
     alerts = JsonProperty ()
-    customer = ReferenceProperty(Customer, collection_name='dispatches')
     declaration = ReferenceProperty(Declaration, collection_name='dispatches')

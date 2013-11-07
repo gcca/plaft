@@ -75,7 +75,7 @@ module.exports = class BusinessFormView extends BaseFormView
             #{form.control-group}
               #{form.controlSym100}
                 <span>
-                  <input type='text' name='name' placeholder='Actividad economica principal'>
+                  <input type='text' name='activityEconomic' placeholder='Actividad economica principal'>
                   <i class='#{gz.Css \icon-tasks}'
                       data-tip-color='#{gz.Css \blue}'
                       data-tip-text='Actividad económica principal (comercial, industrial, construcción, transporte, etc.)'></i>
@@ -122,7 +122,7 @@ module.exports = class BusinessFormView extends BaseFormView
             </div>
 
             #{form.control-group}
-              #{form.controlSym}
+              #{form.controlSym100}
                 <span>
                   <select name='legalDocumentType'>
                     <option value='DNI'>DNI</option>
@@ -138,7 +138,7 @@ module.exports = class BusinessFormView extends BaseFormView
             </div>
 
             #{form.control-group}
-              #{form.controlSym}
+              #{form.controlSym100}
                 <span>
                   <input type='text' name='legalDocumentNumber' placeholder='Número de identificación'>
                   <i class='#{gz.Css \icon-credit-card}'
@@ -193,10 +193,9 @@ module.exports = class BusinessFormView extends BaseFormView
         #{form.block50}
           <fieldset>
 
-
             <legend>Datos Persona Contacto</legend>
             #{form.control-group}
-              #{form.controlSym}
+              #{form.controlSym100}
                 <span>
                 <input type='text' name='contactPhone' placeholder='Teléfono contacto'>
                 <i class='#{gz.Css \icon-phone}'
@@ -207,7 +206,7 @@ module.exports = class BusinessFormView extends BaseFormView
             </div>
 
             #{form.control-group}
-              #{form.controlSym}
+              #{form.controlSym100}
                 <span>
                   <input type='text' name='officePhone' placeholder='Teléfono oficina'>
                   <i class='#{gz.Css \icon-phone}'
@@ -218,9 +217,9 @@ module.exports = class BusinessFormView extends BaseFormView
             </div>
 
 
-            <fieldset>
+
             #{form.control-group}
-              #{form.controlSym}
+              #{form.controlSym100}
                 <span>
                 <input type='text' name='addressCityCode'
                     placeholder='Código Postal'>
@@ -230,7 +229,7 @@ module.exports = class BusinessFormView extends BaseFormView
                 </span>
               </div>
             </div>
-            </fieldset>
+
 
             #{form.control-group}
               #{form.controlSym100}
@@ -243,13 +242,12 @@ module.exports = class BusinessFormView extends BaseFormView
               </div>
             </div>
 
+
           </fieldset>
 
-
           <fieldset>
+
             <legend>Información</legend>
-
-
 
             #{form.control-group}
               <label class='#{gz.Css \large-75}

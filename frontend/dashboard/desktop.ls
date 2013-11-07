@@ -24,10 +24,15 @@ module.exports = class DesktopView extends gz.GView
    */
   changeDesktop: !(Module, opts = new Object) ->
     @uiSearch.destroyTooltip!
-    module = new Module opts, @
-    @el.innerHTML = ''
-    @el.appendChild module.el
-    @uiSearch.on (gz.Css \search), module.onSearch if module.onSearch?
+    if @module?
+      @module.remove!
+      delete @module
+    @module = new Module opts, @
+    ## @el.innerHTML = ''
+    @el.appendChild @module.el
+    @uiSearch.on (gz.Css \search), @module.onSearch if @module.onSearch?
+    @uiTitle.setValue Module.menuTitle
+    @trigger (gz.Css \on-appended)
 
   /**
    * @param {Object} menuView GView.
@@ -40,7 +45,24 @@ module.exports = class DesktopView extends gz.GView
      * @protected
      */
     @uiSearch = searchView
-
+    /**
+     * Topbar title.
+     * @type {Object}
+     * @protected
+     */
+    @uiTitle =
+      /**
+       * Set title text.
+       * @param {string} titleText
+       */
+      setValue: !(titleText = '...') -> @$elTitle.html titleText
+      /**
+       * DOM element title.
+       * @type {Object}
+       * @private
+       */
+      $elTitle: $ "##{gz.Css \topbar-title}"
+    # end @uiTitle
     menuView.bind (gz.Css \change-desktop), @changeDesktop, @
     super!
 

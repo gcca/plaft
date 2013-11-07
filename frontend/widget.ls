@@ -7,8 +7,8 @@
  * @class Modal
  *
  * @example
- * modal = new Modal '<h3>Header</h3>', '<p>body</p>'
- * modal.show!
+ * >>> modal = new Modal '<h3>Header</h3>', '<p>body</p>'
+ * >>> modal.show!
  */
 class Modal extends gz.GView
 
@@ -104,14 +104,15 @@ class Modal extends gz.GView
   /** @private */ uiModal : null
 
 /**
- * Create alert on top.
+ * Create stacking alerts with position fixed.
  * @class AutoAlert
- * Parameter {@code type} must be {@code gz.Css ('error'|'success'|'info')}
  *
  * @example
- * autoAlert = new AutoAlert (gz.Css \error),
- *                           '<b>ERROR:</b> Esto es un error'
- * autorAlert.show!
+ * >>> // Choose style with (gz.Css <type>)
+ * >>> // parameter {@code type} can be {@code ('error'|'success'|'info')}.
+ * >>> autoAlert = new AutoAlert (gz.Css \error),
+ * ...                           '<b>ERROR:</b> Esto es un error'
+ * >>> autorAlert.show!
  */
 class AutoAlert extends gz.GView
 
@@ -157,7 +158,7 @@ class AutoAlert extends gz.GView
   @nacc = 0
 
   /**
-   * @param {string} type .error .success .info
+   * @param {string} type One {@code .error}, {@code .success}, {@code .info}.
    * @param {string} message Text
    * @param {string=} block HTML content
    * @constructor
@@ -193,7 +194,7 @@ class AutoAlert extends gz.GView
    * @param {boolean=} autohide
    */
   show: !(autohide = on) ->
-    @el.style.bottom = "#{@@bacc * @@acc + 1.2}em"
+    @el.style.bottom = "#{@@bacc * @@acc + 1.4}em"
     @@acc++
     @@nacc++
     ## @@bacc = 3.6

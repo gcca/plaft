@@ -2,6 +2,7 @@
 '''Handlers '''
 
 from interface import BaseHandler
+from domain.model import Declaration # (-o-) DBG
 from domain.gz import SpecificationError, NotFoundError, DuplicateError, \
     StoreFailedError, BadValueError
 from application.service import CustomerService, DeclarationService, \
@@ -116,6 +117,7 @@ class DeclarationHandler(BaseHandler):
 
     def get(self):
         trackingId = self.request.get('trackingId')
+        if not trackingId: return self.render_json(Declaration.all()) # (-o-) DBG
         service = DeclarationService()
         try:
             declaration = service.requestDeclaration(trackingId)

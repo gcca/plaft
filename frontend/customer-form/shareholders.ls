@@ -20,6 +20,7 @@ model  = require '../model'
 /**
  * Shareholder view.
  * Manage shareholder item in list.
+ * @class
  * @private
  */
 class ShareholderView extends gz.GView
@@ -125,31 +126,31 @@ module.exports = class ShareholdersView extends gz.GView
   initialize: !(@options) ->
     div = gz.newel \div
     className = "#{gz.Css \large-100}
-           \ #{gz.Css \medium-100}
-           \ #{gz.Css \small-100}"
-    div.innerHTML = "<button type='button'
-               class='#{gz.Css \ink-button}
-                  \ #{gz.Css \event-add-shareholder}'
-               style='margin-bottom:0.7em'>
-               Agregar <i class='#{gz.Css \icon-plus}'></i>
-             </button>"
+               \ #{gz.Css \medium-100}
+               \ #{gz.Css \small-100}"
+    div.innerHTML = "
+      <button type='button' class='#{gz.Css \ink-button}
+                                 \ #{gz.Css \event-add-shareholder}'
+          style='margin-bottom:0.7em'>
+        Agregar <i class='#{gz.Css \icon-plus}'></i>
+      </button>"
     @el.appendChild div
 
     ul = gz.newel \ul
     ul.className = "#{gz.Css \menu}
-            \ #{gz.Css \vertical}
-            \ #{gz.Css \rounded}
-            \ #{gz.Css \shadowed}
-            \ #{gz.Css \white}"
+                  \ #{gz.Css \vertical}
+                  \ #{gz.Css \rounded}
+                  \ #{gz.Css \shadowed}
+                  \ #{gz.Css \white}"
 
     @el.className = gz.Css \ink-navigation
     @el.appendChild ul
     @ul = ul
 
     shareholders = new ShareholderList
+    # function(GModel, options)
     shareholders.bind \add, !(shareholder, _, opts) ->
-      shareholderView = new ShareholderView addIcon : opts.addIcon,
-                          shareholder
+      shareholderView = new ShareholderView addIcon : opts.addIcon, shareholder
       ul.appendChild shareholderView.el
 
     localShareholders = []
@@ -167,7 +168,6 @@ module.exports = class ShareholdersView extends gz.GView
       shareholders.add shareholder, addIcon : true
 
     @shareholders = shareholders
-
     @render!
 
   /**

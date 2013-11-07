@@ -9,6 +9,7 @@ widget = require '../../widget'
 ModuleBaseView = require './base'
 
 /** @private */ DeclarationModel             = model.Declaration
+/** @private */ CustomerModel                = model.Customer
 /** @private */ CustomerLastDeclarationModel = model.CustomerLastDeclaration
 /** @private */ DispatchModel                = model.Dispatch
 
@@ -30,12 +31,18 @@ module.exports = class DeclarationView extends ModuleBaseView
      * @private
      */
     'click button': !(evt) ->
-      dispatchJSON = $ \form .serializeJSON!
-      dispatchJSON[\declaration] = @declaration
+      dispatchJSON = @$el.find \form .serializeJSON!
+      dispatchJSON.\declaration = @declaration
       dispatch = new DispatchModel dispatchJSON
       dispatch.save new Object, do
-        \success : -> alert 'OK'
-        \error   : -> alert 'ERROR: new dispatch'
+        \success : ~>
+          @desktop.uiSearch.elClear!
+          @remove!
+          (new widget.GAutoAlert (gz.Css \success),
+                                 '<b>DESPACHO</b>: Se ha creado el despacho
+                                 \ de manera exitosa.').show!
+        \error   : ->
+          alert 'ERROR: new dispatch'
 
   /**
    * On search from searchView event.
@@ -52,17 +59,27 @@ module.exports = class DeclarationView extends ModuleBaseView
       Model = CustomerLastDeclarationModel
     else
       (new widget.GAutoAlert (gz.Css \error),
-                            '<b>ERROR</b>: Debe ingresar un código
-                            \ de declaración jurada o un número RUC.').show!
+                             '<b>ERROR</b>: Debe ingresar un código
+                             \ de declaración jurada o un número RUC.').show!
       return
     # (-o-) First find declaration
     @declaration = new Model "#type" : query
     # (-o-) First find customer
     @declaration.fetch do
-      \success : (declaration) ~> @renderInfo declaration.attributes
-      \error   : ~>
-        console.log '500:'
-        console.log arguments
+      \success : (declaration) ~>
+        if declaration.isNew!
+          @onSearchInfoNoDeclaration
+        else
+          @renderInfo declaration.attributes
+      \error : @onSearchInfoNoDeclaration
+
+  /**
+   * @see onSearch
+   */
+  onSearchInfoNoDeclaration: ->
+    (new widget.GAutoAlert (gz.Css \info),
+                           '<b>AVISO</b>: No existe una declaración
+                             \ jurada.').show!
 
   /**
    * Initialize view.
@@ -90,7 +107,7 @@ module.exports = class DeclarationView extends ModuleBaseView
    */
   render: ->
     @desktop.uiSearch.showTooltip '
-      <b>Buscar por <em>razón social</em>, <em>RUC</em>
+      <b>Buscar por <em>RUC</em>
       \ o <em>código de declaración jurada</em>.</b>'
     @desktop.uiSearch.elFocus!
     super!
@@ -102,7 +119,8 @@ module.exports = class DeclarationView extends ModuleBaseView
    * @private
    */
   template: (declaration) -> "
-    <form id='dispatchForm' class='#{gz.Css \ink-form} #{gz.Css \ink-form-new}'>
+    <form class='#{gz.Css \ink-form} #{gz.Css \ink-form-new}'
+        style='margin-top:-0.8em;margin-left:-2em'>
       #{form.block50}
         <fieldset>
           <legend>Cliente</legend>
@@ -110,23 +128,14 @@ module.exports = class DeclarationView extends ModuleBaseView
           #{form.control-group}
             #{form.label}Nombre</label>
             #{form.control}
-              <input type='text'
-                  value='#{declaration.'customer'.'name'}' disabled>
+              <label><b>#{declaration.'customer'.'name'}</b></label>
             </div>
           </div>
 
           #{form.control-group}
-            #{form.label}Origen</label>
+            #{form.label}RUC</label>
             #{form.control}
-              <input type='text'
-                  value='#{declaration.'source'}' disabled>
-            </div>
-          </div>
-
-          #{form.control-group}
-            #{form.label100}Referencias</label>
-            #{form.control100}
-              <input type='text' value='' disabled>
+              <label><b>#{declaration.'customer'.'documentNumber'}</b></label>
             </div>
           </div>
         </fieldset>
@@ -136,31 +145,33 @@ module.exports = class DeclarationView extends ModuleBaseView
         <fieldset>
           <legend>Tercero</legend>
 
-          #{form.control-group}
-            #{form.label}Nombre</label>
-            #{form.control}
-              <input type='text'
-                  value='#{declaration.'thirdName'}' disabled>
+          #{
+          if declaration.'thirdName' then "
+            #{form.control-group}
+              #{form.label}Nombre</label>
+              #{form.control}
+                <label><b>#{declaration.'thirdName'}</b></label>
+              </div>
             </div>
-          </div>
 
-          <em><h6 class='#{gz.Css \note}'>Documento de identidad</h6><br></em>
+            <h6 class='#{gz.Css \note}'><em>Documento de identidad</em></h6><br>
 
-          #{form.control-group}
-            #{form.label}Tipo</label>
-            #{form.control}
-              <input type='text'
-                  value='#{declaration.'thirdDocumentType'}' disabled>
+            #{form.control-group}
+              #{form.label}Tipo</label>
+              #{form.control}
+                <label><b>#{declaration.'thirdDocumentType'}</b></label>
+              </div>
             </div>
-          </div>
 
-          #{form.control-group}
-            #{form.label}Número</label>
-            #{form.control}
-              <input type='text'
-                  value='#{declaration[\thirdDocumentNumber]}' disabled>
-            </div>
-          </div>
+            #{form.control-group}
+              #{form.label}Número</label>
+              #{form.control}
+                <label><b>#{declaration[\thirdDocumentNumber]}</b></label>
+              </div>
+            </div>"
+          else
+            "<h6 class='#{gz.Css \note}'>No figura un tercero.</h6>"
+          }
         </fieldset>
       </div>
 
@@ -196,34 +207,38 @@ module.exports = class DeclarationView extends ModuleBaseView
         <legend>Datos SO</legend>
 
         #{form.control-group}
-          #{form.control}
-            Cod. Agente Aduana
-            <input name='customsBrokerCode' type='text' value=''>
+          #{form.control100}
+            <input name='customsBrokerCode' type='text'
+                placeholder='Codigo de Agente de Aduana' value=''>
           </div>
         </div>
 
         #{form.control-group}
-          #{form.control}
-          Fecha Recepción <input name='dateReceived' type='text' value=''>
+          #{form.control100}
+            <input name='dateReceived' type='text'
+                placeholder='Fecha de recepción' value=''>
           </div>
         </div>
 
 
         #{form.control-group}
-          #{form.control}
-          Refer. Cliente <input name='customerReferences' type='text' value=''>
+          #{form.control100}
+            <input name='customerReferences' type='text'
+                placeholder='Referencias' value=''>
           </div>
         </div>
 
         #{form.control-group}
-          #{form.control}
-          Reg. Aduanero <input name='customsRegime' type='text' value=''>
+          #{form.control100}
+            <input name='customsRegime' type='text'
+                placeholder='Regimen aduanero'value=''>
           </div>
         </div>
 
         #{form.control-group}
-          #{form.control}
-          Cod. Aduana <input name='customsCode' type='text' value=''>
+          #{form.control100}
+          <input name='customsCode' type='text'
+              placeholder='Código de Aduana' value=''>
           </div>
         </div>
 
@@ -236,50 +251,58 @@ module.exports = class DeclarationView extends ModuleBaseView
         <legend>Factura Comercial</legend>
 
         #{form.control-group}
-          #{form.control}
-          Num Factura <input name='invoiceNumber' type='text' value=''>
+          #{form.control100}
+            <input name='invoiceNumber' type='text'
+                placeholder='Número Factura' value=''>
           </div>
         </div>
 
         #{form.control-group}
-          #{form.control}
-          Razon Social <input name='businessName' type='text' value=''>
+          #{form.control100}
+            <input name='businessName' type='text'
+                placeholder='Razón social' value=''>
           </div>
         </div>
 
         #{form.control-group}
-          #{form.control}
-          Direccion <input name='invoiceAddress' type='text' value=''>
+          #{form.control100}
+            <input name='invoiceAddress' type='text'
+                placeholder='Dirección' value=''>
           </div>
         </div>
 
         #{form.control-group}
-          #{form.control}
-          Valor/Importe <input name='invoiceValue' type='text' value=''>
+          #{form.control100}
+            <input name='invoiceValue' type='text'
+                placeholder='Valor / Importe' value=''>
           </div>
         </div>
 
         #{form.control-group}
-          #{form.control}
-          Moneda V/I <input name='invoiceCurrencyValue' type='text' value=''>
+          #{form.control100}
+            <input name='invoiceCurrencyValue' type='text'
+                placeholder='Moneda V/I' value=''>
           </div>
         </div>
 
         #{form.control-group}
-          #{form.control}
-          Ajuste Valor <input name='invoiceAdjustment' type='text' value=''>
+          #{form.control100}
+            <input name='invoiceAdjustment' type='text'
+                placeholder='Ajuste Valor' value=''>
           </div>
         </div>
 
         #{form.control-group}
-          #{form.control}
-          Moneda AV <input name='invoiceCurrencyValue' type='text' value=''>
+          #{form.control100}
+            <input name='invoiceCurrencyAdjustment' type='text'
+                placeholder='Moneda AV' value=''>
           </div>
         </div>
 
         #{form.control-group}
-          #{form.control}
-            Orden Despacho <input name='orderNumber' type='text' value=''>
+          #{form.control100}
+            <input name='orderNumber' type='text'
+                placeholder='Orden de Despacho' value=''>
           </div>
         </div>
 
@@ -289,7 +312,7 @@ module.exports = class DeclarationView extends ModuleBaseView
 
       #{form.block100}
         #{form.control-group}
-          #{form.control}
+          #{form.control100}
             <button type='button' class='#{gz.Css \ink-button}'>
               Generar Despacho
             </button>
@@ -300,3 +323,4 @@ module.exports = class DeclarationView extends ModuleBaseView
 
   /** @private */ @menuCaption = 'Declaración'
   /** @private */ @menuIcon    = gz.Css \icon-file-text
+  /** @private */ @menuTitle   = 'Declaración Jurada'

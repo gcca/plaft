@@ -46,7 +46,7 @@ module.exports = class DeclarationFormView extends gz.GView
          * @private
          */
         @commitOptions =
-            \success : gz.tie @, !(declaration) ->
+            \success : !(declaration) ~>
                 @trigger (gz.Css \event-created-declaration), declaration
             \error : ->
                 alert 'ERROR declaration'

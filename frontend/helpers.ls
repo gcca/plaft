@@ -63,7 +63,7 @@ class GModel extends window .\Backbone .\Model
       o.url = m.url! + '?' + (["#k=#{a[k]}" for k of a].join '&')
     else if t is \create or t is \update
       a = m.toJSON!
-      a <<<< {[k, a[k].\id] for k of a when a[k]? and a[k].'id'?}
+      a <<<< {[k,a[k].id] for k of a when a[k] instanceof GModel and a[k].id?}
       o.\attrs = a
     super ...
 
@@ -137,8 +137,8 @@ $ document
       tx = document.createElement \p
 
       ale.className = "#{gz.Css \ink-alert}
-               \ #{gz.Css \basic}
-               \ #{gz.Css \error}"
+                     \ #{gz.Css \basic}
+                     \ #{gz.Css \error}"
 
       tx.style.margin = \0
       tx.innerHTML = '<b>Error:</b> &nbsp; Sin conexión.'

@@ -40,6 +40,11 @@ class SearchView extends gz.GView
   elFocus: !-> @el.focus!
 
   /**
+   * Clear text.
+   */
+  elClear: !-> @el.value = ''
+
+  /**
    * Show tooltip.
    * @param {string} value Tooltip HTML text.
    * @return {Object} Tooltip object

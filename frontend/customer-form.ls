@@ -57,7 +57,7 @@ class CustomerFormView extends gz.GView
      * @private
      */
     'keyup input[name=name]': !(evt) ->
-      input = event.currentTarget
+      input = evt.currentTarget
       @logo.innerHTML = input.value
 
   /**
@@ -66,9 +66,9 @@ class CustomerFormView extends gz.GView
    */
   initEvents : !->
     formSearch = @el.querySelector 'form#search'
-    formSearch.onsubmit = gz.tie @, (event) ->
-      event.preventDefault!
-      f = event.currentTarget
+    formSearch.onsubmit = (evt) ~>
+      evt.preventDefault!
+      f = evt.currentTarget
       documentNumber = f.elements[\query].value
       localStorage.setItem \query documentNumber
       # (-o-) First find customer
@@ -338,7 +338,6 @@ class CustomerFormView extends gz.GView
 /**
  * Template. Menu on topbar.
  * @see CustomerFormView_template
- * @type {string}
  * @private
  */
 CustomerForm-MenuLI= "
@@ -380,7 +379,6 @@ CustomerForm-MenuLI= "
 
 /**
  * Template (main).
- * @type {string}
  * @private
  */
 CustomerFormView_template = "

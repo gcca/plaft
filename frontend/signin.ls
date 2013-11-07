@@ -208,5 +208,4 @@ document.body.innerHTML = "
       </li>
     </ul>
   </nav>
-</footer>
-"
+</footer>"

@@ -21,13 +21,16 @@ def generic(template, args=''):
         '</body>'
         '</html>') % {'template': template, 'args': args}
 
-# ------------
-# Sign In View
-# ------------
-class SignInView(BaseHandler):
+
+class IndexSignInBaseView(BaseHandler):
 
     def write_signin(self, args=''):
         self.write(generic('signin', args))
+
+# ----------
+# Index View
+# ----------
+class IndexView(IndexSignInBaseView):
 
     def write_badbrowser(self):
         self.write(
@@ -99,13 +102,18 @@ class SignInView(BaseHandler):
 
     def get(self):
         agent = self.request.headers['User-Agent']
-
-        if -1 != agent.find('Firefox') \
-                or -1 != agent.find('Chrome') \
-                or -1 != agent.find('Safari'):
+        if ( # No IE!!!
+                -1 != agent.find('Firefox')
+                or -1 != agent.find('Chrome')
+                or -1 != agent.find('Safari')):
             self.write_signin()
         else:
             self.write_badbrowser()
+
+# ------------
+# Sign In View
+# ------------
+class SignInView(IndexSignInBaseView):
 
     def post(self):
         email    = self.request.get('email')

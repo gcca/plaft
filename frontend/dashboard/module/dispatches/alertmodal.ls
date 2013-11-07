@@ -23,22 +23,26 @@ module.exports = class AlertModal extends widget.GModal
                 <div class='#{gz.Css \control-group} #{gz.Css \column-group}'>"
 
             control-group.append "
-                <label class='#{gz.Css \large-85}
-                            \ #{gz.Css \medium-85}
-                            \ #{gz.Css \small-85}'
+                <label class='#{gz.Css \large-90}
+                            \ #{gz.Css \medium-90}
+                            \ #{gz.Css \small-90}'
                     style='margin-bottom:0;text-align:justify'>
                   #alert
                 </label>"
 
             control = $ "
                 <div class='#{gz.Css \control}
-                          \ #{gz.Css \large-15}
-                          \ #{gz.Css \medium-15}
-                          \ #{gz.Css \small-15}
-                          \ #{gz.Css \content-right}'>"
+                          \ #{gz.Css \large-10}
+                          \ #{gz.Css \medium-10}
+                          \ #{gz.Css \small-10}
+                          \ #{gz.Css \content-center}'>"
             input = $ \<input>
                 ..attr \type, \checkbox
-                ..css \height, '20px'
+                ..css do
+                  \float : 'initial'
+                  \transform : 'scale(1.5)'
+                  \-moz-transform : 'scale(1.5)'
+                  \-webkit-transform : 'scale(1.5)'
             control.append input
             control-group.append control
 

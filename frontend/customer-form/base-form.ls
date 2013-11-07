@@ -37,7 +37,7 @@ module.exports = class BaseFormView extends gz.GView
             @declarationView.commit @customer
         else
             @customer.save dataJSON, do
-                \success : gz.tie @, !(customer) ->
+                \success : !(customer) ~>
                     @declarationView.commit customer
                 \error : ->
                     alert 'ERROR customer'

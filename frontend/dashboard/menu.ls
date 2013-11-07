@@ -3,7 +3,6 @@
  */
 
 /**
- * @type {Array.<Object>}
  * @private
  */
 modules = [
@@ -11,9 +10,7 @@ modules = [
   DeclarationView = require './module/declaration'
   DispatchView    = require './module/dispatch'
   DispatchesView  = require './module/dispatches'
-  # OperationsView   = require'./module/operations'
-  # (-o-) To remove... NewOperation
-  #NewOperationView = require'module/newoperation'
+  DeclarationsView = require './module/declarations'
 ]
 
 /**

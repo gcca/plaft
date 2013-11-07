@@ -12,7 +12,7 @@ def main():
                         documentNumber='666-666-69')
     cb1.store()
 
-    cb2 = CustomsBroker(name='Massive Dynamic',
+    cb2 = CustomsBroker(name='OPC',
                         documentNumber='123-789-99')
     cb2.store()
 
@@ -27,15 +27,44 @@ def main():
     cbu1.store()
 
     # Customers
-    p1 = Business(name='cristHian Gz. (gcca)',
-                  documentType='RUC',
-                  documentNumber='12345678989')
-    p1.store()
+    customer1 = Business(
+        name='cristHian Gz. (gcca)',
+        documentType='RUC',
+        documentNumber='12345678989')
+    customer1.store()
 
-    p2 = Business(name='Máximo Décimo',
-                  documentType='RUC',
-                  documentNumber='12345678980')
-    p2.store()
+    customer2 = Business(
+        name='Massive Dynamic',
+        documentType='RUC',
+        documentNumber='12345678980')
+    customer2.store()
+
+    # Declarations
+    declaration1 = Declaration(
+        trackingId          = 'GGGGG666',
+        source              = '',
+        references          = '',
+        customer            = Dto(customer1.dict),
+        third               = True,
+        thirdType           = 'person',
+        thirdName           = 'TM Fire on Sky',
+        thirdDocumentType   = 'RUC',
+        thirdDocumentNumber = '963963852789')
+    declaration1.put()
+    customer1.lastDeclaration = declaration1
+    customer1.store()
+
+    declaration2 = Declaration(
+        trackingId          = '666GGGGG',
+        source              = '',
+        references          = '',
+        customer            = Dto(customer2.dict),
+        third               = True,
+        thirdType           = 'person',
+        thirdName           = 'Hell Bells',
+        thirdDocumentType   = 'RUC',
+        thirdDocumentNumber = '12211112129')
+    declaration2.put()
 
     # Dispatches
     d1 = Dispatch(
@@ -52,7 +81,7 @@ def main():
         invoiceAdjustment          = '',
         invoiceCurrencyValue       = '',
         invoiceCurrencyAdjustment  = '',
-        customer = p1)
+        declaration = declaration1)
     d1.store()
     d2 = Dispatch(
         orderNumber                = '2013-11',
@@ -68,24 +97,8 @@ def main():
         invoiceAdjustment          = '',
         invoiceCurrencyValue       = '',
         invoiceCurrencyAdjustment  = '',
-        customer = p2)
+        declaration = declaration2)
     d2.store()
-
-    # Declarations
-    declaration1 = Declaration(
-        trackingId          = 'GGGGG666',
-        source              = '',
-        references          = '',
-        customer            = Dto({
-            'name': 'Massive Dynamic',
-        }),
-        third               = True,
-        thirdType           = 'person',
-        thirdName           = 'TM Fire on Sky',
-        thirdDocumentType   = 'RUC',
-        thirdDocumentNumber = '963963852789')
-    declaration1.put()
-
 
 # Debug View
 class DebugView(webapp2.RequestHandler):

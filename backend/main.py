@@ -1,8 +1,8 @@
 from webapp2 import WSGIApplication, Route
 from webapp2_extras import routes
 
-from interface.views import SignInView, CustomerFormView, DashboardView, \
-    DeclarationPDFView
+from interface.views import IndexView, CustomerFormView, DashboardView, \
+    DeclarationPDFView, SignInView
 from interface.handlers import CustomerHandler, DeclarationHandler, \
     CustomerDeclarationHandler, CustomerLastDeclarationHandler, DispatchHandler
 
@@ -23,8 +23,8 @@ app = WSGIApplication([
     ('/debug', DebugView),
 
     # Views
-    ('/', SignInView),
-    ('/signin', SignInView),  # avoid 302
+    ('/', IndexView),
+    ('/signin', SignInView),
     ('/customer-form', CustomerFormView),
     ('/dashboard', DashboardView),
 
