@@ -265,7 +265,7 @@ class DeclarationService(object):
 
 class DispatchService(object):
 
-    def requestDispatches(self):
+    def requestDispatches(self, dto):
         """Fetch dispatches
 
         Returns:

@@ -136,7 +136,7 @@ class DispatchHandler(BaseHandler):
     def get(self):
         service = DispatchService()
         try:
-            dispatches = service.requestDispatches()
+            dispatches = service.requestDispatches(self.request_dto)
         except Exception as e:
             self.status.BAD_REQUEST(e)
         else:

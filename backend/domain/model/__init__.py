@@ -155,15 +155,15 @@ class Person(Customer):
         businessNumber: RUC de la persona, si la tiene.
     """
 
-    birthPlace     = TextProperty ()
-    birthday       = DateProperty ()
-    nationality    = TextProperty ()
-    role           = TextProperty ()
-    businessNumber = TextProperty ()
-    partnerName    = TextProperty ()
-    organization   = TextProperty ()
-    adressPersonLegal   = TextProperty ()
-    adressPersonFiscal   = TextProperty ()
+    birthPlace         = TextProperty ()
+    birthday           = DateProperty ()
+    nationality        = TextProperty ()
+    role               = TextProperty ()
+    businessNumber     = TextProperty ()
+    partnerName        = TextProperty ()
+    organization       = TextProperty ()
+    adressPersonLegal  = TextProperty ()
+    adressPersonFiscal = TextProperty ()
 
     #phone          = StringProperty()
     #mobile         = StringProperty()
@@ -248,7 +248,7 @@ class Dispatch(Entity):
     """Dispatch Entity
 
     Attributes:
-        orderDispatch: Código generado por recepcionista para cada despacho.
+        orderNumber: Código generado por recepcionista para cada despacho.
         customsBrokerCode: Codigo de Agente de Aduana.
         dateReceived: Fecha de Recepción.
         customerReferences: Referencias del cliente.

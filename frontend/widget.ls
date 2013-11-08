@@ -158,7 +158,7 @@ class AutoAlert extends gz.GView
   @nacc = 0
 
   /**
-   * @param {string} type One {@code .error}, {@code .success}, {@code .info}.
+   * @param {string} type One: {@code .error}, {@code .success}, {@code .info}.
    * @param {string} message Text
    * @param {string=} block HTML content
    * @constructor
@@ -171,7 +171,7 @@ class AutoAlert extends gz.GView
    */
   initialize: !->
     @$el.on \mouseover ~> @el.style.opacity = 'initial'
-    @$el.on \mouseleave ~> @el.style.opacity = '0.69' # ;)
+    @$el.on \mouseleave ~> @el.style.opacity = '0.69' # \(ツ)/
     @el.classList.add if @block? then gz.Css \block else gz.Css \basic
     @el.classList.add @type
     @el.style
@@ -201,7 +201,7 @@ class AutoAlert extends gz.GView
     @el.style.opacity = '0'
     @$el.appendTo document.body
     @$el.animate \opacity : 1, 400, \ease-in
-    setTimeout (~> @hide!), 6900 if autohide # ;)
+    setTimeout (~> @hide!), 6900 if autohide # \(ツ)/
 
   /**
    * Hide.

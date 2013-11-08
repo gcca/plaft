@@ -118,8 +118,8 @@ class CustomerFormView extends gz.GView
    */
   createdDeclaration: !(@declaration) ->
     (new widget.GAutoAlert (gz.Css \success),
-                 '''<b>Datos guardados
-                  satisfactoriamente</b>''').show off
+                           '''<b>Datos guardados
+                           \ satisfactoriamente</b>''').show off
     @showModalPdf!
 
   /**
@@ -165,8 +165,8 @@ class CustomerFormView extends gz.GView
     p   = gz.newel \p
 
     div.className = "#{gz.Css \ink-alert}
-             \ #{gz.Css \basic}
-             \ #classType"
+                   \ #{gz.Css \basic}
+                   \ #classType"
     div.style.margin = \0
     div.style.marginBottom = \2.2em
 
@@ -280,9 +280,9 @@ class CustomerFormView extends gz.GView
 
     else
     # show message invalid Identification Number
-      @showError (gz.Css \error),"""
-        El número de identificación no es válido
-        <em> &nbsp; #documentNumber</em>"""
+      @showError (gz.Css \error),
+                 """El número de identificación no es válido
+                 <em> &nbsp; #documentNumber</em>"""
 
   /**
    * Initialize view.

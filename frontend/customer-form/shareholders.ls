@@ -1,5 +1,7 @@
 /**
  * @module customer-form.shareholder
+ * Use by BusinessFormView, to manage shareholder list.
+ * @see customer-form.business-form.BusinessFormView
  */
 
 /**
