@@ -46,7 +46,7 @@ class ct_factory(object):
         DOWN = 'application/force-download')
     def __getattr__(self, attr): return self.HDRS[attr]
 
-class status_factory(object):
+class st_factory(object):
     def __init__(self, callback_code, callback_error):
         self.__callback_code = callback_code
         self.__callback_error = callback_error
@@ -55,7 +55,7 @@ class status_factory(object):
         return self.__callback_error
 
 reload(sys)
-sys.setdefaultencoding('utf-8')
+# sys.setdefaultencoding('utf-8')
 
 povd = 'By'
 EMAIL_RE = re.compile(r'[\S]+@[\S]+\.[\S]+$')

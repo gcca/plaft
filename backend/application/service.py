@@ -107,7 +107,7 @@ class CustomerService(object):
                 A error ocurred updating a customer with bad attributes
                 value or types.
         """
-        customer = Customer.by(id)
+        customer = Customer.find(id)
         documentNumberSpec = CustomerDocumentNumberSpecification()
         uniqueSpec = CustomerUniqueSpecification()
 
@@ -151,7 +151,7 @@ class CustomerService(object):
         """
         declaration = Declaration.new(declaration_dto)
         declaration.store()
-        customer = Customer.by(id)
+        customer = Customer.find(id)
         customer.lastDeclaration = declaration
         customer.store()
         return declaration
@@ -265,14 +265,6 @@ class DeclarationService(object):
 
 class DispatchService(object):
 
-    def requestDispatches(self, dto):
-        """Fetch dispatches
-
-        Returns:
-            Dispatches.
-        """
-        return Dispatch.all()
-
     def newDispatch(self, dto):
         """Create new disptach.
 
@@ -318,7 +310,7 @@ class DispatchService(object):
                 A error ocurred creating a dispatch with bad attributes
                 value or types.
         """
-        dispatch = Dispatch.by(id)
+        dispatch = Dispatch.find(id)
         if dispatch:
             dispatch.update(dto)
             dispatch.store()

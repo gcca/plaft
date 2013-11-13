@@ -14,8 +14,6 @@
 #        `-_        ''" .."   _-'
 #           "'--__      __--'"    cristHian Gz. (gcca)
 #                 ""--""
-errors = window[\params][\e]
-existLoginError = errors? and (errors.indexOf 'login') != -1
 document.body.innerHTML = "
 <div class='#{gz.Css \topbar}' style='margin-bottom:1em;'>
 
@@ -96,22 +94,18 @@ document.body.innerHTML = "
 
       <br><br>
 
-      <form action='/signin' method='post' class='#{gz.Css \ink-form}'>
+      <form class='#{gz.Css \ink-form}'>
         <fieldset>
-          <div class='#{gz.Css \control-group}
-            #{if existLoginError
-                then " #{gz.Css \validation} #{gz.Css \error}" else ''}'>
+          <div class='#{gz.Css \control-group}'>
             <div class='#{gz.Css \control} #{gz.Css \append-symbol}'>
               <span>
-                <input type='text' name='email' placeholder='Usuario' value='gcca@meil.io'>
+                <input type='text' name='username' placeholder='Usuario' value='gcca@meil.io'>
                 <i class='#{gz.Css \icon-envelope-alt}'></i>
               </span>
             </div>
           </div>
 
-          <div class='#{gz.Css \control-group}
-            #{if existLoginError
-                then " #{gz.Css \validation} #{gz.Css \error}" else ''}'>
+          <div class='#{gz.Css \control-group}'>
             <div class='#{gz.Css \control} #{gz.Css \append-symbol}'>
               <span>
                 <input type='password' name='password' placeholder='Clave' value='123'>
@@ -120,18 +114,16 @@ document.body.innerHTML = "
             </div>
           </div>
 
-          <div class='#{gz.Css \control-group}
-            #{if existLoginError
-                then " #{gz.Css \validation} #{gz.Css \error}" else ''}'>
+          <div class='#{gz.Css \control-group}'>
             <div class='#{gz.Css \control}'>
-              #{if existLoginError then "
-                      <p style='float:left'
-                              class='#{gz.Css \tip}'>
-                        Usuario o clave incorrectos
-                      </p>" else ''}
+              <img id='signin-img'
+                  style='float:left;
+                         margin-left:4px;
+                         margin-right:5px;
+                         margin-top:6px'>
               <button class='#{gz.Css \ink-button}
                            \ #{gz.Css \green}
-                           \ #{gz.Css \push-right}'>
+                           \ #{gz.Css \push-right}' type='button'>
                 Ingresar
               </button>
             </div>
@@ -209,3 +201,24 @@ document.body.innerHTML = "
     </ul>
   </nav>
 </footer>"
+document.querySelector "button.#{gz.Css \green}" .onclick = ->
+  document.querySelector \#signin-img
+    ..src = '/static/img/ss.gif'
+  form = document.querySelector \form .elements
+  new XMLHttpRequest
+    ..open \post '/api/v1/signin'
+    ..setRequestHeader 'Content-type' 'application/x-www-form-urlencoded'
+    ..onreadystatechange = ->
+      if @readyState is 4
+        document.querySelector \#signin-img .src = ''
+        if @status is 200
+          location.href = '/dashboard'
+        else
+          if not (document.querySelector ".#{gz.Css \tip}")?
+            for i in (document.querySelectorAll ".#{gz.Css \control-group}")
+              i.className += " #{gz.Css \validation} #{gz.Css \error}"
+            document.createElement \p
+              ..className = "#{gz.Css \tip} #{gz.Css \push-left}"
+              ..innerHTML = 'Usuario o clave incorrectos'
+              i.firstElementChild.insertBefore ..
+    ..send "username=#{form.username.value}&password=#{form.password.value}"

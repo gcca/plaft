@@ -6,7 +6,7 @@ thirdparty=$srcdir/3rdparty
 setup=./setup.pyo
 cssc=./cssc.jar
 jsc=./jsc.jar
-ext3=zepto,underscore,ink,backbone,typeahead
+ext3=zepto,underscore,ink,backbone,jade,typeahead
 int3=ink
 cd `dirname $0`
 if [ '0' == "$3" ]; then opt=-O; fi

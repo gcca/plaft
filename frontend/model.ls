@@ -86,7 +86,7 @@ class Declaration extends GModel
  * @class Declarations
  */
 class Declarations extends gz.GCollection
-  urlRoot: \declaration
+  urlRoot: \declarations
   model: Declaration
 
 # --------------------
@@ -114,7 +114,7 @@ class Dispatch extends GModel
  * @class Dispatches
  */
 class Dispatches extends gz.GCollection
-  urlRoot: \dispatch
+  urlRoot: \dispatches
   model: Dispatch
 
 /**

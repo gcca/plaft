@@ -204,7 +204,8 @@ class Repository(db.Model):
 
     @classmethod
     def find(self, dto=None, **filters):
-        return self.findAll(dto, **filters).get()
+        return (self.by(dto) if type(dto) is int
+                else self.findAll(dto, **filters).get())
 
 class Entity(EntityMixIn, BaseEntity, Repository):
 

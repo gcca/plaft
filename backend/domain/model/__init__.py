@@ -26,6 +26,8 @@ class User(PolyEntity):
     email    = EmailProperty  (required = True)
     password = StringProperty (required = True)
 
+    protected = ['id', 'password']
+
     @classmethod
     def register(self, email, password, **k):
         password = utils.make_pw_hash(email, password)

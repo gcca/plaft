@@ -2,7 +2,7 @@
 
 from infraestructure.utils import login_required
 from interface import BaseHandler
-from domain.model import User, Declaration, Customer
+from domain.model import Declaration, Customer
 
 # --------------
 # Basic Template
@@ -21,16 +21,13 @@ def generic(template, args=''):
         '</body>'
         '</html>') % {'template': template, 'args': args}
 
-
-class IndexSignInBaseView(BaseHandler):
+# ------------
+# Sign In View
+# ------------
+class SignInView(BaseHandler):
 
     def write_signin(self, args=''):
         self.write(generic('signin', args))
-
-# ----------
-# Index View
-# ----------
-class IndexView(IndexSignInBaseView):
 
     def write_badbrowser(self):
         self.write(
@@ -110,23 +107,6 @@ class IndexView(IndexSignInBaseView):
         else:
             self.write_badbrowser()
 
-# ------------
-# Sign In View
-# ------------
-class SignInView(IndexSignInBaseView):
-
-    def post(self):
-        email    = self.request.get('email')
-        password = self.request.get('password')
-
-        user = User.login(email, password)
-
-        if user:
-            self.login(user)
-            self.redirect('/dashboard')
-        else:
-            self.write_signin('"e":"login"')
-
 # ------------------
 # Customer Form View
 # ------------------
@@ -148,7 +128,7 @@ class DashboardView(BaseHandler):
 # --------
 # Movement
 # --------
-from datetime import datetime, timedelta
+from datetime import timedelta #, datetime
 from reportlab.lib.enums import TA_JUSTIFY
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle

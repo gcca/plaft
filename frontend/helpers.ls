@@ -73,6 +73,7 @@ class GCollection extends window .\Backbone .\Collection
 
 exports <<<
   tie         : (sf, fn) -> fn.bind sf
+  jParse      : $.\jParse
   newel       : window.document.createElement.bind window.document
   G           : window .\Backbone
   GView       : window .\Backbone .\View

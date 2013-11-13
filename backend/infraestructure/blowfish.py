@@ -36,22 +36,22 @@
 # in section V of Applied Cryptography, second edition.
 # Blowfish is an unpatented fast block cipher designed by
 # Bruce Schneier.
- 
 
-# Function for Feistel Networks 
+
+# Function for Feistel Networks
 
 import array
 
-BLF_N = 16            # Number of Subkeys 
+BLF_N = 16            # Number of Subkeys
 BLF_MAXKEYLEN = ((BLF_N-2)*4)    # 448 bits
 
-def encipher(ctx, xl, xr):    
+def encipher(ctx, xl, xr):
     s = ctx.S
     p = ctx.P
 
     Xl = xl;
     Xr = xr;
-  
+
     Xl ^= p[0];
     Xr ^= (((s[((Xl>>24)&0xFF)] + s[0x100 + ((Xl>>16)&0xFF)]) ^ s[0x200 + ((Xl>> 8)&0xFF)]) + s[0x300 + (Xl&0xFF)]) ^ p[1]
     Xl ^= (((s[((Xr>>24)&0xFF)] + s[0x100 + ((Xr>>16)&0xFF)]) ^ s[0x200 + ((Xr>> 8)&0xFF)]) + s[0x300 + (Xr&0xFF)]) ^ p[2]
@@ -63,11 +63,11 @@ def encipher(ctx, xl, xr):
     Xl ^= (((s[((Xr>>24)&0xFF)] + s[0x100 + ((Xr>>16)&0xFF)]) ^ s[0x200 + ((Xr>> 8)&0xFF)]) + s[0x300 + (Xr&0xFF)]) ^ p[8]
     Xr ^= (((s[((Xl>>24)&0xFF)] + s[0x100 + ((Xl>>16)&0xFF)]) ^ s[0x200 + ((Xl>> 8)&0xFF)]) + s[0x300 + (Xl&0xFF)]) ^ p[9]
     Xl ^= (((s[((Xr>>24)&0xFF)] + s[0x100 + ((Xr>>16)&0xFF)]) ^ s[0x200 + ((Xr>> 8)&0xFF)]) + s[0x300 + (Xr&0xFF)]) ^ p[10]
-    Xr ^= (((s[((Xl>>24)&0xFF)] + s[0x100 + ((Xl>>16)&0xFF)]) ^ s[0x200 + ((Xl>> 8)&0xFF)]) + s[0x300 + (Xl&0xFF)]) ^ p[11] 
+    Xr ^= (((s[((Xl>>24)&0xFF)] + s[0x100 + ((Xl>>16)&0xFF)]) ^ s[0x200 + ((Xl>> 8)&0xFF)]) + s[0x300 + (Xl&0xFF)]) ^ p[11]
     Xl ^= (((s[((Xr>>24)&0xFF)] + s[0x100 + ((Xr>>16)&0xFF)]) ^ s[0x200 + ((Xr>> 8)&0xFF)]) + s[0x300 + (Xr&0xFF)]) ^ p[12]
     Xr ^= (((s[((Xl>>24)&0xFF)] + s[0x100 + ((Xl>>16)&0xFF)]) ^ s[0x200 + ((Xl>> 8)&0xFF)]) + s[0x300 + (Xl&0xFF)]) ^ p[13]
     Xl ^= (((s[((Xr>>24)&0xFF)] + s[0x100 + ((Xr>>16)&0xFF)]) ^ s[0x200 + ((Xr>> 8)&0xFF)]) + s[0x300 + (Xr&0xFF)]) ^ p[14]
-    Xr ^= (((s[((Xl>>24)&0xFF)] + s[0x100 + ((Xl>>16)&0xFF)]) ^ s[0x200 + ((Xl>> 8)&0xFF)]) + s[0x300 + (Xl&0xFF)]) ^ p[15] 
+    Xr ^= (((s[((Xl>>24)&0xFF)] + s[0x100 + ((Xl>>16)&0xFF)]) ^ s[0x200 + ((Xl>> 8)&0xFF)]) + s[0x300 + (Xl&0xFF)]) ^ p[15]
     Xl ^= (((s[((Xr>>24)&0xFF)] + s[0x100 + ((Xr>>16)&0xFF)]) ^ s[0x200 + ((Xr>> 8)&0xFF)]) + s[0x300 + (Xr&0xFF)]) ^ p[16]
 
     return ((Xr ^ p[17]) & 0xFFFFFFFF, Xl & 0xFFFFFFFF)
@@ -79,20 +79,20 @@ def stream2word(data, current):
     for _ in xrange(4):
         if j >= len(data):
             j = 0
-            
+
         temp = ((temp << 8) | data[j]) & 0xFFFFFFFF;
         j+=1
-    
+
     return (temp, j);
 
 def expand0state(ctx, key):
     j = 0;
     p = ctx.P
     for i in xrange(BLF_N + 2):
-        # Extract 4 int8 to 1 int32 from keystream 
+        # Extract 4 int8 to 1 int32 from keystream
         temp, j = stream2word(key, j)
         p[i] ^=  temp
-    
+
     j = 0
     datal = 0x0L
     datar = 0x0L
@@ -100,7 +100,7 @@ def expand0state(ctx, key):
         datal, datar = encipher(ctx, datal, datar);
         p[i + 0] = datal
         p[i + 1] = datar
-        
+
     s = ctx.S
     for i in xrange(0, 4*256, 2):
         datal, datar = encipher(ctx, datal, datar);
@@ -112,20 +112,20 @@ def expandstate(ctx, data, key):
     j = 0
     p = ctx.P
     for i in xrange(BLF_N + 2):
-        # Extract 4 int8 to 1 int32 from keystream 
+        # Extract 4 int8 to 1 int32 from keystream
         temp, j = stream2word(key, j);
         p[i] ^=  temp
-        
+
     j = 0
     datal = 0x00000000
     datar = 0x00000000
     for i in xrange(0, BLF_N + 2L, 2):
         d, j = stream2word(data, j);
         datal ^=  d
-        
+
         d, j = stream2word(data, j);
         datar ^=  d
-        
+
         datal, datar = encipher(ctx, datal, datar);
 
         p[i + 0] = datal
@@ -145,13 +145,13 @@ def expandstate(ctx, data, key):
 def pybc_blf_enc(ctx, data, blocks):
     for index in range(0, blocks*2, 2):
         data[index], data[index+1] = encipher(ctx, data[index], data[index+1])
-        
-        
+
+
 def initstate():
-    # P-box and S-box tables initialized with digits of Pi 
-    
-    class Ctx: 
-        S = array.array('L', [    
+    # P-box and S-box tables initialized with digits of Pi
+
+    class Ctx:
+        S = array.array('L', [
             0xd1310ba6L, 0x98dfb5acL, 0x2ffd72dbL, 0xd01adfb7L,
             0xb8e1afedL, 0x6a267e96L, 0xba7c9045L, 0xf12c7f99L,
             0x24a19947L, 0xb3916cf7L, 0x0801f2e2L, 0x858efc16L,
@@ -281,7 +281,7 @@ def initstate():
             0xdb73dbd3L, 0x105588cdL, 0x675fda79L, 0xe3674340L,
             0xc5c43465L, 0x713e38d8L, 0x3d28f89eL, 0xf16dff20L,
             0x153e21e7L, 0x8fb03d4aL, 0xe6e39f2bL, 0xdb83adf7L,
-   
+
             0xe93d5a68L, 0x948140f7L, 0xf64c261cL, 0x94692934L,
             0x411520f7L, 0x7602d4f7L, 0xbcf46b2eL, 0xd4a20068L,
             0xd4082471L, 0x3320f46aL, 0x43b7d4b7L, 0x500061afL,
@@ -346,7 +346,7 @@ def initstate():
             0x1e50ef5eL, 0xb161e6f8L, 0xa28514d9L, 0x6c51133cL,
             0x6fd5c7e7L, 0x56e14ec4L, 0x362abfceL, 0xddc6c837L,
             0xd79a3234L, 0x92638212L, 0x670efa8eL, 0x406000e0L,
-        
+
             0x3a39ce37L, 0xd3faf5cfL, 0xabc27737L, 0x5ac52d1bL,
             0x5cb0679eL, 0x4fa33742L, 0xd3822740L, 0x99bc9bbeL,
             0xd5118e9dL, 0xbf0f7315L, 0xd62d1c7eL, 0xc700c47bL,
@@ -411,7 +411,7 @@ def initstate():
             0x1948c25cL, 0x02fb8a8cL, 0x01c36ae4L, 0xd6ebe1f9L,
             0x90d4f869L, 0xa65cdea0L, 0x3f09252dL, 0xc208e69fL,
             0xb74e6132L, 0xce77e25bL, 0x578fdfe3L, 0x3ac372e6L])
-        
+
         P = array.array('L', [
                               0x243f6a88L, 0x85a308d3L, 0x13198a2eL, 0x03707344L,
                               0xa4093822L, 0x299f31d0L, 0x082efa98L, 0xec4e6c89L,
@@ -420,4 +420,3 @@ def initstate():
                               0x9216d5d9L, 0x8979fb1bL])
 
     return Ctx()
-

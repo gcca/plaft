@@ -1,12 +1,27 @@
 # -*- coding: utf-8 -*-
 '''Handlers '''
 
-from interface import BaseHandler
-from domain.model import Declaration # (-o-) DBG
+from interface import BaseHandler, RESTfulHandler
+from domain.model import Declaration, User, Dispatch  # (-o-) DBG
 from domain.gz import SpecificationError, NotFoundError, DuplicateError, \
-    StoreFailedError, BadValueError
+    StoreFailedError, BadValueError, Error
 from application.service import CustomerService, DeclarationService, \
     DispatchService
+
+# -------
+# Sign In
+# -------
+class SignInHandler(BaseHandler):
+
+    def post(self):
+        username = self.request.get('username')
+        password = self.request.get('password')
+        user = User.login(username, password)
+        if user:
+            self.login(user)
+            self.write_json('{}')
+        else:
+            self.status.UNAUTHORIZED(Error('Sign in'))
 
 # --------
 # Customer
@@ -113,7 +128,7 @@ class CustomerLastDeclarationHandler(BaseHandler):
 # -----------
 # Declaration
 # -----------
-class DeclarationHandler(BaseHandler):
+class DeclarationsHandler(BaseHandler):
 
     def get(self):
         trackingId = self.request.get('trackingId')
@@ -132,15 +147,6 @@ class DeclarationHandler(BaseHandler):
 # Dispatch
 # --------
 class DispatchHandler(BaseHandler):
-
-    def get(self):
-        service = DispatchService()
-        try:
-            dispatches = service.requestDispatches(self.request_dto)
-        except Exception as e:
-            self.status.BAD_REQUEST(e)
-        else:
-            self.render_json(dispatches)
 
     def post(self):
         '''
@@ -181,3 +187,6 @@ class DispatchHandler(BaseHandler):
             self.status.BAD_REQUEST(ValueError('Bad identifier number: ' + id))
         else:
             self.write_json('{}')
+
+class DispatchesHandler(RESTfulHandler.Collection):
+    model = Dispatch

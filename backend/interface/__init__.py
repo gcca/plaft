@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import webapp2
-from webapp2_extras import jinja2
 
-from infraestructure.utils import *
+from infraestructure.utils import rc_factory, ct_factory, st_factory, json, \
+    Dto, povd, powd, make_secure_val, check_secure_val, jsondumps, logging
+from webapp2_extras import jinja2
 from google.appengine.ext.db import TransactionFailedError
 from domain.model import User
 
@@ -13,6 +14,9 @@ class BaseHandler(webapp2.RequestHandler):
 
     rc = rc_factory()
     ct = ct_factory()
+
+    model = None
+    collection = None
 
     @staticmethod
     def jinja_factory(app):
@@ -37,18 +41,17 @@ class BaseHandler(webapp2.RequestHandler):
         return jinja2.get_jinja2(app = self.app,
             factory = BaseHandler.jinja_factory)
 
-    def __init__(self, *a, **k):
+    def __init__(self, q, p):
         self.user = None
-        self.format = None
-        self.status = status_factory(self.write_status, self.write_error)
-        super(BaseHandler, self).__init__(*a, **k)
+        self.status = st_factory(self.write_status, self.write_error)
+        super(BaseHandler, self).__init__(q, p)
 
     def write(self, *a, **kw):
         self.response.out.write(*a, **kw)
 
     def write_json(self, ds, rc=None):
         self.contt = self.ct.JSON
-        if rc: self.status[rc]
+        if rc: self.status[rc](ValueError('RC JSON'))
         self.write(ds)
 
     def write_file(self, file):
@@ -111,11 +114,6 @@ class BaseHandler(webapp2.RequestHandler):
         uid = self.read_secure_cookie('ud')
         self.user = uid and User.by(int(uid))
 
-        if self.request.url.endswith('.json'):
-            self.format = 'json'
-        else:
-            self.format = 'html'
-
     def _2json(self, o):
         return jsondumps(o)
 
@@ -132,3 +130,12 @@ class BaseHandler(webapp2.RequestHandler):
             self.status.INTERNAL_ERROR(ex)
         else:
             return key
+
+class RESTfulHandler(object):
+    class Collection(BaseHandler):
+        def get(self, q=None):
+            self.render_json(self.model.findAll(q))
+
+    class Model(BaseHandler):
+        def get(self, q=None):
+            self.render_json(self.model.find(q))

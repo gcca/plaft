@@ -5,14 +5,31 @@
 form   = require '../../form'
 model  = require '../../model'
 widget = require '../../widget'
+
 ModuleBaseView = require './base'
 
-/** @private */ DispatchModel = model.Dispatch
+OperationView = require './dispatch/operation'
+StakeholderView = require './dispatch/stakeholder'
 
 /**
  * @class DispatchView
  */
 module.exports = class DispatchView extends ModuleBaseView
+
+  /**
+   * View events.
+   * @private
+   */
+  events:
+    /**
+     * On button save clic.
+     * @param {!Object} evt
+     * @private
+     */
+    "click button.#{gz.Css \green}": !(evt) ->
+      console.log ''
+      for section in @sectionViewList
+        console.log section.JSONControls!
 
   /**
    * On search from searchView event.
@@ -22,7 +39,6 @@ module.exports = class DispatchView extends ModuleBaseView
   onSearch: !(query) ~>
     if query.match /\d+-\d+/
       @dispatch = new DispatchModel \orderNumber : query
-      window.yYy = @dispatch
       @dispatch.fetch do
         \success : @renderInfo
         \error : ->
@@ -33,19 +49,50 @@ module.exports = class DispatchView extends ModuleBaseView
                              \ <em>#query</em>").show!
 
   /**
+   * Add new stakeholder tab.
+   * @param {!string} caption
+   * @param {!Object} tabView
+   * @see renderInfo
+   * @private
+   */
+  addTabView: !(caption, tabView) ->
+    tId = (new Date).getTime!
+    tab = $ "<li><a href='\##{gz.Css \tabs}#tId'>#caption</a></li>"
+    content = $ "<div id='#{gz.Css \tabs}#tId'
+                     class='#{gz.Css \tabs-content}'
+                     style='overflow:hidden'>"
+    content.append tabView.render!.el
+    @$el.find "ul.#{gz.Css \tabs-nav}" .append tab
+    @$el.find "div.#{gz.Css \ink-tabs}" .append content
+
+  /**
+   * Render dispatch form.
    * @private
    */
   renderInfo: ~>
     @$el.html @template
-    tabs = @$el.find ".#{gz.Css \ink-tabs}" .get 0
-    new gz.Ink.UI.Tabs tabs, do
+    new OperationView
+      @addTabView 'Operación', ..
+      @sectionViewList.push ..
+    for caption in <[ Declarante Ordenante Destinario Tercero ]>
+      new StakeholderView
+        @addTabView caption, ..
+        @sectionViewList.push ..
+    new gz.Ink.UI.Tabs (@$el.find ".#{gz.Css \ink-tabs}" .get 0), do
       \preventUrlChange : on
 
   /**
    * Initialize view.
    * @private
    */
-  initialize: !-> @render!
+  initialize: !->
+    /**
+     * Operation and stakeholders sections.
+     * @type {Array.<Object>}
+     * @private
+     */
+    @sectionViewList = new Array
+    @render!
 
   /**
    * Render view.
@@ -57,9 +104,12 @@ module.exports = class DispatchView extends ModuleBaseView
     @renderInfo!
     super!
 
-  /** @private */ @menuCaption = '<span style="font-size:0.7em">Despacho (tmp)</span>'
-  /** @private */ @menuIcon    = gz.Css \icon-ambulance
-  /** @private */ @menuTitle   = 'Despacho (Anexo 6) <em>(DBZ)</em>'
+  /** @private */
+  @menuCaption = '<span style="font-size:0.7em">Despacho (tmp)</span>'
+  /** @private */
+  @menuIcon    = gz.Css \icon-ambulance
+  /** @private */
+  @menuTitle   = 'Despacho (Anexo 6) <em>(DBZ)</em>'
 
   /**
    * Template (Dispatch).
@@ -67,135 +117,11 @@ module.exports = class DispatchView extends ModuleBaseView
    * @return {string}
    * @private
    */
-  template: (dispatch) -> "
-    <div class='#{gz.Css \ink-tabs} #{gz.Css \top}'>
-      <ul class='#{gz.Css \tabs-nav}'>
-        <li><a href='\##{gz.Css \tabs}1'>Operación</a></li>
-        <li><a href='\##{gz.Css \tabs}2'>Declarante</a></li>
-        <li><a href='\##{gz.Css \tabs}3'>Ordenante</a></li>
-        <li><a href='\##{gz.Css \tabs}4'>Destinatario</a></li>
-        <li><a href='\##{gz.Css \tabs}5'>Tercero</a></li>
-      </ul>
-
-      <div id='#{gz.Css \tabs}1' class='tabs-content' style='height:100%'>
-        <form action='' class='ink-form'>
-          <fieldset>
-              <div class='control-group column-group gutters'>
-                  <label for='phone' class='large-15 medium-20 small-30 content-right'>Phone</label>
-                  <div class='control large-85 medium-80 small-70'>
-                      <input type='text' id='phone'>
-                      <p class='tip'>You can add help text to fields</p>
-                  </div>
-              </div>
-
-              <div class='control-group column-group gutters'>
-                  <label for='email' class='large-15 medium-20 small-30 content-right'>Email</label>
-                  <div class='control large-85 medium-80 small-70'>
-                      <input type='text' id='email'>
-                  </div>
-              </div>
-
-              <div class='control-group column-group gutters'>
-                  <label for='area' class='large-15 medium-20 small-30 content-right'>Description</label>
-                  <div class='control large-85 medium-80 small-70'>
-                      <textarea id='area'></textarea>
-                  </div>
-              </div>
-
-              <div class='control-group column-group horizontal-gutters'>
-                  <label for='file-input' class='large-15 medium-20 small-30 content-right'>File input</label>
-                  <div class='control large-85 medium-80 small-70'>
-                      <div class='input-file'>
-                          <input type='file' name='' id='file-input'>
-                      </div>
-                  </div>
-              </div>
-          </fieldset>
-        </form>
-      </div>
-
-      <div id='#{gz.Css \tabs}2' class='tabs-content'>
-        <form action='#' class='ink-form'>
-          <fieldset class='column-group horizontal-gutters'>
-              <div class='control-group required validation warning large-50 medium-100 small-100'>
-                  <label for='text-input'>Text input</label>
-                  <div class='control'>
-                      <input id='text-input' type='text' placeholder='Please input some text'>
-                  </div>
-                  <p class='tip'>Warn about something</p>
-              </div>
-              <div class='control-group required validation error large-50 medium-100 small-100'>
-                  <label for='text-input'>Text input</label>
-                  <div class='control'>
-                      <input id='text-input' type='text' placeholder='Please input some text'>
-                  </div>
-                  <p class='tip'>This field is required</p>
-              </div>
-          </fieldset>
-        </form>
-      </div>
-
-      <div id='#{gz.Css \tabs}3' class='tabs-content'>
-        <form action='#' class='ink-form'>
-          <fieldset class='column-group horizontal-gutters'>
-              <div class='control-group required validation warning large-50 medium-100 small-100'>
-                  <label for='text-input'>Text input</label>
-                  <div class='control'>
-                      <input id='text-input' type='text' placeholder='Please input some text'>
-                  </div>
-                  <p class='tip'>Warn about something</p>
-              </div>
-              <div class='control-group required validation error large-50 medium-100 small-100'>
-                  <label for='text-input'>Text input</label>
-                  <div class='control'>
-                      <input id='text-input' type='text' placeholder='Please input some text'>
-                  </div>
-                  <p class='tip'>This field is required</p>
-              </div>
-          </fieldset>
-        </form>
-      </div>
-
-      <div id='#{gz.Css \tabs}4' class='tabs-content'>
-        <form action='#' class='ink-form'>
-          <fieldset class='column-group horizontal-gutters'>
-              <div class='control-group required validation warning large-50 medium-100 small-100'>
-                  <label for='text-input'>Text input</label>
-                  <div class='control'>
-                      <input id='text-input' type='text' placeholder='Please input some text'>
-                  </div>
-                  <p class='tip'>Warn about something</p>
-              </div>
-              <div class='control-group required validation error large-50 medium-100 small-100'>
-                  <label for='text-input'>Text input</label>
-                  <div class='control'>
-                      <input id='text-input' type='text' placeholder='Please input some text'>
-                  </div>
-                  <p class='tip'>This field is required</p>
-              </div>
-          </fieldset>
-        </form>
-      </div>
-
-      <div id='#{gz.Css \tabs}5' class='tabs-content'>
-        <form action='#' class='ink-form'>
-          <fieldset class='column-group horizontal-gutters'>
-              <div class='control-group required validation warning large-50 medium-100 small-100'>
-                  <label for='text-input'>Text input</label>
-                  <div class='control'>
-                      <input id='text-input' type='text' placeholder='Please input some text'>
-                  </div>
-                  <p class='tip'>Warn about something</p>
-              </div>
-              <div class='control-group required validation error large-50 medium-100 small-100'>
-                  <label for='text-input'>Text input</label>
-                  <div class='control'>
-                      <input id='text-input' type='text' placeholder='Please input some text'>
-                  </div>
-                  <p class='tip'>This field is required</p>
-              </div>
-          </fieldset>
-        </form>
-      </div>
-
-    </div>"
+  template: (->
+    tabs = "#{gz.Css \ink-tabs}.#{gz.Css \top}"
+    tabs-nav = gz.Css \tabs-nav
+    gz.jParse """
+    button.#{gz.Css \ink-button}.#{gz.Css \green} Guardar
+    .#tabs
+      ul.#tabs-nav
+    """)!
