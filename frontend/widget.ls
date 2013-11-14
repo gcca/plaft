@@ -30,7 +30,7 @@ class Modal extends gz.GView
    * Show modal.
    * @protected
    */
-  show: !->
+  elShow: !->
     if not @uiModal?
       document.body.appendChild @el
       @uiModal = new gz.Ink.UI.Modal @modal, do
@@ -46,8 +46,8 @@ class Modal extends gz.GView
    * Hide modal.
    * @protected
    */
-  hide: !->
-    @uiModal[\dismiss]! if @uiModal?
+  elHide: !->
+    @uiModal.'dismiss'! if @uiModal?
 
   /**
    * @param {String} mHeader
@@ -140,7 +140,7 @@ class AutoAlert extends gz.GView
      * On click close.
      * @private
      */
-    'click button': -> @hide!
+    'click button': -> @elHide!
 
   /**
    * @private
@@ -193,7 +193,7 @@ class AutoAlert extends gz.GView
    * Show.
    * @param {boolean=} autohide
    */
-  show: !(autohide = on) ->
+  elShow: !(autohide = on) ->
     @el.style.bottom = "#{@@bacc * @@acc + 1.4}em"
     @@acc++
     @@nacc++
@@ -201,12 +201,12 @@ class AutoAlert extends gz.GView
     @el.style.opacity = '0'
     @$el.appendTo document.body
     @$el.animate \opacity : 1, 400, \ease-in
-    setTimeout (~> @hide!), 6900 if autohide # \(ツ)/
+    setTimeout @elHide, 6900 if autohide # \(ツ)/
 
   /**
    * Hide.
    */
-  hide: !->
+  elHide: !~>
     @@nacc--
     if @@nacc < 1
       @@acc = 0

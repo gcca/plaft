@@ -157,7 +157,7 @@ module.exports = class DispatchView extends ModuleBaseView
     else
       (new widget.GAutoAlert (gz.Css \error),
                              "<b>ERROR:</b> Número de orden incorrecto:
-                             \ <em>#query</em>").show!
+                             \ <em>#query</em>").elShow!
 
   /**
    * Initialize view.

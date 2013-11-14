@@ -75,7 +75,7 @@ module.exports = class AlertModal extends widget.GModal
 
             form.append control-group
             form.append '<hr>'
-        @form = form
+        @signalsForm = form
         form.get 0
 
     /**
@@ -106,7 +106,7 @@ module.exports = class AlertModal extends widget.GModal
      * @private
      */
     onClickOk: !~>
-        @dispatch.save (\alerts : @form.serializeJSON!), do
+        @dispatch.save (\alerts : @signalsForm.serializeJSON!), do
             \success : ~> @hide!
             \error : ~> alert 'ERROR: alerts'
     # -- end Events --

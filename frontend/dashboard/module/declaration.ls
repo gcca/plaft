@@ -40,7 +40,7 @@ module.exports = class DeclarationView extends ModuleBaseView
           @remove!
           (new widget.GAutoAlert (gz.Css \success),
                                  '<b>DESPACHO</b>: Se ha creado el despacho
-                                 \ de manera exitosa.').show!
+                                 \ de manera exitosa.').elShow!
         \error   : ->
           alert 'ERROR: new dispatch'
 
@@ -60,7 +60,7 @@ module.exports = class DeclarationView extends ModuleBaseView
     else
       (new widget.GAutoAlert (gz.Css \error),
                              '<b>ERROR</b>: Debe ingresar un código
-                             \ de declaración jurada o un número RUC.').show!
+                             \ de declaración jurada o un número RUC.').elShow!
       return
     # (-o-) First find declaration
     @declaration = new Model "#type" : query
@@ -79,7 +79,7 @@ module.exports = class DeclarationView extends ModuleBaseView
   onSearchInfoNoDeclaration: ->
     (new widget.GAutoAlert (gz.Css \info),
                            '<b>AVISO</b>: No existe una declaración
-                             \ jurada.').show!
+                             \ jurada.').elShow!
 
   /**
    * Initialize view.

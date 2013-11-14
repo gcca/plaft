@@ -119,7 +119,7 @@ class CustomerFormView extends gz.GView
   createdDeclaration: !(@declaration) ->
     (new widget.GAutoAlert (gz.Css \success),
                            '''<b>Datos guardados
-                           \ satisfactoriamente</b>''').show off
+                           \ satisfactoriamente</b>''').elShow off
     @showModalPdf!
 
   /**
@@ -147,8 +147,8 @@ class CustomerFormView extends gz.GView
         </li>
       </ul>"
 
-    modal = new widget.GModal mHeader, mBody
-    modal.show!
+    gmodal = new widget.GModal mHeader, mBody
+    gmodal.elShow!
 
   /**
    * Limpia solo la zona de alertas para mostrar la alerta.
@@ -265,14 +265,14 @@ class CustomerFormView extends gz.GView
       # exists Identification Number
         (new widget.GAutoAlert (gz.Css \info),
                                '''<b>Usuario registrado</b>: Actualice
-                                sus datos de ser necesario.''').show!
+                                sus datos de ser necesario.''').elShow!
         @logo.innerHTML = customer.get \name
       else
       # No existe y se crea nuevo cliente
         (new widget.GAutoAlert (gz.Css \info),
                                '''<b>Usuario no registrado</b>: Llene
                                 los campos correspondientes
-                                para su registro.''').show!
+                                para su registro.''').elShow!
         @logo.innerHTML = customer.get \documentNumber
         #{alerta}
 

@@ -60,7 +60,7 @@ class Customer extends GModel
    */
   createDeclaration: (declarationJSON, options) ->
     declarationJSON <<< \customer : @toJSON!
-    declaration = new Declaration declarationJSON, parent : @
+    declaration = new Declaration declarationJSON, mRoot : @
     declaration.save new Object, options
 
 /**

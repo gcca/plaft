@@ -51,13 +51,13 @@ NodeList ::=
 # --------------
 class GModel extends window .\Backbone .\Model
   (_, o = new Object) ->
-    @parent? = o.parent
+    @mRoot? = o.mRoot
     super ...
 
-  \url : ->
-    if @parent? then "#{@parent.url!}/#{super!}" else "/api/v1/#{super!}"
+  url: ->
+    if @mRoot? then "#{@mRoot.url!}/#{super!}" else "/api/v1/#{super!}"
 
-  \sync : (t, m, o) ->
+  sync: (t, m, o) ->
     if t is \read
       a = m.attributes
       o.url = m.url! + '?' + (["#k=#{a[k]}" for k of a].join '&')
@@ -68,8 +68,8 @@ class GModel extends window .\Backbone .\Model
     super ...
 
 class GCollection extends window .\Backbone .\Collection
-  \url : ->
-    if @parent? then "#{@parent.url!}/#{super!}" else "/api/v1/#{@urlRoot}"
+  url: ->
+    if @mRoot? then "#{@mRoot.url!}/#{super!}" else "/api/v1/#{@urlRoot}"
 
 exports <<<
   tie         : (sf, fn) -> fn.bind sf

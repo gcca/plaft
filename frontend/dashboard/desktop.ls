@@ -1,6 +1,7 @@
 /**
  * @module dashboard
  */
+
 module.exports = class DesktopView extends gz.GView
   /**
    * DOM element.

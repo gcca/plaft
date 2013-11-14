@@ -27,9 +27,11 @@ module.exports = class DispatchView extends ModuleBaseView
      * @private
      */
     "click button.#{gz.Css \green}": !(evt) ->
-      console.log ''
-      for section in @sectionViewList
-        console.log section.JSONControls!
+      operationRecord =
+        \operation : @operationView.JSONControls!
+        \sections : [section.JSONControls! for section in @sectionViewList]
+      console.log operationRecord
+
 
   /**
    * On search from searchView event.
@@ -46,7 +48,7 @@ module.exports = class DispatchView extends ModuleBaseView
     else
       (new widget.GAutoAlert (gz.Css \error),
                              "<b>ERROR:</b> Número de orden incorrecto:
-                             \ <em>#query</em>").show!
+                             \ <em>#query</em>").elShow!
 
   /**
    * Add new stakeholder tab.
@@ -59,8 +61,7 @@ module.exports = class DispatchView extends ModuleBaseView
     tId = (new Date).getTime!
     tab = $ "<li><a href='\##{gz.Css \tabs}#tId'>#caption</a></li>"
     content = $ "<div id='#{gz.Css \tabs}#tId'
-                     class='#{gz.Css \tabs-content}'
-                     style='overflow:hidden'>"
+                     class='#{gz.Css \tabs-content}' style='overflow:hidden'>"
     content.append tabView.render!.el
     @$el.find "ul.#{gz.Css \tabs-nav}" .append tab
     @$el.find "div.#{gz.Css \ink-tabs}" .append content
@@ -71,11 +72,10 @@ module.exports = class DispatchView extends ModuleBaseView
    */
   renderInfo: ~>
     @$el.html @template
-    new OperationView
-      @addTabView 'Operación', ..
-      @sectionViewList.push ..
+    @operationView = new OperationView
+    @addTabView 'Operación', @operationView
     for caption in <[ Declarante Ordenante Destinario Tercero ]>
-      new StakeholderView
+      new StakeholderView caption: caption
         @addTabView caption, ..
         @sectionViewList.push ..
     new gz.Ink.UI.Tabs (@$el.find ".#{gz.Css \ink-tabs}" .get 0), do
@@ -111,6 +111,8 @@ module.exports = class DispatchView extends ModuleBaseView
   /** @private */
   @menuTitle   = 'Despacho (Anexo 6) <em>(DBZ)</em>'
 
+  /** @private */ operationView: null
+
   /**
    * Template (Dispatch).
    * @param {!Object} dispatch
@@ -120,8 +122,9 @@ module.exports = class DispatchView extends ModuleBaseView
   template: (->
     tabs = "#{gz.Css \ink-tabs}.#{gz.Css \top}"
     tabs-nav = gz.Css \tabs-nav
+    btn = "#{gz.Css \ink-button}.#{gz.Css \green}.#{gz.Css \push-right}"
     gz.jParse """
-    button.#{gz.Css \ink-button}.#{gz.Css \green} Guardar
+    button.#btn Guardar
     .#tabs
       ul.#tabs-nav
     """)!

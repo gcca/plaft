@@ -3,7 +3,16 @@
  */
 
 /**
- * @class
+ * Global search.
+ * Module must have {@code onSearch} method to catch event search from this view.
+ * @class SearchView
+ *
+ * @example
+ * >>> class ExampleModuleView extends ModuleBaseView
+ * ...   onSearch: !(queryText) ~>
+ * ...     # {@code queryText} string in search {@code <input>}.
+ * ...     ...
+ * ...   ...
  */
 class SearchView extends gz.GView
 

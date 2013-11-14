@@ -45,7 +45,7 @@ module.exports = class DispatchesView extends builder.Table
       alertModal = new AlertModal @dispatches.get btn.dataset.\id
       AlertModal::'_events'."#{gz.Css \dismiss}"[0].\ctx = alertModal
       alertModal.buttonTarget = btn
-      alertModal.show!
+      alertModal.elShow!
 
   /**
    * Generate toolbar for cell

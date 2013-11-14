@@ -10,6 +10,7 @@ SectionBaseView = require './base'
 module.exports = class StakeholderView extends SectionBaseView
 
   /**
+   * Render field.
    * @see render
    * @private
    */
@@ -17,9 +18,15 @@ module.exports = class StakeholderView extends SectionBaseView
 
   /**
    * Initialize view.
+   * @override
    * @private
    */
   initialize: !->
+    /**
+     * Field template.
+     * @see field
+     * @private
+     */
     @@_field ||= (->
       control-group = "#{gz.Css \control-group}
                       .#{gz.Css \column-group}
@@ -36,8 +43,9 @@ module.exports = class StakeholderView extends SectionBaseView
         .#{control-group}
           #{label}= $B
           .#{control}
-            input(type='text', name=$A)
+            input(type='text', name=$B)
       """)!
+    super ...
 
   /**
    * Render view.

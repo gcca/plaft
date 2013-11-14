@@ -3,7 +3,21 @@
  */
 
 /**
+ * Module Base
+ * -----------
+ * You need inherit from this class to add new modules in {@code dashboad.menu}
+ * and {@ dashboard.dekstop}.
  * @class ModuleBaseView
+ *
+ * @example
+ * >>> class ExampleModuleView extends from ModuleBaseView
+ * ...   method1: -> ...
+ * ...   ...
+ * ...   methodN: -> ...
+ * ...
+ * ...   @menuCaption = 'Text on {@code menu view}'
+ * ...   @menuIcon = gz.Css \icon-on-menu-view
+ * ...   @menuTitle = 'Title on {@code topbar}'
  */
 module.exports = class ModuleBaseView extends gz.GView
 
@@ -20,6 +34,12 @@ module.exports = class ModuleBaseView extends gz.GView
    * @protected
    */
   @menuIcon = ''
+
+  /**
+   * @static
+   * @protected
+   */
+  @menuTitle = ''
 
   /**
    * DOM element.
