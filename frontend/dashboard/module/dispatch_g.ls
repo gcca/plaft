@@ -2,7 +2,6 @@
  * @module dashboard.module
  */
 
-form   = require '../../form'
 model  = require '../../model'
 widget = require '../../widget'
 
@@ -29,7 +28,7 @@ module.exports = class DispatchView extends ModuleBaseView
     "click button.#{gz.Css \green}": !(evt) ->
       operationRecord =
         \operation : @operationView.JSONControls!
-        \sections : [section.JSONControls! for section in @sectionViewList]
+        \sections  : [..JSONControls! for @sectionViewList]
       console.log operationRecord
 
 

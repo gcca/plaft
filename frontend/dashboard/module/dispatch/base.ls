@@ -16,7 +16,7 @@ module.exports = class SectionBaseView extends gz.GView
    * @type {string}
    * @private
    */
-  className: gz.Css \ink-form
+  className: "#{gz.Css \ink-form} #{gz.Css \ink-form-new}"
 
   /**
    * Get JSON form.

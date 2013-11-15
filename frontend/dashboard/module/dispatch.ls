@@ -2,7 +2,7 @@
  * @module dashboard.module
  */
 
-form   = require '../../form'
+#form   = require../../form'
 widget = require '../../widget'
 ModuleBaseView = require './base'
 

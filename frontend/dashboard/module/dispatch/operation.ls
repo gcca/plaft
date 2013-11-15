@@ -24,33 +24,57 @@ module.exports = class OperationView extends SectionBaseView
    * @private
    */
   template: (->
+    block = "#{gz.Css \large-50}
+            .#{gz.Css \medium-50}
+            .#{gz.Css \small-100}
+            .#{gz.Css \gz-block}"
+
     control-group = "#{gz.Css \control-group}
-                    .#{gz.Css \column-group}
-                    .#{gz.Css \gutters}"
+                    .#{gz.Css \column-group}"
 
-    label = "label.#{gz.Css \large-25}
-                  .#{gz.Css \medium-25}
-                  .#{gz.Css \small-40}
-                  .#{gz.Css \content-right}"
+    labelL = "label.#{gz.Css \large-25}
+                   .#{gz.Css \medium-25}
+                   .#{gz.Css \small-100}"
 
-    control = "#{gz.Css \control}
-              .#{gz.Css \large-75}
-              .#{gz.Css \medium-75}
-              .#{gz.Css \small-60}"
+    controlL = "#{gz.Css \control}
+               .#{gz.Css \large-75}
+               .#{gz.Css \medium-75}
+               .#{gz.Css \small-100}"
 
-    labels = "['Codigo SO',
-               'Codigo OC',
-               'Número de fila',
-               'Número de registro de Operación',
-               'Número de registro interno',
-               'Modalidad de operación',
-               'Número de operaciones']"
+
+    labelR = "label.#{gz.Css \large-100}
+                   .#{gz.Css \medium-100}
+                   .#{gz.Css \small-100}"
+
+    controlR = "#{gz.Css \control}
+               .#{gz.Css \large-100}
+               .#{gz.Css \medium-100}
+               .#{gz.Css \small-100}"
+
+    labelsLeft = "['Codigo SO',
+                   'Codigo OC',
+                   'Número de fila']"
+
+    labelsRight = "['Número de registro de Operación',
+                    'Número de registro interno',
+                    'Modalidad de operación',
+                    'Número de operaciones']"
 
     gz.jParse """
-    - var labels = #labels
-    - each label in labels
-      .#{control-group}
-        #{label}= label
-        .#{control}
-          input(type='text', name=label)
+      .#block
+        fieldset
+          legend Registro
+          - each label in #labelsLeft
+            .#control-group
+              #labelL= label
+              .#controlL
+                input(type='text', name=label)
+      .#block
+        fieldset
+          legend Datos
+          - each label in #labelsRight
+            .#control-group
+              #labelR= label
+              .#controlR
+                input(type='text', name=label)
     """)!

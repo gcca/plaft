@@ -29,8 +29,7 @@ $.fn.populateJSON = !(json) ->
 
 # Maintain while HTML5 - bind not implemented (on testing)
 (Function::bind = ->
-  me = @; he = [].shift.apply arguments; ar = arguments; -> me.apply he, ar
-) if not (->).bind
+  ((s,t,p) -> -> s.apply t, p)(@, [].shift.apply(&), &)) if not (->).bind
 
 # Maintain while HTML5 - RadioNodeList not implemented yet
 NodeList ::=
@@ -91,7 +90,7 @@ window .\Ink .\UI
         Toggle     : ..\Toggle
         Tooltip    : ..\Tooltip
 exports <<<< window.gz if window.gz?
-window.gz = gz = exports
+gz = exports
 
 # --------------------
 # Loading info spinner

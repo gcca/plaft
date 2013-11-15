@@ -3,7 +3,7 @@
  */
 
 /** @private */
-form = require '../../form'
+## form= require../../form'
 /** @private */
 model = require '../../model'
 /** @private */

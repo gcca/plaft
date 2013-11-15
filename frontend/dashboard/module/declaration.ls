@@ -2,7 +2,8 @@
  * @module dashboard.module
  */
 
-form  = require '../../form'
+/** @const */
+# form  = require../../form'
 model = require '../../model'
 widget = require '../../widget'
 
