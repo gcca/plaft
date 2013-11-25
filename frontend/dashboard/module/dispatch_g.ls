@@ -11,6 +11,11 @@ OperationView = require './dispatch/operation'
 StakeholderView = require './dispatch/stakeholder'
 
 /**
+ * @private
+ */
+DispatchModel = model.Dispatch
+
+/**
  * @class DispatchView
  */
 module.exports = class DispatchView extends ModuleBaseView
@@ -26,11 +31,12 @@ module.exports = class DispatchView extends ModuleBaseView
      * @private
      */
     "click button.#{gz.Css \green}": !(evt) ->
-      operationRecord =
-        \operation : @operationView.JSONControls!
-        \sections  : [..JSONControls! for @sectionViewList]
-      console.log operationRecord
-
+      registration =
+        \operation : @operationView.JSONFields!
+        \sections  : [..JSONFields! for @sectionViewList]
+      @dispatch.save \registration : registration, do
+        \success : -> alert 'Guardado'
+        \error : -> alert 'ERROR: Dispatch (6)'
 
   /**
    * On search from searchView event.
@@ -42,9 +48,13 @@ module.exports = class DispatchView extends ModuleBaseView
       @dispatch = new DispatchModel \orderNumber : query
       @dispatch.fetch do
         \success : @renderInfo
-        \error : ->
-          alert 'ERROR: Load disptach'
+        \error : ~>
+          @$el.html ''
+          (new widget.GAutoAlert (gz.Css \error),
+                                 "<b>ERROR:</b> Despacho no encontrado:
+                                 \ <em>#query</em>").elShow!
     else
+      @$el.html ''
       (new widget.GAutoAlert (gz.Css \error),
                              "<b>ERROR:</b> Número de orden incorrecto:
                              \ <em>#query</em>").elShow!
@@ -60,7 +70,8 @@ module.exports = class DispatchView extends ModuleBaseView
     tId = (new Date).getTime!
     tab = $ "<li><a href='\##{gz.Css \tabs}#tId'>#caption</a></li>"
     content = $ "<div id='#{gz.Css \tabs}#tId'
-                     class='#{gz.Css \tabs-content}' style='overflow:hidden'>"
+                     class='#{gz.Css \tabs-content}'
+                     style='overflow:hidden;margin-top:0'>"
     content.append tabView.render!.el
     @$el.find "ul.#{gz.Css \tabs-nav}" .append tab
     @$el.find "div.#{gz.Css \ink-tabs}" .append content
@@ -71,10 +82,10 @@ module.exports = class DispatchView extends ModuleBaseView
    */
   renderInfo: ~>
     @$el.html @template
-    @operationView = new OperationView
+    @operationView = new OperationView kind: \operation
     @addTabView 'Operación', @operationView
     for caption in <[ Declarante Ordenante Destinario Tercero ]>
-      new StakeholderView caption: caption
+      new StakeholderView kind: caption
         @addTabView caption, ..
         @sectionViewList.push ..
     new gz.Ink.UI.Tabs (@$el.find ".#{gz.Css \ink-tabs}" .get 0), do
@@ -114,16 +125,13 @@ module.exports = class DispatchView extends ModuleBaseView
 
   /**
    * Template (Dispatch).
-   * @param {!Object} dispatch
    * @return {string}
    * @private
    */
-  template: (->
-    tabs = "#{gz.Css \ink-tabs}.#{gz.Css \top}"
-    tabs-nav = gz.Css \tabs-nav
-    btn = "#{gz.Css \ink-button}.#{gz.Css \green}.#{gz.Css \push-right}"
-    gz.jParse """
-    button.#btn Guardar
-    .#tabs
-      ul.#tabs-nav
-    """)!
+  template: -> "
+    <button class='#{gz.Css \ink-button} #{gz.Css \green} #{gz.Css \push-right}'>
+      Guardar
+    </button>
+    <div class='#{gz.Css \ink-tabs} #{gz.Css \top}'>
+      <ul class='#{gz.Css \tabs-nav}'></ul>
+    </div>"

@@ -4,7 +4,7 @@ from datetime import date
 from domain.gz import db
 from infraestructure.utils import Dto
 from domain.model import CustomsBrokerUser, CustomsBroker, Business, \
-    Dispatch, Declaration
+    Dispatch, Declaration, Datastore
 
 def main():
     # Customs Brokers
@@ -67,10 +67,10 @@ def main():
     declaration2.put()
 
     # Dispatches
-    d1 = Dispatch(
+    cbu1.createDispatch(Dto(
         orderNumber                = '2013-05',
         customsBrokerCode          = '',
-        dateReceived               = date(2013, 05, 12),
+        dateReceived               = '2013-05-12',
         customerReferences         = '',
         customsRegime              = '',
         customsCode                = '',
@@ -81,12 +81,12 @@ def main():
         invoiceAdjustment          = '',
         invoiceCurrencyValue       = '',
         invoiceCurrencyAdjustment  = '',
-        declaration = declaration1)
-    d1.store()
-    d2 = Dispatch(
+        declaration = declaration1.id))
+
+    cbu1.createDispatch(Dto(
         orderNumber                = '2013-11',
         customsBrokerCode          = '',
-        dateReceived               = date(2013, 11, 12),
+        dateReceived               = '2013-11-12',
         customerReferences         = '',
         customsRegime              = '',
         customsCode                = '',
@@ -97,8 +97,8 @@ def main():
         invoiceAdjustment          = '',
         invoiceCurrencyValue       = '',
         invoiceCurrencyAdjustment  = '',
-        declaration = declaration2)
-    d2.store()
+        declaration = declaration2.id))
+
 
 # Debug View
 class DebugView(webapp2.RequestHandler):
@@ -108,6 +108,6 @@ class DebugView(webapp2.RequestHandler):
 
     def post(self):
         db.delete(v for m in (CustomsBrokerUser, CustomsBroker, Business,
-                             Dispatch, Declaration)
+                              Dispatch, Declaration, Datastore)
                   for v in m.all(keys_only=True))
         self.response.out.write('The End')

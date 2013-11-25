@@ -159,11 +159,11 @@ class AutoAlert extends gz.GView
 
   /**
    * @param {string} type One: {@code .error}, {@code .success}, {@code .info}.
-   * @param {string} message Text
-   * @param {string=} block HTML content
+   * @param {string} alertText Alert text.
+   * @param {string=} block HTML content.
    * @constructor
    */
-  !(@type, @message, @block = void) -> super!
+  !(@type, @alertText, @block = void) -> super!
 
   /**
    * Initialize view.
@@ -186,7 +186,7 @@ class AutoAlert extends gz.GView
   render: ->
     @el.innerHTML = "
      <button class='#{gz.Css \ink-dismiss}'>&times;</button>
-     <p>#{@message}</p>"
+     <p>#{@alertText}</p>"
     super!
 
   /**

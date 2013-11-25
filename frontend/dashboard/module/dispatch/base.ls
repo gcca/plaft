@@ -19,11 +19,11 @@ module.exports = class SectionBaseView extends gz.GView
   className: "#{gz.Css \ink-form} #{gz.Css \ink-form-new}"
 
   /**
-   * Get JSON form.
+   * Get JSON fields form.
    * @return {Object}
    * @public
    */
-  JSONControls: -> @$el.serializeJSON!
+  JSONFields: -> @$el.serializeJSON!
 
   /**
    * Initialize view.
@@ -31,7 +31,7 @@ module.exports = class SectionBaseView extends gz.GView
    * @private
    */
   initialize: !(sectionOptions) ->
-    @caption = sectionOptions.caption if sectionOptions?
+    @kind = sectionOptions.kind if sectionOptions?
 
   /**
    * Render view.
@@ -39,5 +39,5 @@ module.exports = class SectionBaseView extends gz.GView
    * @protected
    */
   render: ->
-    @$el.append "<input type='hidden' name='sectionType' value='#{@caption}'>"
+    @$el.append "<input type='hidden' name='kind' value='#{@kind}'>"
     super!

@@ -2,6 +2,7 @@
 '''Handlers '''
 
 from interface import BaseHandler, RESTfulHandler
+from infraestructure.utils import login_required
 from domain.model import Declaration, User, Dispatch  # (-o-) DBG
 from domain.gz import SpecificationError, NotFoundError, DuplicateError, \
     StoreFailedError, BadValueError, Error
@@ -146,7 +147,8 @@ class DeclarationsHandler(BaseHandler):
 # --------
 # Dispatch
 # --------
-class DispatchHandler(BaseHandler):
+class DispatchHandler(RESTfulHandler.Model):
+    model = Dispatch
 
     def post(self):
         '''
@@ -190,3 +192,20 @@ class DispatchHandler(BaseHandler):
 
 class DispatchesHandler(RESTfulHandler.Collection):
     model = Dispatch
+
+    @login_required
+    def get(self):
+        service = DispatchService(self.user)
+        dispatches = service.pendingDispatches()
+        self.render_json(dispatches)
+
+class DispatchFix(BaseHandler):
+
+    def post(self, id=None):
+        if id:
+            # service = DispatchService(self.user)
+            dispatch = Dispatch.by(int(id))
+            #self.user.fixDispatch(dispatch)
+            self.render_json({})
+        else:
+            self.status.BAD_REQUEST

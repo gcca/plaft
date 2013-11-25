@@ -72,7 +72,6 @@ class GCollection extends window .\Backbone .\Collection
 
 exports <<<
   tie         : (sf, fn) -> fn.bind sf
-  jParse      : $.\jParse
   newel       : window.document.createElement.bind window.document
   G           : window .\Backbone
   GView       : window .\Backbone .\View
@@ -116,7 +115,7 @@ $ document
       isSpinning := true
     , 10
 
-  ..on \ajaxError, !(_, xhr) ->
+  ..on \ajaxError, (_, xhr) !->
     if xhr.status is 0
       base = document.createElement \nav
 

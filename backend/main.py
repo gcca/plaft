@@ -5,7 +5,7 @@ from interface.views import SignInView, CustomerFormView, DashboardView, \
     DeclarationPDFView
 from interface.handlers import CustomerHandler, DeclarationsHandler, \
     CustomerDeclarationHandler, CustomerLastDeclarationHandler, \
-    DispatchHandler, SignInHandler, DispatchesHandler
+    DispatchHandler, SignInHandler, DispatchesHandler, DispatchFix
 
 from debug import DebugView
 
@@ -36,5 +36,6 @@ app = WSGIApplication([
     RESTful('declarations', DeclarationsHandler),
     RESTful(('customer', 'declaration') , CustomerDeclarationHandler),
     RESTful('dispatch', DispatchHandler),
+    ('/api/v1/dispatch/(\\d+)/fix', DispatchFix),
     RESTful('dispatches', DispatchesHandler)
 ], debug=True)

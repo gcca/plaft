@@ -11,8 +11,14 @@ from domain.model.customer import \
 from domain.model.declaration import \
     TrackingIdSpecification as DeclarationTrackingIdSpecification
 
+
+class BaseService(object):
+
+    def __init__(self, user=None):
+        self.user = user
+
 class CustomerService(object):
-    """Customer Service. """
+    """Customer Service."""
 
     def requestCustomer(self, documentNumber):
         """Fetch customer from datastore.
@@ -263,7 +269,7 @@ class DeclarationService(object):
             raise SpecificationError('Bad trackingId: ' + trackingId,
                                      DeclarationTrackingIdSpecification)
 
-class DispatchService(object):
+class DispatchService(BaseService):
 
     def newDispatch(self, dto):
         """Create new disptach.
@@ -316,3 +322,16 @@ class DispatchService(object):
             dispatch.store()
         else:
             raise NotFoundError('Dispatch not found: %s' % id)
+
+    def pendingDispatches(self):
+        """List dispaches.
+
+        Returns:
+            Pendings dispatche list.
+        """
+        return self.user.customsBroker.pendingDispatches()
+
+    def fixDispatch(id):
+        """
+        """
+        pass

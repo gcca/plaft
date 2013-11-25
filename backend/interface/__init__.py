@@ -7,7 +7,9 @@ from infraestructure.utils import rc_factory, ct_factory, st_factory, json, \
     Dto, povd, powd, make_secure_val, check_secure_val, jsondumps, logging
 from webapp2_extras import jinja2
 from google.appengine.ext.db import TransactionFailedError
+from domain.gz import Error
 from domain.model import User
+
 
 class BaseHandler(webapp2.RequestHandler):
     ''' Base Handler '''
@@ -132,10 +134,23 @@ class BaseHandler(webapp2.RequestHandler):
             return key
 
 class RESTfulHandler(object):
-    class Collection(BaseHandler):
-        def get(self, q=None):
-            self.render_json(self.model.findAll(q))
+    class RESTfulBase(BaseHandler):
+        def __init__(self, a, b):
+            if self.model:
+                return super(RESTfulHandler.RESTfulBase, self).__init__(a, b)
+            raise Error(self.__class__.__name__ + ' needs a model')
 
-    class Model(BaseHandler):
+    class Collection(RESTfulBase):
+        def get(self):
+            self.render_json(self.model.findAll(self.request_dto))
+
+    class Model(RESTfulBase):
         def get(self, q=None):
-            self.render_json(self.model.find(q))
+            if q: self.render_json(self.model.find(id=q))
+            else:
+                dto = self.request_dto
+                model = self.model.find(dto) if dto.dict else None
+                if model:
+                    self.render_json(model)
+                else:
+                    self.status.NOT_FOUND(Error('Not found: ' + dto.json))

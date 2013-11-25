@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from infraestructure.utils import login_required
+from infraestructure.utils import user_required
 from interface import BaseHandler
 from domain.model import Declaration, Customer
 
@@ -121,7 +121,7 @@ class CustomerFormView(BaseHandler):
 # --------------
 class DashboardView(BaseHandler):
 
-    @login_required
+    @user_required
     def get(self):
         self.write(generic('dashboard'))
 

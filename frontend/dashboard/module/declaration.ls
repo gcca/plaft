@@ -3,7 +3,7 @@
  */
 
 /** @const */
-# form  = require../../form'
+form  = require '../../form'
 model = require '../../model'
 widget = require '../../widget'
 

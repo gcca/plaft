@@ -6,7 +6,7 @@ domain.model
 import infraestructure.utils as utils
 from domain.gz import Entity, PolyEntity, ReferenceProperty, StringProperty, \
     EmailProperty, BooleanProperty, DateProperty, TextProperty, \
-    DocumentTypeProperty, JsonProperty, BadValueError
+    DocumentTypeProperty, JsonProperty, BadValueError, Key, ListProperty
 
 # ----
 # User
@@ -36,8 +36,14 @@ class User(PolyEntity):
     @classmethod
     def login(self, email, password):
         user = User.find(email=email)
-        if user and utils.valid_pw(email, password, user.password):
-            return user
+        if user and utils.valid_pw(email, password, user.password): return user
+
+# ---------
+# Datastore
+# ---------
+class Datastore(Entity):
+
+    pendingDispatches = ListProperty(Key)
 
 # -----------
 # Declaration
@@ -222,6 +228,23 @@ class CustomsBroker(Entity):
 
     name           = StringProperty ()
     documentNumber = StringProperty ()
+    datastore      = ReferenceProperty(Datastore)
+
+    protected = ['datastore']
+
+    def store(self, *a, **k):
+        """Store.
+        Assert datastore.
+        """
+        if not self.datastore:
+            datastore = Datastore()
+            datastore.store()
+            self.datastore = datastore
+        super(CustomsBroker, self).store(*a, **k)
+
+    def pendingDispatches(self):
+        """Returns pending dispatches query."""
+        return Dispatch.get(self.datastore.pendingDispatches)
 
 # -------------------
 # Customs Broker User
@@ -242,6 +265,50 @@ class CustomsBrokerUser(User):
     def register(self, name, password, customsBroker, **_):
         return super(CustomsBrokerUser, self).register(
             name, password, customsBroker=customsBroker)
+
+    @property
+    def datastore(self): return self.customsBroker.datastore
+
+    def createDispatch(self, dto):
+        """
+        TODO(...): DOCs and Exceptions.
+        """
+        try:
+            dispatch = Dispatch.new(dto)
+            key = dispatch.store()
+        except:
+            raise Exception()
+        else:
+            try:
+                self.datastore.pendingDispatches.append(key)
+                self.datastore.store()
+            except:
+                dispatch.delete()
+                raise Exception()
+
+    def fixDispatch(self, disptach):
+        """TODO(...): """
+        self.datastore.pendingDispatches.remove(disptach.key())
+        self.datastore.store()
+        operation = Operation()
+        operation.store()
+        disptach.operation = operation
+        disptach.store()
+
+# ---------
+# Operation
+# ---------
+class Operation(Entity):
+    """
+    Attributes:
+        customsBroker
+        dispatches
+
+    TODO(...): Create doc.
+    """
+
+    customsBroker = ReferenceProperty(CustomsBroker,
+                                      collection_name='operations')
 
 # --------
 # Dispatch
@@ -267,18 +334,20 @@ class Dispatch(Entity):
         TODO(...): Update doc.
     """
 
-    orderNumber                = TextProperty ()
-    customsBrokerCode          = TextProperty ()
-    dateReceived               = DateProperty ()
-    customerReferences         = TextProperty () # Esto no debería esta acá
-    customsRegime              = TextProperty ()
-    customsCode                = TextProperty ()
-    businessName               = TextProperty ()
-    invoiceNumber              = TextProperty ()
-    invoiceAddress             = TextProperty ()
-    invoiceValue               = TextProperty ()
-    invoiceAdjustment          = TextProperty ()
-    invoiceCurrencyValue       = TextProperty ()
-    invoiceCurrencyAdjustment  = TextProperty ()
+    orderNumber                = StringProperty ()
+    customsBrokerCode          = TextProperty   ()
+    dateReceived               = DateProperty   ()
+    customerReferences         = TextProperty   () # Esto no debería esta acá
+    customsRegime              = TextProperty   ()
+    customsCode                = TextProperty   ()
+    businessName               = TextProperty   ()
+    invoiceNumber              = TextProperty   ()
+    invoiceAddress             = TextProperty   ()
+    invoiceValue               = TextProperty   ()
+    invoiceAdjustment          = TextProperty   ()
+    invoiceCurrencyValue       = TextProperty   ()
+    invoiceCurrencyAdjustment  = TextProperty   ()
+    registration = JsonProperty ()
     alerts = JsonProperty ()
+    operation = ReferenceProperty(Operation, collection_name='dispatches')
     declaration = ReferenceProperty(Declaration, collection_name='dispatches')

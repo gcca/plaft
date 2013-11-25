@@ -23,58 +23,35 @@ module.exports = class OperationView extends SectionBaseView
    * @return {string}
    * @private
    */
-  template: (->
-    block = "#{gz.Css \large-50}
-            .#{gz.Css \medium-50}
-            .#{gz.Css \small-100}
-            .#{gz.Css \gz-block}"
+  template: gzc.Jade '''
+    - var labelsLeft = [
+    -   "Codigo SO",
+    -   "Codigo OC",
+    -   "Número de fila"
+    - ];
 
-    control-group = "#{gz.Css \control-group}
-                    .#{gz.Css \column-group}"
+    - var labelsRight = [
+    -   "Número de registro de Operación",
+    -   "Número de registro interno",
+    -   "Modalidad de operación",
+    -   "Número de operaciones"
+    - ];
 
-    labelL = "label.#{gz.Css \large-25}
-                   .#{gz.Css \medium-25}
-                   .#{gz.Css \small-100}"
+    .large-50.medium-50.small-100
+      fieldset.block-left
+        legend Registro
+        each label in labelsLeft
+          .control-group.column-group
+            label.large-100.medium-100.small-100= label
+            .control.large-100.medium-100.small-100
+              input(type="text", name=label)
 
-    controlL = "#{gz.Css \control}
-               .#{gz.Css \large-75}
-               .#{gz.Css \medium-75}
-               .#{gz.Css \small-100}"
-
-
-    labelR = "label.#{gz.Css \large-100}
-                   .#{gz.Css \medium-100}
-                   .#{gz.Css \small-100}"
-
-    controlR = "#{gz.Css \control}
-               .#{gz.Css \large-100}
-               .#{gz.Css \medium-100}
-               .#{gz.Css \small-100}"
-
-    labelsLeft = "['Codigo SO',
-                   'Codigo OC',
-                   'Número de fila']"
-
-    labelsRight = "['Número de registro de Operación',
-                    'Número de registro interno',
-                    'Modalidad de operación',
-                    'Número de operaciones']"
-
-    gz.jParse """
-      .#block
-        fieldset
-          legend Registro
-          - each label in #labelsLeft
-            .#control-group
-              #labelL= label
-              .#controlL
-                input(type='text', name=label)
-      .#block
-        fieldset
-          legend Datos
-          - each label in #labelsRight
-            .#control-group
-              #labelR= label
-              .#controlR
-                input(type='text', name=label)
-    """)!
+    .large-50.medium-50.small-100
+      fieldset.block-right
+        legend Datos
+        each label in labelsRight
+          .control-group.column-group
+            label.large-100.medium-100.small-100= label
+            .control.large-100.medium-100.small-100
+              input(type="text", name=label)
+  '''

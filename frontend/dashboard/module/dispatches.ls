@@ -3,8 +3,6 @@
  */
 
 /** @private */
-## form= require../../form'
-/** @private */
 model = require '../../model'
 /** @private */
 widget = require '../../widget'
@@ -47,6 +45,11 @@ module.exports = class DispatchesView extends builder.Table
       alertModal.buttonTarget = btn
       alertModal.elShow!
 
+    "click ##{gz.Css \dispatch-save}": !(evt) ->
+      btn = evt.currentTarget
+      dispatch = @dispatches.get btn.dataset.\id
+      dispatch.fix!
+
   /**
    * Generate toolbar for cell
    * Options:
@@ -57,41 +60,37 @@ module.exports = class DispatchesView extends builder.Table
    * @return {string}
    * @private
    */
-  toolbarCell: (dispatch) -> "
-    <div class='#{gz.Css \button-toolbar} #{gz.Css \push-right}'>
-      <div class='#{gz.Css \button-group}'>
-      <button id='#{gz.Css \dispatch-alerts}'
-          class='#{gz.Css \ink-button}'
-          data-id='#{dispatch[\id]}'
-          data-tip-text='Señales de alerta'
-          data-tip-color='#{gz.Css \blue}'>
-        <span class='#{gz.Css \icon-file-alt}'></span>
-      </button>
-      <button class='#{gz.Css \ink-button}'
-          data-tip-text='Editar'
-          data-tip-color='#{gz.Css \blue}'>
-        <span class='#{gz.Css \icon-edit}'></span>
-      </button>
-      </div>
-
-      <div class='#{gz.Css \button-group}'>
-      <button class='#{gz.Css \ink-button}'
-          data-tip-text='Normal'
-          data-tip-color='#{gz.Css \green}'>
-        <span class='#{gz.Css \icon-ok-sign}'></span>
-      </button>
-      <button class='#{gz.Css \ink-button}'
-          data-tip-text='Inusual'
-          data-tip-color='#{gz.Css \orange}'>
-        <span class='#{gz.Css \icon-info-sign}'></span>
-      </button>
-      <button class='#{gz.Css \ink-button}'
-          data-tip-text='Sospechosa'
-          data-tip-color='#{gz.Css \red}'>
-        <span class='#{gz.Css \icon-exclamation-sign}'></span>
-      </button>
-      </div>
-    </div>"
+  toolbarCell: gzc.Jade '''
+    .button-toolbar.push-right
+      .button-group
+        button.ink-button#dispatch-alerts(
+            data-id=id,
+            data-tip-text="Señales de alerta",
+            data-tip-color="{Css blue}")
+          span.icon-file-alt
+        button.ink-button(
+            data-tip-text="Editar",
+            data-tip-color="{Css blue}")
+          span.icon-edit
+        button.ink-button#dispatch-save(
+            data-id=id,
+            data-tip-text="Guardar",
+            data-tip-color="{Css blue}")
+          span.icon-save
+      .button-group
+        button.ink-button(
+            data-tip-text="Normal",
+            data-tip-color="{Css green}")
+          span.icon-ok-sign
+        button.ink-button(
+            data-tip-text="Inusual",
+            data-tip-color="{Css orange}")
+          span.icon-info-sign
+        button.ink-button(
+            data-tip-text="Sospechosa",
+            data-tip-color="{Css red}")
+          span.icon-exclamation-sign
+  '''
 
   /**
    * Counting alerts for dispatch.

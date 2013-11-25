@@ -1,6 +1,5 @@
 gz     = require './helpers'
 model  = require './model'
-form   = require './form'
 widget = require './dashboard/widget'
 
 MenuView    = require './dashboard/menu'

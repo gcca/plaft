@@ -1,5 +1,3 @@
-#form = require../../form'
-
 class OperationEditView extends gz.GView
     tagName: \div
 

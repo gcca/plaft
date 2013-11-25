@@ -67,14 +67,11 @@ def valid_password(password):
     return password and PASS_RE.match(password)
 
 def make_pw_hash(name, password, salt=None):
-    if not salt:
-        salt = bcrypt.gensalt(6)
-    try:
-        h = bcrypt.hashpw(name+password, salt)
+    if not salt: salt = bcrypt.gensalt(6)
+    try: h = bcrypt.hashpw(name+password, salt)
     except ValueError: pass
     except Exception: pass
-    else:
-        return h
+    else: return h
 
 def valid_pw(name, password, h):
     return h == make_pw_hash(name, password, h)
@@ -85,21 +82,21 @@ def make_salt(length = 9):
 
 secret = 'J:u(8"(v/i#:g)3-u3E&"'
 def make_secure_val(val, salt=None):
-    if not salt:
-        salt = make_salt()
+    if not salt: salt = make_salt()
     return '%s|%s|%s' % (val, salt, hmac.new(secret, val+salt).hexdigest())
 
 def check_secure_val(secure_val):
-    try:
-        val, salt, _ = secure_val.split('|')
+    try: val, salt, _ = secure_val.split('|')
     except ValueError: pass
     except Exception: pass
-    else:
-        if secure_val == make_secure_val(val, salt):
-            return val
+    else: return val if secure_val == make_secure_val(val, salt) else None
 
-def login_required(m, _=''):
-    return lambda s, *a, **k: m(s, *a, **k) if s.user else s.redirect('/')
+def user_required(m):
+    return lambda s, *a, **k: (m(s, *a, **k) if s.user
+                               else s.redirect('/'))
+def login_required(m):
+    return lambda s, *a, **k: (m(s, *a, **k) if s.user
+                               else s.status.FORBIDDEN(Exception('Forbidden')))
 
 from google.appengine.ext import db
 class JSONgccaEncoder(json.JSONEncoder):
@@ -130,7 +127,12 @@ for i in xrange(len(s)):
 powd = ''.join(x)
 
 class Dto(object):
-    def __init__(self, d):
+    @property
+    def dict(self): return self.__dict__
+    @property
+    def json(self): return jsondumps(self)
+    def __init__(self, d=None, **k):
+        if not d: d = k
         if d.has_key('id'): del d['id']
         self.__dict__.update(d)
         for k, v in d.items():

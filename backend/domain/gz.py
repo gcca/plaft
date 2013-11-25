@@ -24,6 +24,7 @@ IntegerProperty = db.IntegerProperty
 FloatProperty = db.FloatProperty
 StringListProperty = db.StringListProperty
 UnindexedProperty = db.UnindexedProperty
+Key = db.Key
 
 # ----------
 # Exceptions
@@ -96,7 +97,7 @@ class EntityMixIn(object):
         '''
         # MOD INFORMATION HOLE! on handler: be careful
         dict = { p.name: mdlmap(getattr(self, p._attr_name())) for p in \
-                     self.properties().values() }
+                 self.properties().values() }
         if self.is_saved(): dict['id'] = self.id
         return dict
 
