@@ -35,7 +35,10 @@ app = WSGIApplication([
     ]),
     RESTful('declarations', DeclarationsHandler),
     RESTful(('customer', 'declaration') , CustomerDeclarationHandler),
+
+      # Dispatch
     RESTful('dispatch', DispatchHandler),
-    ('/api/v1/dispatch/(\\d+)/fix', DispatchFix),
+    Route(r'/api/v1/dispatch/<id:\w+>/fix/<type:\w+>', DispatchFix),
+
     RESTful('dispatches', DispatchesHandler)
 ], debug=True)

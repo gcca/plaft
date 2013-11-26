@@ -109,8 +109,17 @@ class CustomerLastDeclaration extends Declaration
 class Dispatch extends GModel
   urlRoot: \dispatch
 
-  fix: ->
-    $.post "/api/v1/dispatch/#{@id}/fix"
+  /**
+   * Generic fix dispatch POST Request.
+   * @param {string} type
+   * @private
+   */
+  __fix: (type) !->
+    $.post "#{@API.path}dispatch/#{@id}/fix/#type"
+
+  /** @see __fix */ fixRegister   : !-> @__fix \register
+  /** @see __fix */ fixUnusual    : !-> @__fix \unusual
+  /** @see __fix */ fixSuspicious : !-> @__fix \suspicious
 
 /**
  * Dispatch collection

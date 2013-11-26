@@ -45,10 +45,41 @@ module.exports = class DispatchesView extends builder.Table
       alertModal.buttonTarget = btn
       alertModal.elShow!
 
-    "click ##{gz.Css \dispatch-save}": !(evt) ->
-      btn = evt.currentTarget
-      dispatch = @dispatches.get btn.dataset.\id
-      dispatch.fix!
+    /**
+     * Fixed dispatch by @{code register}.
+     * @param {Object} evt Event object
+     * @private
+     */
+    "click ##{gz.Css \dispatch-register}": !(evt) ->
+      dispatch = @getDispatchByEvent evt
+      dispatch.fixRegister!
+
+    /**
+     * Fixed dispatch by @{code unusual}.
+     * @param {Object} evt Event object
+     * @private
+     */
+    "click ##{gz.Css \dispatch-unusual}": !(evt) ->
+      dispatch = @getDispatchByEvent evt
+      dispatch.fixUnusual!
+
+    /**
+     * Fixed dispatch by @{code suspicious}.
+     * @param {Object} evt Event object
+     * @private
+     */
+    "click ##{gz.Css \dispatch-suspicious}": !(evt) ->
+      dispatch = @getDispatchByEvent evt
+      dispatch.fixSuspicious!
+
+  /**
+   * Fixed dispatch by @{code suspicious}.
+   * @param {Object} evt Event object
+   * @see "click ##{gz.Css \dispatch-TYPE}".
+   *   TYPE in {'register', 'unusual', 'suspicious'}
+   * @private
+   */
+  getDispatchByEvent: (evt) -> @dispatches.get evt.currentTarget.dataset.\id
 
   /**
    * Generate toolbar for cell
@@ -56,12 +87,13 @@ module.exports = class DispatchesView extends builder.Table
    *   - alerts, edit dispatch
    *   - unusual, suspicious
    * Used by {@code render}.
-   * @param {!Object} dispatch
+   * @param {!Object} locals Dispatch.
    * @return {string}
    * @private
    */
   toolbarCell: gzc.Jade '''
     .button-toolbar.push-right
+
       .button-group
         button.ink-button#dispatch-alerts(
             data-id=id,
@@ -72,21 +104,20 @@ module.exports = class DispatchesView extends builder.Table
             data-tip-text="Editar",
             data-tip-color="{Css blue}")
           span.icon-edit
-        button.ink-button#dispatch-save(
-            data-id=id,
-            data-tip-text="Guardar",
-            data-tip-color="{Css blue}")
-          span.icon-save
+
       .button-group
-        button.ink-button(
+        button.ink-button#dispatch-register(
+            data-id=id,
             data-tip-text="Normal",
             data-tip-color="{Css green}")
           span.icon-ok-sign
-        button.ink-button(
+        button.ink-button#dispatch-unusual(
+            data-id=id,
             data-tip-text="Inusual",
             data-tip-color="{Css orange}")
           span.icon-info-sign
-        button.ink-button(
+        button.ink-button#dispatch-suspicious(
+            data-id=id,
             data-tip-text="Sospechosa",
             data-tip-color="{Css red}")
           span.icon-exclamation-sign

@@ -201,11 +201,13 @@ class DispatchesHandler(RESTfulHandler.Collection):
 
 class DispatchFix(BaseHandler):
 
-    def post(self, id=None):
-        if id:
-            # service = DispatchService(self.user)
-            dispatch = Dispatch.by(int(id))
-            #self.user.fixDispatch(dispatch)
-            self.render_json({})
+    def post(self, id, type):
+        service = DispatchService(self.user)
+        try:
+            service.fixDispatch(int(id), type)
+        except ValueError, TypeError:
+            self.status.BAD_REQUEST(Error('Bad id: ' + id))
+        except BadValueError as ex:
+            self.status.BAD_REQUEST(ex)
         else:
-            self.status.BAD_REQUEST
+            self.write_json('{}')

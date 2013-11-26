@@ -48,13 +48,16 @@ NodeList ::=
 # --------------
 # Global Context
 # --------------
-class GModel extends window .\Backbone .\Model
+GBase =
+    API : path : '/api/v1/'
+
+class GModel extends window .\Backbone .\Model implements GBase
   (_, o = new Object) ->
     @mRoot? = o.mRoot
     super ...
 
   url: ->
-    if @mRoot? then "#{@mRoot.url!}/#{super!}" else "/api/v1/#{super!}"
+    if @mRoot? then "#{@mRoot.url!}/#{super!}" else "#{@API.path}#{super!}"
 
   sync: (t, m, o) ->
     if t is \read
@@ -66,9 +69,9 @@ class GModel extends window .\Backbone .\Model
       o.\attrs = a
     super ...
 
-class GCollection extends window .\Backbone .\Collection
+class GCollection extends window .\Backbone .\Collection implements GBase
   url: ->
-    if @mRoot? then "#{@mRoot.url!}/#{super!}" else "/api/v1/#{@urlRoot}"
+    if @mRoot? then "#{@mRoot.url!}/#{super!}" else "#{@API.path}#{@urlRoot}"
 
 exports <<<
   tie         : (sf, fn) -> fn.bind sf

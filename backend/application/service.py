@@ -3,7 +3,8 @@
 TODO(...): requestLastDeclaration, DispatchService
 """
 
-from domain.gz import SpecificationError, NotFoundError, StoreFailedError
+from domain.gz import SpecificationError, NotFoundError, StoreFailedError, \
+    BadValueError
 from domain.model import Customer, Person, Business, Declaration, Dispatch
 from domain.model.customer import \
     DocumentNumberSpecification as CustomerDocumentNumberSpecification, \
@@ -331,7 +332,10 @@ class DispatchService(BaseService):
         """
         return self.user.customsBroker.pendingDispatches()
 
-    def fixDispatch(id):
+    def fixDispatch(self, id, type):
         """
         """
-        pass
+        dispatch = Dispatch.by(id)
+        if type not in ('register', 'unusual', 'suspicious'):
+            raise BadValueError('Bad type: ' + type)
+        # self.user.fixDispatch(dispatch, type)

@@ -286,14 +286,14 @@ class CustomsBrokerUser(User):
                 dispatch.delete()
                 raise Exception()
 
-    def fixDispatch(self, disptach):
+    def fixDispatch(self, disptach, type):
         """TODO(...): """
         self.datastore.pendingDispatches.remove(disptach.key())
-        self.datastore.store()
+        # self.datastore.store()
         operation = Operation()
-        operation.store()
+        # operation.store()
         disptach.operation = operation
-        disptach.store()
+        # disptach.store()
 
 # ---------
 # Operation
