@@ -6,11 +6,10 @@
  * @private
  */
 modules = [
-  MainView        = require './module/main'
-  DeclarationView = require './module/declaration'
-  DispatchView    = require './module/dispatch'
-  DispatchView    = require './module/dispatch_g'
-  DispatchesView  = require './module/dispatches'
+  MainView         = require './module/main'
+  DeclarationView  = require './module/declaration'
+  DispatchView     = require './module/dispatch'
+  DispatchesView   = require './module/dispatches'
   DeclarationsView = require './module/declarations'
 ]
 
