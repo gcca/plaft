@@ -112,14 +112,15 @@ class Dispatch extends GModel
   /**
    * Generic fix dispatch POST Request.
    * @param {string} type
+   * @param {Function} mCallback
    * @private
    */
-  __fix: (type) !->
-    $.post "#{@API.path}dispatch/#{@id}/fix/#type"
+  _fix: (type, mCallback) !->
+    $.post "#{@API.path}dispatch/#{@id}/fix/#type" mCallback
 
-  /** @see __fix */ fixRegister   : !-> @__fix \register
-  /** @see __fix */ fixUnusual    : !-> @__fix \unusual
-  /** @see __fix */ fixSuspicious : !-> @__fix \suspicious
+  /** @see __fix */ fixRegister   : (mCallback) !-> @_fix \register   mCallback
+  /** @see __fix */ fixUnusual    : (mCallback) !-> @_fix \unusual    mCallback
+  /** @see __fix */ fixSuspicious : (mCallback) !-> @_fix \suspicious mCallback
 
 /**
  * Dispatch collection

@@ -26,6 +26,13 @@ module.exports = class SectionBaseView extends gz.GView
   JSONFields: -> @$el.serializeJSON!
 
   /**
+   * Update form fields from JSON.
+   * @param {Object} jsonData
+   * @public
+   */
+  fieldsFromJSON: (jsonData) !-> @$el.populateJSON jsonData
+
+  /**
    * Initialize view.
    * @param {Object} sectionOptions
    * @private

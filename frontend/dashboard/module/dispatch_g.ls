@@ -31,12 +31,15 @@ module.exports = class DispatchView extends ModuleBaseView
      * @private
      */
     "click button.#{gz.Css \green}": !(evt) ->
-      registration =
+      register =
         \operation : @operationView.JSONFields!
         \sections  : [..JSONFields! for @sectionViewList]
-      @dispatch.save \registration : registration, do
-        \success : -> alert 'Guardado'
-        \error : -> alert 'ERROR: Dispatch (6)'
+      @dispatch.save \register : register, do
+        \success : ->
+          (new widget.GAutoAlert (gz.Css \success),
+                                 "<b>DESPACHO:</b> Datos guardados.").elShow!
+        \error : ->
+          alert 'ERROR: Dispatch (6)'
 
   /**
    * On search from searchView event.
@@ -47,7 +50,8 @@ module.exports = class DispatchView extends ModuleBaseView
     if query.match /\d+-\d+/
       @dispatch = new DispatchModel \orderNumber : query
       @dispatch.fetch do
-        \success : @renderInfo
+        \success : !(dispatch) ~>
+          @renderInfo dispatch.get \register
         \error : ~>
           @$el.html ''
           (new widget.GAutoAlert (gz.Css \error),
@@ -71,7 +75,7 @@ module.exports = class DispatchView extends ModuleBaseView
     tab = $ "<li><a href='\##{gz.Css \tabs}#tId'>#caption</a></li>"
     content = $ "<div id='#{gz.Css \tabs}#tId'
                      class='#{gz.Css \tabs-content}'
-                     style='overflow:hidden;margin-top:0'>"
+                     style='overflow:hidden;margin-top:0em'>"
     content.append tabView.render!.el
     @$el.find "ul.#{gz.Css \tabs-nav}" .append tab
     @$el.find "div.#{gz.Css \ink-tabs}" .append content
@@ -80,14 +84,24 @@ module.exports = class DispatchView extends ModuleBaseView
    * Render dispatch form.
    * @private
    */
-  renderInfo: ~>
+  renderInfo : !(register) ~>
+    # from template
     @$el.html @template
+    # add operation view (anexo 2: operation register)
     @operationView = new OperationView kind: \operation
-    @addTabView 'Operación', @operationView
-    for caption in <[ Declarante Ordenante Destinario Tercero ]>
+      @addTabView 'Operación', ..
+      # set form data
+      ..fieldsFromJSON register.\operation if register?
+    # add section views (anexo 2: stakeholders)
+    sections = register.\sections if register?
+    sections ||= []
+    capsSecs = _.zip <[ Declarante Ordenante Destinario Tercero ]> sections
+    for [caption, section]  in capsSecs
       new StakeholderView kind: caption
         @addTabView caption, ..
         @sectionViewList.push ..
+        ..fieldsFromJSON section if register?
+    # set ui-tabs manager
     new gz.Ink.UI.Tabs (@$el.find ".#{gz.Css \ink-tabs}" .get 0), do
       \preventUrlChange : on
 
@@ -111,7 +125,6 @@ module.exports = class DispatchView extends ModuleBaseView
   render: ->
     @desktop.uiSearch.showTooltip '<b>Buscar por <em>número de orden</em></b>'
     @desktop.uiSearch.elFocus!
-    @renderInfo!
     super!
 
   /** @private */

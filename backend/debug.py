@@ -4,7 +4,7 @@ from datetime import date
 from domain.gz import db
 from infraestructure.utils import Dto
 from domain.model import CustomsBrokerUser, CustomsBroker, Business, \
-    Dispatch, Declaration, Datastore
+    Dispatch, Declaration, Datastore, Operation
 
 def main():
     # Customs Brokers
@@ -108,6 +108,6 @@ class DebugView(webapp2.RequestHandler):
 
     def post(self):
         db.delete(v for m in (CustomsBrokerUser, CustomsBroker, Business,
-                              Dispatch, Declaration, Datastore)
+                              Dispatch, Declaration, Datastore, Operation)
                   for v in m.all(keys_only=True))
         self.response.out.write('The End')

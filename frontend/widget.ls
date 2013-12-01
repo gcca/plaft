@@ -270,3 +270,4 @@ exports <<<
   GModal     : Modal
   GAutoAlert : AutoAlert
   GTypeahead : Typeahead
+

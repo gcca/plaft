@@ -10,30 +10,6 @@ SectionBaseView = require './base'
 module.exports = class StakeholderView extends SectionBaseView
 
   /**
-   * Render field.
-   * @see render
-   * @private
-   */
-  field: (name, label) -> "
-    <div class='#{gz.Css \control-group}
-              \ #{gz.Css \column-group}
-              \ #{gz.Css \gutters}'>
-      <label class='#{gz.Css \large-25}
-                  \ #{gz.Css \medium-25}
-                  \ #{gz.Css \small-40}
-                  \ #{gz.Css \content-right}'>
-        #label
-      </label>
-      <div class='#{gz.Css \control}
-                \ #{gz.Css \large-75}
-                \ #{gz.Css \medium-75}
-                \ #{gz.Css \small-60}'>
-        <input type='text' name='#name'>
-      </div>
-    </div>
-  "
-
-  /**
    * Initialize view.
    * @override
    * @private
@@ -46,22 +22,50 @@ module.exports = class StakeholderView extends SectionBaseView
    * @override
    */
   render: ->
-    @$el.html "
-      <fieldset>
-        <legend>Datos</legend>
-        #{@field '' 'Tipo de documento'}
-        #{@field '' 'Número de documento'}
-        #{@field '' 'País de emisión del documento'}
-        #{@field '' 'Apellido paterno'}
-        #{@field '' 'Apellido materno'}
-        #{@field '' 'Nombres'}
-        #{@field '' 'Nacionalidad'}
-        #{@field '' 'Ocupación'}
-        #{@field '' 'Descripción de ocupación'}
-        #{@field '' 'Código CIIU'}
-        #{@field '' 'Cargo'}
-        #{@field '' 'Dirección'}
-        #{@field '' 'Código ubigeo'}
-        #{@field '' 'Teléfono'}
-      </fieldset>"
+    @$el.html @template!
     super!
+
+  /**
+   * View template.
+   * @return string
+   * @private
+   */
+  template: -> gzc.Jade '''
+    - var labelsLeft = [
+    -   "Tipo de documento",
+    -   "Número de documento",
+    -   "País de emisión del documento",
+    -   "Apellido paterno",
+    -   "Apellido materno",
+    -   "Nombres",
+    -   "Nacionalidad"
+    - ];
+
+    - var labelsRight = [
+    -   "Ocupación",
+    -   "Descripción de ocupación",
+    -   "Código CIIU",
+    -   "Cargo",
+    -   "Dirección",
+    -   "Código ubigeo",
+    -   "Teléfono"
+    - ];
+
+    .large-50.medium-50.small-100
+      fieldset.block-left
+        legend
+        each label in labelsLeft
+          .control-group.column-group
+            label.large-100.medium-100.small-100= label
+            .control.large-100.medium-100.small-100
+              input(type="text", name=label)
+
+    .large-50.medium-50.small-100
+      fieldset.block-right
+        legend
+        each label in labelsRight
+          .control-group.column-group
+            label.large-100.medium-100.small-100= label
+            .control.large-100.medium-100.small-100
+              input(type="text", name=label)
+  '''

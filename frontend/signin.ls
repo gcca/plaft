@@ -221,4 +221,4 @@ document.querySelector "button.#{gz.Css \green}" .onclick = ->
               ..className = "#{gz.Css \tip} #{gz.Css \push-left}"
               ..innerHTML = 'Usuario o clave incorrectos'
               i.firstElementChild.insertBefore ..
-    ..send "username=#{form.username.value}&password=#{form.password.value}"
+    ..send "username=#{form.'username'.value}&password=#{form.'password'.value}"

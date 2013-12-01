@@ -48,8 +48,7 @@ NodeList ::=
 # --------------
 # Global Context
 # --------------
-GBase =
-    API : path : '/api/v1/'
+GBase = API : path : '/api/v1/'
 
 class GModel extends window .\Backbone .\Model implements GBase
   (_, o = new Object) ->
@@ -90,7 +89,8 @@ window .\Ink .\UI
         Modal      : ..\Modal
         Table      : ..\Table
         Toggle     : ..\Toggle
-        Tooltip    : ..\Tooltip
+        Tooltip    : class extends ..\Tooltip
+          destroy: !-> for t in @'tooltips' then t.'_removeTooltip'!
 exports <<<< window.gz if window.gz?
 gz = exports
 

@@ -29,7 +29,7 @@ Key = db.Key
 # ----------
 # Exceptions
 # ----------
-class Error(db.Error):
+class Error(Exception):
     """Base model error type. """
 
 class StoreFailedError(Error):

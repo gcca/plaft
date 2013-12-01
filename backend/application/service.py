@@ -3,8 +3,7 @@
 TODO(...): requestLastDeclaration, DispatchService
 """
 
-from domain.gz import SpecificationError, NotFoundError, StoreFailedError, \
-    BadValueError
+from domain.gz import SpecificationError, NotFoundError, BadValueError
 from domain.model import Customer, Person, Business, Declaration, Dispatch
 from domain.model.customer import \
     DocumentNumberSpecification as CustomerDocumentNumberSpecification, \
@@ -14,12 +13,39 @@ from domain.model.declaration import \
 
 
 class BaseService(object):
+    """Base for application services."""
 
     def __init__(self, user=None):
-        self.user = user
+        """Constuctor.
+        Needs user for use cases in domain layer.
 
-class CustomerService(object):
+        Args:
+            user (CustomsBrokerUser)
+        """
+        self.user = user
+        self.model = None
+
+    def setModel(self, model):
+        """Set service model."""
+        self.model = model
+
+    def storeCascade(self, _):
+        """Store entties in cascade validation."""
+        self.user = None
+        return NotImplemented
+
+    def deleteCascade(self, _):
+        """Delete entties in cascade validation."""
+        self.user = None
+        return NotImplemented
+
+
+class CustomerService(BaseService):
     """Customer Service."""
+
+    def __init__(self):
+        super(CustomerService, self).__init__(None)
+        self.setModel(Customer)
 
     def requestCustomer(self, documentNumber):
         """Fetch customer from datastore.
@@ -40,12 +66,13 @@ class CustomerService(object):
             NotFoundError:
                 An error occurred searching a customer by document number.
         """
-        customer = Customer(documentNumber=documentNumber)
+        customer = self.model(documentNumber=documentNumber)
         documentNumberSpec = CustomerDocumentNumberSpecification()
-        customer.documentType = self._inferDocumentType(customer)
+        # (-o-) Need better validation for customer.documentType
+        customer.documentType = 'RUC' if customer.isBusiness else 'DNI'
 
         if documentNumberSpec.isSatisfiedBy(customer):
-            customer = Customer.find(documentNumber=documentNumber)
+            customer = self.model.find(documentNumber=documentNumber)
         else:
             raise SpecificationError('Invalid number: ' + documentNumber)
         if not customer:
@@ -72,15 +99,19 @@ class CustomerService(object):
             BadValueError:
                 A error ocurred creating a customer with bad attributes
                 value or types.
+            StoreFailedError:
+                A error occurred storing entity.
         """
-        customer = Customer.new(dto)
+        customer = self.model.new(dto)
         documentNumberSpec = CustomerDocumentNumberSpecification()
         uniqueSpec = CustomerUniqueSpecification()
 
         if documentNumberSpec.isSatisfiedBy(customer):
             if uniqueSpec.isSatisfiedBy(customer):
-                customer = self._specificCustomer(customer, dto)
-                return self._storeCustomer(customer)
+                customer = (Business.new(dto) if customer.isBusiness
+                            else Person.new(dto))
+                customer.store()
+                return customer.id
             else:
                 raise SpecificationError('Customer already exists',
                                          CustomerUniqueSpecification)
@@ -113,8 +144,10 @@ class CustomerService(object):
             BadValueError:
                 A error ocurred updating a customer with bad attributes
                 value or types.
+            StoreFailedError:
+                A error occurred storing entity.
         """
-        customer = Customer.find(id)
+        customer = self.model.find(id)
         documentNumberSpec = CustomerDocumentNumberSpecification()
         uniqueSpec = CustomerUniqueSpecification()
 
@@ -129,8 +162,7 @@ class CustomerService(object):
         if uniqueSpec.isSatisfiedBy(Customer.new(dto)):
             raise SpecificationError('Customer does not exists',
                                      CustomerUniqueSpecification)
-
-        self._storeCustomer(customer)
+        customer.store()
 
     def createDeclaration(self, id, declaration_dto):
         """Customer creates new delcaration.
@@ -158,7 +190,7 @@ class CustomerService(object):
         """
         declaration = Declaration.new(declaration_dto)
         declaration.store()
-        customer = Customer.find(id)
+        customer = self.model.find(id)
         customer.lastDeclaration = declaration
         customer.store()
         return declaration
@@ -178,67 +210,18 @@ class CustomerService(object):
             NotFoundError:
                 Searching customer.
         """
-        customer = Customer.find(dto)
-        if customer: return customer.lastDeclaration
+        customer = self.model.find(dto)
+        if customer:
+            return customer.lastDeclaration
         raise NotFoundError('Customer not found')
 
-    def _inferDocumentType(self, customer):
-        """Infer passport and alien card from customer entitty.
 
-        Args:
-            customer:
-                Customer entity.
-
-        Returns:
-            A document type string.
-
-        TODO(gcca): Replace by isBusiness, isPerson of customer object.
-        """
-        documentNumber = customer.documentNumber
-        documentType = None
-        if 11 == len(documentNumber):
-            documentType = 'RUC'
-        elif 8 == len(documentNumber):
-            documentType = 'DNI'
-        return documentType
-
-    def _storeCustomer(self, customer):
-        """Common store customer method.
-
-        Args:
-            customer:
-                Customer entity.
-
-        Returns:
-            None.
-
-        Raises:
-            StoreFailedError:
-                A error occurred storing entity.
-        """
-        try:
-            customer.store()
-        except StoreFailedError as storeFailed:
-            raise storeFailed
-        else:
-            return customer.id
-
-    def _specificCustomer(self, customer, dto):
-        """Retrieve specific customer: person or business.
-
-        >>> # If dto is Business
-        >>> customer = Customer.new(dto_business)
-        >>> self._specificCustomer(customer, dto_business)
-        ... <object Business at 0x...>
-        >>> # If dto is Person
-        >>> customer = Customer.new(dto_person)
-        >>> self._specificCustomer(customer, dto_person)
-        ... <object Person at 0x...>
-        """
-        return Business.new(dto) if customer.isBusiness else Person.new(dto)
-
-class DeclarationService(object):
+class DeclarationService(BaseService):
     """Declaration Service. """
+
+    def __init__(self):
+        super(DeclarationService, self).__init__(None)
+        self.setModel(Declaration)
 
     def requestDeclaration(self, trackingId):
         """Fetch declaration from datastore.
@@ -262,7 +245,7 @@ class DeclarationService(object):
         """
         trackingIdSpec = DeclarationTrackingIdSpecification()
         if trackingIdSpec.isSatisfiedBy(Declaration(trackingId=trackingId)):
-            declaration = Declaration.find(trackingId=trackingId)
+            declaration = self.model.find(trackingId=trackingId)
             if not declaration:
                 raise NotFoundError('Declaration not found: ' + trackingId)
             return declaration
@@ -270,7 +253,13 @@ class DeclarationService(object):
             raise SpecificationError('Bad trackingId: ' + trackingId,
                                      DeclarationTrackingIdSpecification)
 
+
 class DispatchService(BaseService):
+    """Dispatch Service."""
+
+    def __init__(self, user):
+        super(DispatchService, self).__init__(user)
+        self.setModel(Dispatch)
 
     def newDispatch(self, dto):
         """Create new disptach.
@@ -292,7 +281,7 @@ class DispatchService(BaseService):
                 A error ocurred creating a dispatch with bad attributes
                 value or types.
         """
-        dispatch = Dispatch.new(dto)
+        dispatch = self.model.new(dto)
         dispatch.store()
         return dispatch
 
@@ -317,7 +306,7 @@ class DispatchService(BaseService):
                 A error ocurred creating a dispatch with bad attributes
                 value or types.
         """
-        dispatch = Dispatch.find(id)
+        dispatch = self.model.find(id)
         if dispatch:
             dispatch.update(dto)
             dispatch.store()
@@ -333,9 +322,15 @@ class DispatchService(BaseService):
         return self.user.customsBroker.pendingDispatches()
 
     def fixDispatch(self, id, type):
+        """Fix disptach with register, unused or suspicious type.
+
+        Args:
+            id:
+                Dispatch identifier.
+            type:
+                Must be in ('register', 'unusual', 'suspicious').
         """
-        """
-        dispatch = Dispatch.by(id)
+        dispatch = self.model.by(id)
         if type not in ('register', 'unusual', 'suspicious'):
             raise BadValueError('Bad type: ' + type)
-        # self.user.fixDispatch(dispatch, type)
+        self.user.fixDispatch(dispatch, type)

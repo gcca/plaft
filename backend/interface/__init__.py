@@ -8,7 +8,7 @@ from infraestructure.utils import rc_factory, ct_factory, st_factory, json, \
 from webapp2_extras import jinja2
 from google.appengine.ext.db import TransactionFailedError
 from domain.gz import Error
-from domain.model import User
+from domain.model import User, CustomsBrokerUser
 
 
 class BaseHandler(webapp2.RequestHandler):
@@ -44,6 +44,7 @@ class BaseHandler(webapp2.RequestHandler):
             factory = BaseHandler.jinja_factory)
 
     def __init__(self, q, p):
+        self.userModel = CustomsBrokerUser
         self.user = None
         self.status = st_factory(self.write_status, self.write_error)
         super(BaseHandler, self).__init__(q, p)

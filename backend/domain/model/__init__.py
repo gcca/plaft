@@ -6,7 +6,8 @@ domain.model
 import infraestructure.utils as utils
 from domain.gz import Entity, PolyEntity, ReferenceProperty, StringProperty, \
     EmailProperty, BooleanProperty, DateProperty, TextProperty, \
-    DocumentTypeProperty, JsonProperty, BadValueError, Key, ListProperty
+    DocumentTypeProperty, JsonProperty, BadValueError, Key, ListProperty, \
+    StoreFailedError
 
 # ----
 # User
@@ -43,7 +44,18 @@ class User(PolyEntity):
 # ---------
 class Datastore(Entity):
 
-    pendingDispatches = ListProperty(Key)
+    pendingDispatches    = ListProperty (Key)
+    registerOperations   = ListProperty (Key)
+    unusualOperations    = ListProperty (Key)
+    suspiciousOperations = ListProperty (Key)
+
+    @property
+    def operationsBy(self):
+        return {
+            'register'   : self.registerOperations,
+            'unusual'    : self.unusualOperations,
+            'suspicious' : self.suspiciousOperations
+        }
 
 # -----------
 # Declaration
@@ -259,6 +271,7 @@ class CustomsBrokerUser(User):
                        el usuario pertenece.
     """
 
+    aModel = CustomsBroker
     customsBroker = ReferenceProperty(CustomsBroker, collection_name='users')
 
     @classmethod
@@ -288,12 +301,34 @@ class CustomsBrokerUser(User):
 
     def fixDispatch(self, disptach, type):
         """TODO(...): """
-        self.datastore.pendingDispatches.remove(disptach.key())
-        # self.datastore.store()
+
+        if not type in ('register', 'unusual', 'suspicious'):
+            raise BadValueError(
+                'type not in (\'register\', \'unusual\', \'suspicious\')')
+
         operation = Operation()
-        # operation.store()
+        operation.store()
+
         disptach.operation = operation
-        # disptach.store()
+        try:
+            disptach.store()
+        except StoreFailedError as ex:
+            operation.delete()
+            raise ex
+        else:
+            disptachKey = disptach.key()
+            self.datastore.pendingDispatches.remove(disptachKey)
+            try:
+                self.datastore.store()
+            except StoreFailedError as ex:
+                operation.delete()
+                disptach.operation = None
+                disptach.store()
+                raise ex
+            else:
+                self.datastore.operationsBy[type].append(disptachKey)
+                self.datastore.store()
+
 
 # ---------
 # Operation
@@ -347,7 +382,7 @@ class Dispatch(Entity):
     invoiceAdjustment          = TextProperty   ()
     invoiceCurrencyValue       = TextProperty   ()
     invoiceCurrencyAdjustment  = TextProperty   ()
-    registration = JsonProperty ()
-    alerts = JsonProperty ()
+    register                   = JsonProperty   ()
+    alerts                     = JsonProperty   ()
     operation = ReferenceProperty(Operation, collection_name='dispatches')
     declaration = ReferenceProperty(Declaration, collection_name='dispatches')

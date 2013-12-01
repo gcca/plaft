@@ -24,11 +24,14 @@ class SignInHandler(BaseHandler):
         else:
             self.status.UNAUTHORIZED(Error('Sign in'))
 
+
 # --------
 # Customer
 # --------
 class CustomerHandler(BaseHandler):
     '''Customer Handler '''
+
+    Service = CustomerService
 
     def get(self):
         '''
@@ -80,16 +83,17 @@ class CustomerHandler(BaseHandler):
             self.status.BAD_REQUEST(e)
         except NotFoundError as e:
             self.status.NOT_FOUND(e)
-        except ValueError as e:
-            self.status.BAD_REQUEST(ValueError('Bad identifier number: ' + id))
-        except TypeError as e:
-            self.status.BAD_REQUEST(ValueError('Bad identifier number: ' + id))
+        except ValueError, TypeError:
+            self.status.BAD_REQUEST(Error('Bad identifier number: ' + id))
         except BadValueError as e:
             self.status.BAD_REQUEST(e)
         else:
             self.write_json('{}')
 
+
 class CustomerDeclarationHandler(BaseHandler):
+
+    Service = CustomerService
 
     def post(self, pid):
         '''
@@ -108,14 +112,15 @@ class CustomerDeclarationHandler(BaseHandler):
             self.status.BAD_REQUEST(e)
         except StoreFailedError as e:
             self.status.INTERNAL_ERROR(e)
-        except ValueError as e:
-            self.status.BAD_REQUEST(ValueError('Bad identifier number: ' + id))
-        except TypeError as e:
-            self.status.BAD_REQUEST(ValueError('Bad identifier number: ' + id))
+        except ValueError, TypeError:
+            self.status.BAD_REQUEST(Error('Bad identifier number: ' + id))
         else:
             self.write_json('{"id":"%s"}' % declaration.id)
 
+
 class CustomerLastDeclarationHandler(BaseHandler):
+
+    Service = CustomerService
 
     def get(self):
         service = CustomerService()
@@ -126,14 +131,18 @@ class CustomerLastDeclarationHandler(BaseHandler):
         else:
             self.render_json(declaration)
 
+
 # -----------
 # Declaration
 # -----------
 class DeclarationsHandler(BaseHandler):
 
+    Service = DeclarationService
+
     def get(self):
         trackingId = self.request.get('trackingId')
-        if not trackingId: return self.render_json(Declaration.all()) # (-o-) DBG
+        if not trackingId:
+            return self.render_json(Declaration.all()) # (-o-) DBG
         service = DeclarationService()
         try:
             declaration = service.requestDeclaration(trackingId)
@@ -143,6 +152,7 @@ class DeclarationsHandler(BaseHandler):
             self.status.NOT_FOUND(e)
         else:
             self.render_json(declaration)
+
 
 # --------
 # Dispatch
@@ -161,7 +171,7 @@ class DispatchHandler(RESTfulHandler.Model):
             (model...)
         Returns: movement ID - int
         '''
-        service = DispatchService()
+        service = DispatchService(self.user)
         try:
             dispatch = service.newDispatch(self.request_dto)
         except StoreFailedError as e:
@@ -174,7 +184,7 @@ class DispatchHandler(RESTfulHandler.Model):
             self.write_json('{"id":%s}' % dispatch.id)
 
     def put(self, id):
-        service = DispatchService()
+        service = DispatchService(self.user)
         try:
             service.updateDispatch(int(id), self.request_dto)
         except StoreFailedError as e:
@@ -183,15 +193,15 @@ class DispatchHandler(RESTfulHandler.Model):
             self.status.BAD_REQUEST(e)
         except NotFoundError as e:
             self.status.NOT_FOUND(e)
-        except ValueError as e:
-            self.status.BAD_REQUEST(ValueError('Bad identifier number: ' + id))
-        except TypeError as e:
-            self.status.BAD_REQUEST(ValueError('Bad identifier number: ' + id))
+        except ValueError, TypeError:
+            self.status.BAD_REQUEST(Error('Bad identifier number: ' + id))
         else:
             self.write_json('{}')
 
+
 class DispatchesHandler(RESTfulHandler.Collection):
     model = Dispatch
+    Service = DispatchService
 
     @login_required
     def get(self):
@@ -199,15 +209,17 @@ class DispatchesHandler(RESTfulHandler.Collection):
         dispatches = service.pendingDispatches()
         self.render_json(dispatches)
 
+
 class DispatchFix(BaseHandler):
+    Service = DispatchService
 
     def post(self, id, type):
         service = DispatchService(self.user)
         try:
             service.fixDispatch(int(id), type)
-        except ValueError, TypeError:
-            self.status.BAD_REQUEST(Error('Bad id: ' + id))
         except BadValueError as ex:
             self.status.BAD_REQUEST(ex)
+        except ValueError, TypeError:
+            self.status.BAD_REQUEST(Error('Bad id: ' + id))
         else:
             self.write_json('{}')

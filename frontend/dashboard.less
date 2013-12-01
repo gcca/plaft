@@ -11,9 +11,8 @@
  * Identifiers
  */
 .topbar-title {filter:none}  // @see dashboard
-.dispatch-alerts {filter:none}  // @see dashboard.module.dispatches
 // @see dashboard.module.dispatches
-.dispatch-register-unusual-suspicious {filter:none}
+.dispatch-alerts-register-unusual-suspicious {filter:none}
 .id-alert {filter:none}
 
 /**
@@ -22,13 +21,14 @@
 .button-edit {filter:none}  // @see dashboard.module.operations
 
 .gz-dashboard {
-    table.gz-options-toggleable tr {  // @see dashboard.module.builder
-        td:last-child * {
-            visibility: hidden;
-        }
+  table.gz-options-toggleable tr {
+    // @see dashboard.module.builder
+    td:last-child * {
+      visibility: hidden;
+    }
 
-        &:hover td:last-child * {
-        visibility: visible;
-        }
-    }  // .table.options-toggleable
+    &:hover td:last-child * {
+      visibility: visible;
+    }
+  }  // .table.options-toggleable
 }  // .dashboard

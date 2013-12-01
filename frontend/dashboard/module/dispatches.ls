@@ -53,6 +53,7 @@ module.exports = class DispatchesView extends builder.Table
     "click ##{gz.Css \dispatch-register}": !(evt) ->
       dispatch = @getDispatchByEvent evt
       dispatch.fixRegister!
+      @removeRowByEvent evt
 
     /**
      * Fixed dispatch by @{code unusual}.
@@ -62,6 +63,7 @@ module.exports = class DispatchesView extends builder.Table
     "click ##{gz.Css \dispatch-unusual}": !(evt) ->
       dispatch = @getDispatchByEvent evt
       dispatch.fixUnusual!
+      @removeRowByEvent evt
 
     /**
      * Fixed dispatch by @{code suspicious}.
@@ -71,6 +73,7 @@ module.exports = class DispatchesView extends builder.Table
     "click ##{gz.Css \dispatch-suspicious}": !(evt) ->
       dispatch = @getDispatchByEvent evt
       dispatch.fixSuspicious!
+      @removeRowByEvent evt
 
   /**
    * Fixed dispatch by @{code suspicious}.
@@ -80,6 +83,18 @@ module.exports = class DispatchesView extends builder.Table
    * @private
    */
   getDispatchByEvent: (evt) -> @dispatches.get evt.currentTarget.dataset.\id
+
+  /**
+   * Remove row after fix dispatch.
+   * @param {Object} evt Event object
+   * @see "click ##{gz.Css \dispatch-TYPE}".
+   *   TYPE in {'register', 'unusual', 'suspicious'}
+   * @private
+   */
+  removeRowByEvent: (evt) ->
+    evt.currentTarget
+      ..elTooltip.destroy!
+      $ .. .parents \tr .remove!
 
   /**
    * Generate toolbar for cell
@@ -93,7 +108,6 @@ module.exports = class DispatchesView extends builder.Table
    */
   toolbarCell: gzc.Jade '''
     .button-toolbar.push-right
-
       .button-group
         button.ink-button#dispatch-alerts(
             data-id=id,
@@ -104,7 +118,6 @@ module.exports = class DispatchesView extends builder.Table
             data-tip-text="Editar",
             data-tip-color="{Css blue}")
           span.icon-edit
-
       .button-group
         button.ink-button#dispatch-register(
             data-id=id,
@@ -169,7 +182,8 @@ module.exports = class DispatchesView extends builder.Table
             @toolbarCell dispatch
           ]
         @showTable!
-        $ '[data-tip-text]' .each (_, el) -> new gz.Ink.UI.Tooltip el
+        # @see e.elTooltip for managing tooltip.
+        $ '[data-tip-text]' .each (_, e) -> e.elTooltip = new gz.Ink.UI.Tooltip e
     super!
 
   /** @private */ @menuCaption = 'Despachos'
