@@ -78,6 +78,7 @@ class DashboardView extends gz.GView
     right.appendChild desktopView.el
 
     body.appendChild right
+    @menuView = menuView
 
 # ---------
 # Templates
@@ -151,7 +152,7 @@ class DashboardView extends gz.GView
 # ---------
 # Body Init
 # ---------
-new DashboardView
+(new DashboardView).render!
 ## ($ "ul.#{gz.Css \grey}").children!.next!.children!.first!.click!
 ## evt = $.Event \keyup
 ##   ..keyCode = 13

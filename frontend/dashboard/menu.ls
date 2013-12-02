@@ -51,6 +51,15 @@ module.exports = class MenuView extends gz.GView
       el.classList.add gz.Css \active
 
   /**
+   * Set current item-module.
+   * @param {!number} indexItem
+   * @public
+   */
+  currentModule: (indexItem) !->
+    a = ($ @ul .find 'a')[indexItem]
+    a.click! if a?
+
+  /**
    * Initialize view.
    * @private
    */

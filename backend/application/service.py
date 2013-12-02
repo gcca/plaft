@@ -283,7 +283,15 @@ class DispatchService(BaseService):
         """
         dispatch = self.model.new(dto)
         dispatch.store()
-        return dispatch
+        try:
+            datastore = self.user.datastore
+            datastore.pendingDispatches.append(dispatch.key())
+            datastore.store()
+        except StoreFailedError as ex:
+            dispatch.delete()
+            raise ex
+        else:
+            return dispatch
 
     def updateDispatch(self, id, dto):
         """Update disptach.

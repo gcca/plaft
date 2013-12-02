@@ -95,7 +95,7 @@ module.exports = class DispatchView extends ModuleBaseView
     # add section views (anexo 2: stakeholders)
     sections = register.\sections if register?
     sections ||= []
-    capsSecs = _.zip <[ Declarante Ordenante Destinario Tercero ]> sections
+    capsSecs = _.\zip <[ Declarante Ordenante Destinario Tercero ]> sections
     for [caption, section]  in capsSecs
       new StakeholderView kind: caption
         @addTabView caption, ..
