@@ -16,6 +16,8 @@ module.exports = class OperationView extends SectionBaseView
    */
   render: ->
     @$el.html @template!
+    ## @$el.find 'input[name=Código del Sujeto Obligado]' .val(
+    ##   gzApp.customsBroker.get \code)
     super!
 
   /**
@@ -23,42 +25,99 @@ module.exports = class OperationView extends SectionBaseView
    * @return {string}
    * @private
    */
-  template: gzc.Jade '''
-    - var labelsLeft = [
-    -   "Código del Sujeto Obligado",
-    -   "Código del Oficial de Cumplimiento",
-    -   "Número de fila"
-    - ];
+  template: ->
+    leftNames = [
+      'obligedCode'
+      'officierCode'
+      'rowCode'
+    ]
+    leftLabels = [
+      "Código del Sujeto Obligado"
+      "Código del Oficial de Cumplimiento"
+      "Número de fila"
+    ]
+    leftDefaults = [
+      gzApp.customsBroker.get \code
+      gzApp.customsBroker.get \officierCode
+      ''
+    ]
 
-    - var labelsRight = [
-    -   "Número de operación",
-    -   "Número de interno (DAM)",
-    -   "Número de operaciones",
-    -   "Fecha de operación"
-    - ];
+    rightNames = [
+      'operationCode'
+      'internalCode'
+      'operationsNumber'
+      'operationDate'
+    ]
+    rightLabels = [
+      "Número de operación"
+      "Número de interno (DAM)"
+      "Número de operaciones"
+      "Fecha de operación"
+    ]
+    rightDefaults = [
+      ''
+      ''
+      ''
+      ''
+    ]
 
-    .large-50.medium-50.small-100
-      fieldset.block-left
-        legend Registro
-        each label in labelsLeft
-          .control-group.column-group
-            label.large-100.medium-100.small-100= label
-            .control.large-100.medium-100.small-100
-              input(type="text", name=label)
+    block = "<div class='#{gz.Css \large-50}
+                       \ #{gz.Css \medium-50}
+                       \ #{gz.Css \small-100}'>"
+    divControlGroup = "<div class='#{gz.Css \control-group}'>"
+    label = '<label>'
+    divControl = "<div class='#{gz.Css \control}'>"
 
-    .large-50.medium-50.small-100
-      fieldset.block-right
-        legend Operación
-        each label in labelsRight
-          .control-group.column-group
-            label.large-100.medium-100.small-100= label
-            .control.large-100.medium-100.small-100
-              input(type="text", name=label)
+    text = new Array
 
-        .control-group.column-group
-          label.large-100.medium-100.small-100 Modalidad de operación
-          .control.large-100.medium-100.small-100
-            select(name="mode")
-              option(value="U") Individual
-              option(value="M") Múltiple
-  '''
+    text
+      ..push block
+      ..push "<fieldset class='#{gz.Css \block-left}'>"
+      ..push '<legend>Registro</legend>'
+    for [fname, flabel, fvalue] in (_.\zip leftNames, leftLabels, leftDefaults)
+      text
+        ..push divControlGroup
+        ..push label
+        ..push flabel
+        ..push '</label>'
+        ..push divControl
+        ..push "<input type='text' name='#{fname}' value='#{fvalue}'>"
+        ..push '</div>'
+        ..push '</div>'
+    text
+      ..push '</fieldset>'
+      ..push '</div>'
+
+    text
+      ..push block
+      ..push "<fieldset class='#{gz.Css \block-right}'>"
+      ..push '<legend>Operación</legend>'
+    for [fname, flabel, fvalue] in (_.\zip rightNames, rightLabels, rightDefaults)
+      text
+        ..push divControlGroup
+        ..push label
+        ..push flabel
+        ..push '</label>'
+        ..push divControl
+        ..push "<input type='text' name='#{fname}' value='#{fvalue}'>"
+        ..push '</div>'
+        ..push '</div>'
+
+    text
+      ..push divControlGroup
+      ..push label
+      ..push 'Modalidad de operación'
+      ..push '</label>'
+      ..push divControl
+      ..push "<select name='operationMode'>
+                <option value='U'>Individual</option>
+                <option value='M'>Múltiple</option>
+              </select>"
+      ..push '</div>'
+      ..push '</div>'
+
+    text
+      ..push '</fieldset>'
+      ..push '</div>'
+
+    text.join ''

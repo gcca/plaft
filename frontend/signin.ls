@@ -35,8 +35,7 @@ document.body.innerHTML = "
         </button>
       </li>
       <li><a href='#'>CavaSoft</a></li>
-      <li><a href='#'>Help</a></li>
-      <li><a href='#'>Sign in</a></li>
+      <li><a href='/dashboard'>Dashboard</a></li>
     </ul>
 
   </nav>
@@ -120,7 +119,19 @@ document.body.innerHTML = "
                   style='float:left;
                          margin-left:4px;
                          margin-right:5px;
-                         margin-top:6px'>
+                         margin-top:6px;
+                         visibility:hidden'>
+              #{
+                if (document.cookie.match /ud=(.*\|.*\|.*)/) then
+                  "<button class='#{gz.Css \ink-button}
+                               \ #{gz.Css \blue}
+                               \ #{gz.Css \push-right}' type='button'
+                      onclick='location.href = \"/dashboard\"'>
+                    Dashboard
+                  </button>"
+                else
+                  ""
+              }
               <button class='#{gz.Css \ink-button}
                            \ #{gz.Css \green}
                            \ #{gz.Css \push-right}' type='button'>
@@ -192,8 +203,8 @@ document.body.innerHTML = "
       <li>
         © Copyright 2013, CavaSoft SAC. <a href='#'>&nbsp;</a>
       </li>
-      <li class='#{gz.Css \push-right}'>
-        Created by&nbsp;
+      <li class='#{gz.Css \push-right}' style='font-size:.9em;padding-top:.25em'>
+        Created by &nbsp;
         <a href='http://gcca.alwaysdata.net'>cristHian Gz. (gcca)</a>
         &nbsp;&nbsp;&nbsp;&nbsp;
         <a href='/static/doc/index.html'>Doc</a>
@@ -204,13 +215,16 @@ document.body.innerHTML = "
 document.querySelector "button.#{gz.Css \green}" .onclick = ->
   document.querySelector \#signin-img
     ..src = '/static/img/ss.gif'
+    ..style.visibility = \visible
   form = document.querySelector \form .elements
   new XMLHttpRequest
     ..open \post '/api/v1/signin'
     ..setRequestHeader 'Content-type' 'application/x-www-form-urlencoded'
     ..onreadystatechange = ->
       if @readyState is 4
-        document.querySelector \#signin-img .src = ''
+        document.querySelector \#signin-img
+          ..src = ''
+          ..style.visibility = \hidden
         if @status is 200
           location.href = '/dashboard'
         else

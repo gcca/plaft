@@ -15,10 +15,16 @@ module.exports = class DeclarationFormView extends gz.GView
      */
     tagName: \form
 
-    events :
+    /**
+     * View events.
+     * @type {Object}
+     * @private
+     */
+    events:
         /**
          * Event for collapsible {@code div} of third.
          * @param {EventTarget} event
+         * @private
          */
         'change input[name=third]' : !(event) ->
             input   = event.currentTarget
@@ -28,7 +34,7 @@ module.exports = class DeclarationFormView extends gz.GView
     /**
      * Send declaration data.
      */
-    commit : !(customer) ->
+    commit: !(customer) ->
         # (-o-) get moneySource
         customer.createDeclaration @zJSON!, @commitOptions
 
@@ -57,7 +63,7 @@ module.exports = class DeclarationFormView extends gz.GView
      * @type {string}
      * @override
      */
-    className : "#{gz.Css \ink-form}
+    className: "#{gz.Css \ink-form}
                \ #{gz.Css \top-space}
                \ #{gz.Css \column-group}
                \ #{gz.Css \gutters}
@@ -67,107 +73,109 @@ module.exports = class DeclarationFormView extends gz.GView
      * Render declaration view
      * @override
      */
-    render : ->
-        @$el.html @gtemplate!
+    render: ->
+        @$el.html @template!
         new widget.GTypeahead \el : (@$el.find '[name=references]' .get 0)
         super!
 
     /**
-     * Form template
+     * View template.
+     * @return {string}
+     * @private
      */
-    gtemplate : -> "
-    #{form.block50}
-      <fieldset>
-        <legend>Origen de los fondos</legend>
+    template: -> "
+      #{form.block50}
+        <fieldset>
+          <legend>Origen de los fondos</legend>
 
-        #{form.control-group}
-          #{form.label}
-            Origen
-          </label>
-          #{form.control}
-            <select name='moneySource'>
-              <option>Efectivo</option>
-              <option>No Efectivo</option>
-            </select>
+          #{form.control-group}
+            #{form.label}
+              Origen
+            </label>
+            #{form.control}
+              <select name='moneySource'>
+                <option>Efectivo</option>
+                <option>No Efectivo</option>
+              </select>
+            </div>
           </div>
-        </div>
-      </fieldset>
+        </fieldset>
 
-      <fieldset>
-        #{form.control-group}
-          #{form.label100}
-            Referencias
-          </label>
-          #{form.controlSym100}
-            <span>
-              <input type='text' name='references'
-                  placeholder='Referencias del cliente'>
-              <i class='#{gz.Css \icon-check-minus}'></i>
-            </span>
+        <fieldset>
+          #{form.control-group}
+            #{form.label100}
+              Referencias
+            </label>
+            #{form.controlSym100}
+              <span>
+                <input type='text' name='references'
+                    placeholder='Referencias del cliente'>
+                <i class='#{gz.Css \icon-check-minus} #{gz.Css \toggle}'></i>
+              </span>
+            </div>
           </div>
-        </div>
-      </fieldset>
-    </div>
+        </fieldset>
+      </div>
 
-    #{form.block50}
-      <fieldset>
-        <div class='#{gz.Css \control-group}
-                  \ #{gz.Css \column-group}
-                  \ #{gz.Css \gutters}
-                  \ #{gz.Css \declaration-third}
-                  \ #{gz.Css \declaration-third-hidden}'>
-          #{form.labelCheck}
-            <h6>¿Existe un tercero?</h6>
-          </label>
-          #{form.controlCheck}
-            <input type='checkbox' name='third'>
+      #{form.block50}
+        <fieldset>
+          <div class='#{gz.Css \control-group}
+                    \ #{gz.Css \column-group}
+                    \ #{gz.Css \gutters}
+                    \ #{gz.Css \declaration-third}
+                    \ #{gz.Css \declaration-third-hidden}'>
+            #{form.labelCheck}
+              <h6>¿Existe un tercero?</h6>
+            </label>
+            #{form.controlCheck}
+              <input type='checkbox' name='third'>
+            </div>
           </div>
-        </div>
 
-        #{form.control-group}
-          #{form.label}
-            Tipo
-          </label>
-          #{form.control}
-            <select name='thirdType'>
-              <option value='person'>Persona Natural</option>
-              <option value='business'>Persona Jurídica</option>
-            </select>
+          #{form.control-group}
+            #{form.label}
+              Tipo
+            </label>
+            #{form.control}
+              <select name='thirdType'>
+                <option value='person'>Persona Natural</option>
+                <option value='business'>Persona Jurídica</option>
+              </select>
+            </div>
           </div>
-        </div>
 
-        #{form.control-group}
-          #{form.label}
-            Nombre
-          </label>
-          #{form.control}
-            <input type='text' name='thirdName'
-                placeholder='Nombres y Apellidos o Razón Social'>
+          #{form.control-group}
+            #{form.label}
+              Nombre
+            </label>
+            #{form.control}
+              <input type='text' name='thirdName'
+                  placeholder='Nombres y Apellidos o Razón Social'>
+            </div>
           </div>
-        </div>
 
-        #{form.control-group}
-          #{form.label}
-            Tipo
-          </label>
-          #{form.control}
-            <select name='thirdDocumentType'>
-              <option value='DNI'>DNI</option>
-              <option value='RUC'>RUC</option>
-              <option value='CE'>Carné de extranjería</option>
-              <option value='PA'>Pasaporte</option>
-            </select>
+          #{form.control-group}
+            #{form.label}
+              Tipo
+            </label>
+            #{form.control}
+              <select name='thirdDocumentType'>
+                <option value='DNI'>DNI</option>
+                <option value='RUC'>RUC</option>
+                <option value='CE'>Carné de extranjería</option>
+                <option value='PA'>Pasaporte</option>
+              </select>
+            </div>
           </div>
-        </div>
 
-        #{form.control-group}
-          #{form.label}
-            Número
-          </label>
-          #{form.control}
-            <input type='text' name='thirdDocumentNumber'
-                placeholder='Número de DNI o RUC'>
+          #{form.control-group}
+            #{form.label}
+              Número
+            </label>
+            #{form.control}
+              <input type='text' name='thirdDocumentNumber'
+                  placeholder='Número de DNI o RUC'>
+            </div>
           </div>
-        </div>
-      </fieldset>
-    </div>"
+        </fieldset>
+      </div>"

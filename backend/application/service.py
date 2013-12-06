@@ -217,7 +217,7 @@ class CustomerService(BaseService):
 
 
 class DeclarationService(BaseService):
-    """Declaration Service. """
+    """Declaration Service."""
 
     def __init__(self):
         super(DeclarationService, self).__init__(None)

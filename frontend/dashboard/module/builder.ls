@@ -12,13 +12,6 @@ ModuleBaseView = require './base'
 class Table extends ModuleBaseView
 
   /**
-   * DOM element.
-   * @type {string}
-   * @private
-   */
-  tagName : \div
-
-  /**
    * Set table on div.
    * @return {Object}
    */

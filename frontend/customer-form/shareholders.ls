@@ -32,77 +32,123 @@ class ShareholderView extends gz.GView
    * @type {string}
    * @private
    */
-  tagName: \li
+  tagName: \div
+
+  /**
+   * Style.
+   * @type {string}
+   * @private
+   */
+  className: "#{gz.Css \large-100} #{gz.Css \medium-100} #{gz.Css \small-100}'>"
+
+  /**
+   * View events.
+   * @type {Object}
+   * @private
+   */
+  events:
+    /**
+     * On click remove DOM element.
+     * @private
+     */
+    "click ##{gz.Css \id-icon-remove}": !-> @model.destroy!
+    /**
+     * On key press enter.
+     * @param {Object} evt
+     * @private
+     */
+    "keypress input": !(evt) ->
+      @model.collection.push new ShareholderModel if 13 == evt.keyCode
+
+  /**
+   * JSON shareholder model.
+   * @return {!Object}
+   */
+  JSONFields: ->
+    \documentType   : @$el.find "##{gz.Css \id-documentType}"   .val!
+    \documentNumber : @$el.find "##{gz.Css \id-documentNumber}" .val!
+    \name           : @$el.find "##{gz.Css \id-name}"           .val!
 
   /**
    * Initialize view.
    * @private
    */
-  initialize: !(@options, @shareholder) ->
-    a = gz.newel \a
-    a.href = 'javascript:void(0)'
+  initialize: !->
+    # model
+    @model.bind \destroy @unrender
+    # Style
+    @$el.css \margin '.3em 0'
 
-    cgroup = gz.newel \div
-    cgroup.className = "#{gz.Css \column-group} #{gz.Css \gutters}"
+  /**
+   * Render view.
+   * @return {Object}
+   * @override
+   */
+  render: ->
+    aHtml = new Array
 
-    cname = gz.newel \div
-    cname.className = "#{gz.Css \large-100}
-                     \ #{gz.Css \medium-60}
-                     \ #{gz.Css \small-70}"
-    cname.style.margin = '0'
+    aHtml.push "<div class='#{gz.Css \large-20}
+                          \ #{gz.Css \medium-20}
+                          \ #{gz.Css \small-100}'>"
+    doct = @model.get \documentType
+    aHtml.push "<select id='#{gz.Css \id-documentType}'
+                    class='#{gz.Css \large-95}
+                         \ #{gz.Css \medium-95}
+                         \ #{gz.Css \small-95}'>
+                  <option value='DNI' #{if doct is \DNI then \selected else ''}>
+                    DNI
+                  </option>
+                  <option value='PA' #{if doct is \PA then \selected else ''}>
+                    Pasaporte
+                  </option>
+                  <option value='CE' #{if doct is \CE then \selected else ''}>
+                    Carné de extranjería
+                  </option>
+                </select>"
+    aHtml.push '</div>'
 
-    cdocType = gz.newel \div
-    cdocType.className = "#{gz.Css \large-50}
-                        \ #{gz.Css \medium-20}
-                        \ #{gz.Css \small-30}"
-    cdocType.style.margin = '0'
+    aHtml.push "<div class='#{gz.Css \large-20}
+                          \ #{gz.Css \medium-20}
+                          \ #{gz.Css \small-100}'>"
+    aHtml.push "<input id='#{gz.Css \id-documentNumber}' type='text'
+                    class='#{gz.Css \large-95}
+                         \ #{gz.Css \medium-95}
+                         \ #{gz.Css \small-95}'
+                    value='#{@model.get \documentNumber}'>"
+    aHtml.push '</div>'
 
-    cdocNum = gz.newel \div
-    cdocNum.className = "#{gz.Css \large-50}
-                       \ #{gz.Css \medium-20}
-                       \ #{gz.Css \small-100}"
-    cdocNum.style.margin = '0'
+    aHtml.push "<div class='#{gz.Css \large-50}
+                          \ #{gz.Css \medium-50}
+                          \ #{gz.Css \small-100}'>"
+    aHtml.push "<input id='#{gz.Css \id-name}' type='text'
+                    class='#{gz.Css \large-95}
+                         \ #{gz.Css \medium-95}
+                         \ #{gz.Css \small-95}'
+                     value='#{@model.get \name}'>"
+    aHtml.push '</div>'
 
-    isNewMsg = @options.addIcon
+    aHtml.push "<div class='#{gz.Css \large-10}
+                          \ #{gz.Css \medium-10}
+                          \ #{gz.Css \small-100}'>"
+    aHtml.push "<span id='#{gz.Css \id-icon-remove}'
+                    class='#{gz.Css \icon-remove}
+                         \ #{gz.Css \icon-large}' style='cursor:pointer'>
+                </span>"
+    aHtml.push '</div>'
 
-    edName = new widget.EditableLabel do
-      label : @shareholder.get \name
-      icon  : isNewMsg
-    cname.appendChild edName.el
+    @$el.html (aHtml.join '')
+    super!
 
-    edDocNum = new widget.EditableLabel do
-      label : @shareholder.get \documentNumber
-      icon  : isNewMsg
-    cdocNum.appendChild edDocNum.el
-
-    edDocType = new widget.ComboBox do
-      caption : 'Tipo de documento'
-      choices :
-        \DNI : 'Documento de Identidad Nacional'
-        \PA  : 'Pasaporte'
-        \CE  : 'Carné de Extranjería'
-      choice : @shareholder.get \documentType
-    cdocType.appendChild edDocType.el
-
-    shareholder = @shareholder
-    edName.bind \change, ->
-      shareholder.set \name : @options.label
-
-    edDocNum.bind \change, ->
-      shareholder.set \documentNumber : @options.label
-
-    edDocType.bind \change, ->
-      shareholder.set \documentType : @choice!
-
-    cgroup.appendChild cname
-    cgroup.appendChild cdocType
-    cgroup.appendChild cdocNum
-    a.appendChild cgroup
-    @el.appendChild a
+  /**
+   * Unrender view.
+   * @override
+   */
+  unrender: !~> @remove!
 
 /**
  * Shareholders view.
  * Manage shareholder list.
+ * @class ShareholdersView
  * @public
  */
 module.exports = class ShareholdersView extends gz.GView
@@ -112,72 +158,112 @@ module.exports = class ShareholdersView extends gz.GView
    * @type {string}
    * @private
    */
-  tagName: \nav
+  tagName: \div
 
   /**
-   * JSON shareholder list.
+   * Style.
+   * @type {string}
+   * @private
+   */
+  className: "#{gz.Css \large-100} #{gz.Css \medium-100} #{gz.Css \small-100}'>"
+
+  /**
+   * View events.
+   * @type {Object}
+   * @private
+   */
+  events:
+    /**
+     * On click add shareholder.
+     * @private
+     */
+    "click ##{gz.Css \id-icon-plus}": !-> @collection.push new ShareholderModel
+
+  /**
+   * JSON shareholder collection.
    * @return {Array.<!Object>}
    */
-  zJSON: -> _.\map @shareholders.models, (.toJSON!)
+  JSONFields: -> _.\map @collection.models, (.view.JSONFields!)
 
   /**
    * Initialize view.
-   * @param {?Object} options
    * @private
    */
-  initialize: !(@options) ->
-    div = gz.newel \div
-    className = "#{gz.Css \large-100}
-               \ #{gz.Css \medium-100}
-               \ #{gz.Css \small-100}"
-    div.innerHTML = "
-      <button type='button' class='#{gz.Css \ink-button}
-                                 \ #{gz.Css \event-add-shareholder}'
-          style='margin-bottom:0.7em'>
-        Agregar <i class='#{gz.Css \icon-plus}'></i>
-      </button>"
-    @el.appendChild div
-
-    ul = gz.newel \ul
-    ul.className = "#{gz.Css \menu}
-                  \ #{gz.Css \vertical}
-                  \ #{gz.Css \rounded}
-                  \ #{gz.Css \shadowed}
-                  \ #{gz.Css \white}"
-
-    @el.className = gz.Css \ink-navigation
-    @el.appendChild ul
-    @ul = ul
-
-    shareholders = new ShareholderList
-    # function(GModel, options)
-    shareholders.bind \add, !(shareholder, _, opts) ->
-      shareholderView = new ShareholderView addIcon : opts.addIcon, shareholder
-      ul.appendChild shareholderView.el
-
-    localShareholders = []
-    localShareholders = @options.shareholders if @options.shareholders
-
-    for shareholder in localShareholders
-      shareholder = new ShareholderModel shareholder
-      shareholders.add shareholder
-
-    div.firstElementChild.onclick = !->
-      shareholder = new ShareholderModel do
-        \name           : 'Nombre'
-        \documentType   : 'DNI'
-        \documentNumber : 'Número'
-      shareholders.add shareholder, addIcon : true
-
-    @shareholders = shareholders
-    @render!
+  initialize: !->
+    /**
+     * Shareholder collection.
+     * @type {Array.<Object>}
+     * @private
+     */
+    @collection ||= new ShareholderList
+    # collection
+    @collection.bind \add @appendShareholder
+    # Style
+    @$el.css do
+      \marginTop  : '.8em'
+      \marginLeft : '1em'
 
   /**
    * Render view.
-   * @return {Object}
+   * @return {Object} DOM object.
    * @override
    */
   render: ->
     ## styleA1= @ul.firstElementChild.firstElementChild.style
     ## styleA1.borderTop = '1px solid rgba(0,0,0,0.08)'
+    aHtml = new Array
+
+    aHtml.push "<div class='#{gz.Css \large-100}
+                          \ #{gz.Css \medium-100}
+                          \ #{gz.Css \small-100}' style='margin-bottom:.5em'>"
+
+    aHtml.push "<div class='#{gz.Css \large-10}
+                          \ #{gz.Css \medium-10}
+                          \ #{gz.Css \small-100}
+                          \ #{gz.Css \content-left}'>"
+    aHtml.push "<button id='#{gz.Css \id-icon-plus}' type='button'
+                    class='#{gz.Css \ink-button}'>
+                  Agregar
+                  &nbsp;
+                  <i class='#{gz.Css \icon-plus}'></i>
+                </button>"
+    aHtml.push '</div>'
+    aHtml.push '</div>'
+
+    aHtml.push "<div class='#{gz.Css \large-100}
+                          \ #{gz.Css \medium-100}
+                          \ #{gz.Css \small-100}'>"
+
+    aHtml.push "<div class='#{gz.Css \large-20}
+                          \ #{gz.Css \medium-20}
+                          \ #{gz.Css \small-100}'>"
+    aHtml.push '<b>Documento</b>'
+    aHtml.push '</div>'
+
+    aHtml.push "<div class='#{gz.Css \large-20}
+                          \ #{gz.Css \medium-20}
+                          \ #{gz.Css \small-100}'>"
+    aHtml.push '<b>Número</b>'
+    aHtml.push '</div>'
+
+    aHtml.push "<div class='#{gz.Css \large-50}
+                          \ #{gz.Css \medium-50}
+                          \ #{gz.Css \small-100}'>"
+    aHtml.push '<b>Nombres</b>'
+    aHtml.push '</div>'
+
+    aHtml.push '</div>'
+
+    @$el.html (aHtml.join '')
     super!
+
+  /**
+   * @param {Object} shareholder
+   * @public
+   */
+  appendShareholder: !(shareholder) ~>
+    shareholder.collection = @collection
+    shareholderView = new ShareholderView model: shareholder
+    shareholder.view = shareholderView
+    @$el.append shareholderView.render!.el
+    shareholderView.el.firstElementChild.firstElementChild.focus!

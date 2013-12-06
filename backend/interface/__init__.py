@@ -110,6 +110,7 @@ class BaseHandler(webapp2.RequestHandler):
 
     def logout(self):
         self.response.headers.add_header('Set-Cookie', 'ud=; Path=/')
+        return self
 
     def initialize(self, *a, **kw):
         webapp2.RequestHandler.initialize(self, *a, **kw)

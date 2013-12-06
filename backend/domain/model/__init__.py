@@ -67,13 +67,10 @@ class Declaration(Entity):
 
     Attributes:
         trackingId: Código autogenerado por declaración jurada.
-        source: Origen del dinero.
+        source: Origen de los fondos.
         references: Referencias del cliente.
         customer: Referencia hacia el cliente que genera la declaración jurada.
-        third: ¿Existe un tercero? (Beneficiario final.)
-        thirdType: ¿...?
         thirdName: Nombre o razón social del tercero.
-        thirdDocumentType: Tipo de documento de identidad del tercero.
         thirdDocumentNumber: Número del documento de identificación del tercero.
     """
 
@@ -81,10 +78,7 @@ class Declaration(Entity):
     source              = TextProperty         ()
     references          = TextProperty         ()
     customer            = JsonProperty         ()
-    third               = BooleanProperty      ()
-    thirdType           = TextProperty         ()
     thirdName           = TextProperty         ()
-    thirdDocumentType   = DocumentTypeProperty ()
     thirdDocumentNumber = TextProperty         ()
 
     def _nextTrackingId(self):
@@ -125,8 +119,8 @@ class Customer(PolyEntity):
     documentType    = DocumentTypeProperty ()
     address         = TextProperty         ()
     officialAddress = TextProperty         ()
-    isObliged       = BooleanProperty      ()
-    hasOfficier     = BooleanProperty      ()
+    isObliged       = TextProperty         ()
+    hasOfficier     = TextProperty         ()
     activity        = TextProperty         ()
     lastDeclaration = ReferenceProperty    (Declaration)
 
@@ -175,15 +169,15 @@ class Person(Customer):
         businessNumber: RUC de la persona, si la tiene.
     """
 
-    birthPlace         = TextProperty ()
-    birthday           = DateProperty ()
-    nationality        = TextProperty ()
-    role               = TextProperty ()
-    businessNumber     = TextProperty ()
-    partnerName        = TextProperty ()
-    organization       = TextProperty ()
-    adressPersonLegal  = TextProperty ()
-    adressPersonFiscal = TextProperty ()
+    birthPlace     = TextProperty ()
+    birthday       = DateProperty ()
+    nationality    = TextProperty ()
+    role           = TextProperty ()
+    businessNumber = TextProperty ()
+    partnerName    = TextProperty ()
+    organization   = TextProperty ()
+    addressLegal   = TextProperty ()
+    addressFiscal  = TextProperty ()
 
     #phone          = StringProperty()
     #mobile         = StringProperty()
@@ -200,25 +194,17 @@ class Business(Customer):
 
     Attributes:
         socialObject: Objecto social.
-        legalName: Nombre del representante legal.
-        legalDocumentType: Tipo de documento del representante legal.
-        legalDocumentNumber: Número de identificación del representante legal.
-        addressCityCode: Código de la ciudad.
-        phone: Teléfono.
-        contact: Nombre de la persona de contacto.
+        legal: Identificación del representante legal.
+        contactPhone: Teléfono de contacto de la empresa.
+        officePhone: Teléfono de la oficina.
         shareholders: Lista de accionistas en formato JSON.
     """
 
-    socialObject        = TextProperty         ()
-    legalName           = TextProperty         ()
-    legalDocumentType   = DocumentTypeProperty ()
-    legalDocumentNumber = TextProperty         ()
-    addressCityCode     = TextProperty         ()
-    contactPhone        = TextProperty         ()
-    officePhone         = TextProperty         ()
-    contact             = TextProperty         ()
-    shareholders        = JsonProperty         ()
-    activityEconomic    = TextProperty         ()
+    socialObject    = TextProperty ()
+    legal           = TextProperty ()
+    contact         = TextProperty ()
+    officePhone     = TextProperty ()
+    shareholders    = JsonProperty ()
 
     def __init__(self, *a, **k):
         """Init Business """
@@ -240,6 +226,9 @@ class CustomsBroker(Entity):
 
     name           = StringProperty ()
     documentNumber = StringProperty ()
+    code           = StringProperty (default='')
+    officierName   = TextProperty   ()
+    officierCode   = StringProperty ()
     datastore      = ReferenceProperty(Datastore)
 
     protected = ['datastore']

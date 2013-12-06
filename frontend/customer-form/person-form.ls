@@ -103,7 +103,9 @@ module.exports = class PersonFormView extends BaseFormView
                     \ #{gz.Css \small-25}
                     \ #{gz.Css \append-symbol}'>
             <span>
-              <input type='checkbox' name='report'>
+              <input type='checkbox' name='isObliged'
+                  class='#{gz.Css \check-yesno}'>
+              <span></span>
               <i class='#{gz.Css \icon-legal}'
                   data-tip-color='#{gz.Css \blue}'
                   data-tip-text='¿Es sujeto obligado informar a la UIF-Perú?'></i>
@@ -122,7 +124,9 @@ module.exports = class PersonFormView extends BaseFormView
                     \ #{gz.Css \small-25}
                     \ #{gz.Css \append-symbol}'>
             <span>
-              <input type='checkbox' name='designate'>
+              <input type='checkbox' name='hasOfficier'
+                  class='#{gz.Css \check-yesno}'>
+              <span></span>
               <i class='#{gz.Css \icon-user}'
                   data-tip-color='#{gz.Css \blue}'
                   data-tip-text='¿Designó a su Oficial de Cumplimiento?'></i>
@@ -139,7 +143,7 @@ module.exports = class PersonFormView extends BaseFormView
         #{form.control-group}
           #{form.controlSym100}
             <span>
-              <input type='text' name='adressPersonLegal' placeholder='Domicilio declarado'>
+              <input type='text' name='addressLegal' placeholder='Domicilio declarado'>
               <i class='#{gz.Css \icon-home}'
                   data-tip-color='#{gz.Css \blue}'
                   data-tip-text='Domicilio declarado (Lugar de Residencia)'></i>
@@ -151,7 +155,7 @@ module.exports = class PersonFormView extends BaseFormView
         #{form.control-group}
           #{form.controlSym100}
             <span>
-              <input type='text' name='adressPersonFiscal' placeholder='Domicilio fiscal'>
+              <input type='text' name='addressFiscal' placeholder='Domicilio fiscal'>
               <i class='#{gz.Css \icon-home}'
                   data-tip-color='#{gz.Css \blue}'
                   data-tip-text='Domicilio Fiscal'></i>

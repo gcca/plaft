@@ -51,7 +51,7 @@ class NotFoundError(Error):
 class DuplicateError(Error):
     """Raised by service when the entity exists. """
 
-class BadValueError(Error, db.BadValueError):
+class BadValueError(Error):
     """Raised by models when set bad values attributes. """
 
 # ------
@@ -160,11 +160,14 @@ class EntityMixIn(object):
         Updates model from request object
         '''
         p = self.properties()
-        for k, v in object.__dict__.items():
-            q = p.get(k)
-            if type(q) is ReferenceProperty and type(v) is Dto: continue
-            if not v is None and q:
-                setattr(self, k, self.cast(v, q))
+        try:
+            for k, v in object.__dict__.items():
+                q = p.get(k)
+                if type(q) is ReferenceProperty and type(v) is Dto: continue
+                if not v is None and q:
+                    setattr(self, k, self.cast(v, q))
+        except db.BadValueError as ex:
+            raise BadValueError(ex)
         return self
 
     @classmethod
@@ -205,7 +208,7 @@ class Repository(db.Model):
 
     @classmethod
     def find(self, dto=None, **filters):
-        return (self.by(dto) if type(dto) is int
+        return (self.by(dto) if type(dto) in (int, long)
                 else self.findAll(dto, **filters).get())
 
 class Entity(EntityMixIn, BaseEntity, Repository):

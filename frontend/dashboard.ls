@@ -1,9 +1,24 @@
+/** @module dashboard */
+
 gz     = require './helpers'
 model  = require './model'
 widget = require './dashboard/widget'
 
 MenuView    = require './dashboard/menu'
 DesktopView = require './dashboard/desktop'
+
+ConfigView = require './dashboard/module/config'
+
+# ----------
+# Global App
+# ----------
+gzApp = new Object
+
+customsBroker = new model.CustomsBroker
+customsBroker.fetch do
+  \success : !(customsBroker) ->
+    gzApp.customsBroker = customsBroker
+
 
 /**
  * Main view.
@@ -17,6 +32,20 @@ class DashboardView extends gz.GView
    * @private
    */
   el: $ \body
+
+  /**
+   * View events.
+   * @type {Object}
+   * @private
+   */
+  events:
+    /**
+     * Configuartion module.
+     * @param {Object} evt Event object.
+     * @private
+     */
+    "click ##{gz.Css \id-cog}": !(evt) ->
+      @desktopView.changeDesktop ConfigView .render!
 
   /**
    * Initialize view.
@@ -35,26 +64,28 @@ class DashboardView extends gz.GView
                     \ #{gz.Css \medium-100}
                     \ #{gz.Css \small-100}"
 
-    ## tools = gz.newel \div
-    ## tools.style.marginBottom = '1em'
-    ## tools.className = "#{gz.Css \large-100}
-    ##                  \ #{gz.Css \medium-100}
-    ##                  \ #{gz.Css \small-100}"
-    ## tools.innerHTML = "
-    ##     <nav class='#{gz.Css \ink-navigation}'>
-    ##       <ul style='visibility:hidden' class='#{gz.Css \breadcrumbs}
-    ##                                          \ #{gz.Css \flat}
-    ##                                          \ #{gz.Css \black}
-    ##                                          \ #{gz.Css \rounded}
-    ##                                          \ #{gz.Css \shadowed}'>
-    ##         <li>
-    ##           <a href='javascript:void(0);'>
-    ##             &nbsp;
-    ##           </a>
-    ##         </li>
-    ##       </ul>
-    ##     </nav>"
-    ## left.appendChild tools
+    tools = gz.newel \div
+    tools.style.marginBottom = '1em'
+    tools.className = "#{gz.Css \large-100}
+                     \ #{gz.Css \medium-100}
+                     \ #{gz.Css \small-100}"
+    tools.innerHTML = "
+      <nav class='#{gz.Css \ink-navigation}'>
+        <ul class='#{gz.Css \menu}
+                 \ #{gz.Css \horizontal}
+                 \ #{gz.Css \white}
+                 \ #{gz.Css \rounded}
+                 \ #{gz.Css \shadowed}'>
+          <li style='width:100%'>
+            <a id='#{gz.Css \id-cog}' href='javascript:void(0);' style='width:100%'>
+              <i class='#{gz.Css \icon-cog}'></i>
+              &nbsp;&nbsp;
+              <span>Agencia</span>
+            </a>
+          </li>
+        </ul>
+      </nav>"
+    left.appendChild tools
 
     menu = gz.newel \div
     menu.className = "#{gz.Css \large-100}
@@ -78,7 +109,10 @@ class DashboardView extends gz.GView
     right.appendChild desktopView.el
 
     body.appendChild right
-    @menuView = menuView
+
+    # attributes
+    /** @private */ @menuView = menuView
+    /** @private */ @desktopView = desktopView
 
 # ---------
 # Templates
@@ -135,7 +169,9 @@ class DashboardView extends gz.GView
         </a>
       </li>
       <li>
-        <a id='#{gz.Css \topbar-title}' href='javascript:void(0);'></a>
+        <a id='#{gz.Css \topbar-title}' href='javascript:void(0);'>
+          PLAFT-sw
+        </a>
       </li>
     </ul>
   </nav>

@@ -6,15 +6,18 @@
 .event-submit-customer {filter:none}
 .gz-customsbroker-sel-shareholders {filter:none}
 
+// Identifiers
+.id-shareholders-documentType-documentNumber-name {filter:none}
+
 // Elements
 .query-button {
-    padding: 0.45em 0.8em;
+  padding: 0.43em 0.8em;
 }
 
 // Styles
 p {
-    text-align: justify;
-    //margin-bottom: 2.5em;
+  text-align: justify;
+  //margin-bottom: 2.5em;
 }
 
 .whatIs + .ink-grid {
@@ -22,7 +25,7 @@ p {
         margin-top: 0;
 
         > div {
-            margin-bottom: 0 !important;
+            margin-bottom: 1.2em !important;
         }
 
         fieldset {
@@ -55,27 +58,27 @@ p {
 
 
             .control-group {
-                .control span i {
+                .control span i.toggle {
                     visibility: hidden;
                 }
 
-                &:hover span i {
+                &:hover span i.toggle {
                     visibility: visible;
                 }
 
-                .control span input:focus + i {
+                .control span input:focus + i.toggle {
                     visibility: visible;
                 }
             }
 
             .control-group .control.append-symbol span {
-                & > input {
+                & > input, & > select {
                     width: 101%;
                 }
 
                 & > [class^="icon-"] {
                     right: 0.5em;
-                    top: 0.02em;
+                    top: 0.1em;
                 }
             }
         } // fieldset
@@ -97,7 +100,7 @@ p {
 
             input {
                 padding: 5.5px 6px !important;
-                font-size: 18px !important;
+                font-size: 17px !important;
             }
         }
     } // .form-search

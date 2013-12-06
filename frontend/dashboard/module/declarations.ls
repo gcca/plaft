@@ -35,6 +35,7 @@ module.exports = class DeclarationsView extends builder.Table
    * @private
    */
   initialize: !->
+    @el.style.paddingTop = '0.6em'
     @createTable <[ ID Cliente Documento ]>
 
     declarations = new DeclarationCollection

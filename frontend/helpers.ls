@@ -5,11 +5,14 @@
 # Almost useful
 # Set `.fnIsJSON = true` if need parse to JSON
 $.fn.serializeJSON = ->
-  (_ (@get 0).elements).reduce (ax, f) ->
+  s = (@get 0).elements
+  (_ s).reduce (ax, f) ->
     if f instanceof [HTMLInputElement, HTMLSelectElement, HTMLTextAreaElement]
       if f.name
         if f.type is \checkbox
           ax[f.name] = f.checked
+        else if f.type is \radio
+          ax[f.name] = s[f.name].value
         else
           value = f.value
           value = if value != '' then value else null
@@ -48,6 +51,58 @@ NodeList ::=
 # --------------
 # Global Context
 # --------------
+class Pool
+  (objects) ->
+    @queue = new Array
+    @objects = object
+
+  add: (object) ->
+    @objects.push object
+    @call!
+
+  call: ->
+    if @objects.length and @queue.length
+      fn = @queue.shift!
+      obj = @objects.shift!
+      fn obj, @
+    @
+
+  act: (fn) ->
+    @queue.push fn
+    @call!
+
+class ObjectPool
+  (Cls) ->
+    @cls = Cls
+    @metrics = new Object
+    @_clearMetrics!
+    @_objpool = new Array
+
+  alloc: ->
+    if 0 == @_objpool.length
+      obj = new @cls!
+      @metrics.totalalloc++
+    else
+      obj = @_objpool.pop!
+      @metrics.totalfree--
+    obj.init.apply obj, &
+    obj
+
+  free: (obj) ->
+    @_objpool.push obj
+    @this.metrics.totalfree++
+    for k in obj then delete! obj[k]
+    obj.init.call obj
+
+  collect: (cls) ->
+    @_objpool = new Array
+    inUse = @metrics.totalalloc - @metrics.totalfree
+    @_clearMetrics inUse
+
+  _clearMetrics: (allocated) ->
+    @metrics.totalalloc = allocated || 0
+    @metrics.totalfree = 0
+
 GBase = API : path : '/api/v1/'
 
 class GModel extends window .\Backbone .\Model implements GBase

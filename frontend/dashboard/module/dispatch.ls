@@ -75,7 +75,7 @@ module.exports = class DispatchView extends ModuleBaseView
     tab = $ "<li><a href='\##{gz.Css \tabs}#tId'>#caption</a></li>"
     content = $ "<div id='#{gz.Css \tabs}#tId'
                      class='#{gz.Css \tabs-content}'
-                     style='overflow:hidden;margin-top:0em'>"
+                     style='overflow:hidden;margin-top:.8em'>"
     content.append tabView.render!.el
     @$el.find "ul.#{gz.Css \tabs-nav}" .append tab
     @$el.find "div.#{gz.Css \ink-tabs}" .append content

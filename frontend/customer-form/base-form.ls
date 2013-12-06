@@ -34,12 +34,26 @@ module.exports = class BaseFormView extends gz.GView
     dataJSON = @getDataJSON!
     dataCustomer = @customer.toJSON!
     dataJSON <<< \documentType : 'RUC'
-    delete dataCustomer[\id]
-    if _[\isEqual] dataCustomer, dataJSON
-      @declarationView.commit @customer
+    delete! dataCustomer.\id
+
+    # declaration data
+    dataDeclaration =
+      \source              : delete dataJSON.\source
+      \thirdDocumentNumber : delete dataJSON.\thirdDocumentNumber
+      \thirdName           : delete dataJSON.\thirdName
+
+    optionsDeclaration =
+      \success : !(declaration) ~>
+          @trigger (gz.Css \event-created-declaration), declaration
+      \error : ->
+          alert 'ERROR declaration'
+
+    if _.\isEqual dataCustomer, dataJSON
+      @customer.createDeclaration dataDeclaration, optionsDeclaration
     else
       @customer.save dataJSON, do
-        \success : !(customer) ~> @declarationView.commit customer
+        \success : !(customer) ~>
+          customer.createDeclaration dataDeclaration, optionsDeclaration
         \error : -> alert 'ERROR customer'
 
   /**
@@ -57,11 +71,10 @@ module.exports = class BaseFormView extends gz.GView
   initForm: ->
 
   /**
-   * @param {Object} declarationView GView.
    * @param {Object} customer GModel.
    * @constructor
    */
-  !(@declarationView, @customer) -> super!
+  !(@customer) -> super!
 
   /**
    * Initialize customer form view.
@@ -76,5 +89,4 @@ module.exports = class BaseFormView extends gz.GView
     @$el.populateJSON @customer.attributes
     ($ '[data-tip-text]' @el) .each (_, el) -> new gz.Ink.UI.Tooltip el
 
-  /** @private */ declarationView : null
   /** @private */ customer        : null

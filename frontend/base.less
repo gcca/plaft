@@ -261,6 +261,20 @@ section, section + section {
   padding-left: 1em !important;
 }
 
+// Form
+.check-yesno + i:before {
+  content: "No";
+  margin-left: 0.5em;
+  font-family: Ubuntu, Arial, sans-serif;
+}
+
+.check-yesno:checked + i:before {
+  content: "Sí";
+  margin-left: 0.5em;
+  font-family: Ubuntu, Arial, sans-serif;
+}
+
+
 // GTypeahead
 .tt-suggestions, .tt-dataset {filter:none}
 

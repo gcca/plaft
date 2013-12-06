@@ -34,9 +34,9 @@ module.exports = class MainView extends ModuleBaseView
     "
     @desktop.once (gz.Css \on-appended), @gen
 
-  /** @private */ @menuCaption = 'Principal'
+  /** @private */ @menuCaption = 'Estadísticas'
   /** @private */ @menuIcon    = gz.Css \icon-dashboard
-  /** @private */ @menuTitle   = 'Inicio'
+  /** @private */ @menuTitle   = 'Estadísticas'
 
   gen: ->
     WIDTH = $ '#chart' .width! * 0.85

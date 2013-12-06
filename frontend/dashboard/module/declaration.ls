@@ -121,7 +121,7 @@ module.exports = class DeclarationView extends ModuleBaseView
    */
   template: (declaration) -> "
     <form class='#{gz.Css \ink-form} #{gz.Css \ink-form-new}'
-        style='margin-top:-0.8em;margin-left:-2em'>
+        style='margin-left:-2em'>
       #{form.block50}
         <fieldset>
           <legend>Cliente</legend>

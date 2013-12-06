@@ -10,6 +10,7 @@
 # Basics
 # ------
 GModel = gz.GModel
+GCollection = gz.GCollection
 
 # -----------
 # Shareholder
@@ -20,12 +21,16 @@ GModel = gz.GModel
  */
 class Shareholder extends GModel
   urlRoot: \shareholder
+  defaults:
+    \documentType   : ''
+    \documentNumber : ''
+    \name           : ''
 
 /**
  * Shareholder collection
  * @class Shareholders
  */
-class Shareholders extends gz.GCollection
+class Shareholders extends GCollection
   model: Shareholder
 
 # --------
@@ -67,7 +72,7 @@ class Customer extends GModel
  * Customer collection
  * @class Customers
  */
-class Customers extends gz.GCollection
+class Customers extends GCollection
   url: \customer
   model: Customer
 
@@ -85,7 +90,7 @@ class Declaration extends GModel
  * Declaration collection
  * @class Declarations
  */
-class Declarations extends gz.GCollection
+class Declarations extends GCollection
   urlRoot: \declarations
   model: Declaration
 
@@ -125,10 +130,34 @@ class Dispatch extends GModel
 /**
  * Dispatch collection
  * @class Dispatches
+ *
+ * register
+ *   operation
+ *     obligedCode
+ *     officierCode
+ *     rowCode
+ *     operationCode
+ *     internalCode
+ * internalCode
+ * kind
+ * obligedCode
+ * officierCode
+ * operationCode
+ * operationDate
+ * operationMode
+ * operationsNumber
+ * rowCode
  */
-class Dispatches extends gz.GCollection
+class Dispatches extends GCollection
   urlRoot: \dispatches
   model: Dispatch
+
+/**
+ * Customs Broker model
+ * @class CustomsBroker
+ */
+class CustomsBroker extends GModel
+  urlRoot: \customsbroker
 
 /**
  * @type {Object}
@@ -143,3 +172,4 @@ exports <<<
   Dispatch                : Dispatch
   Dispatches              : Dispatches
   CustomerLastDeclaration : CustomerLastDeclaration
+  CustomsBroker           : CustomsBroker

@@ -4,7 +4,7 @@
 
 BaseFormView = require './base-form'
 ShareholdersView = require './shareholders'
-form = require '../form'
+model = require '../model'
 
 /**
  * Business form view.
@@ -17,295 +17,229 @@ module.exports = class BusinessFormView extends BaseFormView
    * @see customer-form.base-form.BaseFormView.commit
    * @override
    */
-  getDataJSON : ->
+  getDataJSON: ->
     dataJSON = super!
-    dataJSON <<< \shareholders : @shareholdersView.zJSON!
+    dataJSON <<< \shareholders : @shareholdersView.JSONFields!
 
   /**
    * Initialize business form.
    * @override
    */
-  initForm : !->
-    customer = @customer
-    @el.innerHTML = "
-    #{form.block50}
-
-      <fieldset>
-        <legend>Razón Social</legend>
-        #{form.control-group}
-          #{form.controlSym100}
-            <span>
-              <input type='text' name='name' placeholder='Razón social'>
-              <i class='#{gz.Css \icon-group}'
-                  data-tip-color='#{gz.Css \blue}'
-                  data-tip-text='Demoninación o razón social'></i>
-            </span>
-          </div>
+  initForm: !->
+    block = "<div class='#{gz.Css \large-100}
+                       \ #{gz.Css \medium-100}
+                       \ #{gz.Css \small-100}'>"
+    block50 = "<div class='#{gz.Css \large-50}
+                         \ #{gz.Css \medium-100}
+                         \ #{gz.Css \small-100}'>"
+    controlGroup = "<div class='#{gz.Css \control-group}
+                              \ #{gz.Css \large-100}
+                              \ #{gz.Css \medium-100}
+                              \ #{gz.Css \small-100}'>"
+    controlGroup50 = "<div class='#{gz.Css \control-group}
+                                \ #{gz.Css \large-50}
+                                \ #{gz.Css \medium-50}
+                                \ #{gz.Css \small-100}'>"
+    label = "<label>"
+    control = "<div class='#{gz.Css \control}'>"
+    @$el.html "
+      #controlGroup50
+        #label
+          <b>a)</b> Denominación o Razón Social
+        </label>
+        #control
+          <input type='text' name='name'>
         </div>
-      </fieldset>
+      </div>
 
-
-      <fieldset>
-        <legend>RUC</legend>
-        #{form.control-group}
-          #{form.controlSym}
-            <span>
-              <input type='text' name='documentNumber' placeholder='RUC'>
-              <i class='#{gz.Css \icon-barcode}'
-                  data-tip-color='#{gz.Css \blue}'
-                  data-tip-text='Registro Unico de Contribuyentes (RUC)'></i>
-            </span>
-          </div>
+      #controlGroup50
+        #label
+          <b>b)</b> RUC
+        </label>
+        #control
+          <input type='text' name='documentNumber'>
         </div>
-      </fieldset>
+      </div>
 
-
-      <fieldset>
-        <legend>Objeto Social y Actividad Economica</legend>
-        #{form.control-group}
-          #{form.controlSym100}
-            <span>
-              <input type='text' name='socialObject' placeholder='Objeto social'>
-              <i class='#{gz.Css \icon-sign-blank}'
-                  data-tip-color='#{gz.Css \blue}'
-                  data-tip-text='Objeto social'></i>
-            </span>
-          </div>
+      #controlGroup50
+        #label
+          <b>c)</b> Objecto Social
+        </label>
+        #control
+          <input type='text' name='socialObject'>
         </div>
+      </div>
 
-        #{form.control-group}
-          #{form.controlSym100}
-            <span>
-              <input type='text' name='activityEconomic' placeholder='Actividad economica principal'>
-              <i class='#{gz.Css \icon-tasks}'
-                  data-tip-color='#{gz.Css \blue}'
-                  data-tip-text='Actividad económica principal (comercial, industrial, construcción, transporte, etc.)'></i>
-            </span>
-          </div>
+      #controlGroup50
+        #label
+          Actividad económica principal
+        </label>
+        #control
+          <input type='text' name='activity'>
         </div>
+      </div>
 
-      </fieldset>
+      <div id='#{gz.Css \id-shareholders}' class='#{gz.Css \large-100}
+                \ #{gz.Css \medium-100}
+                \ #{gz.Css \small-100}'>
+        #label
+          <b>d)</b> Indetificación Accionistas
+        </label>
+      </div>
 
-
-
-      <fieldset>
-        <legend>Accionistas</legend>
-        #{form.control-group}
-          #{form.controlSym100}
-            <span>
-            <div class='#{gz.Css \gz-customsbroker-sel-shareholders}'></div>
-            <i class='#{gz.Css \icon-group}'
-               data-tip-color='#{gz.Css \blue}'
-               data-tip-text='Identificación de los accionistas, socios o asociados que tengan un porcentaje igual o mayor al 5% de las acciones o participaciones de la persona jurídica'></i>
-            </span>
-          </div>
-
+      #controlGroup50
+        #label
+          <b>e)</b> Identificación Representante Legal
+        </label>
+        #control
+          <input type='text' name='legal'>
         </div>
+      </div>
 
-      </fieldset>
-
-
-
-
-
-      <fieldset>
-        <legend>Identificación de Representante Legal</legend>
-
-        #{form.control-group}
-          #{form.controlSym100}
-            <span>
-              <input type='text' name='legalName' placeholder='Nombre representante legal'>
-              <i class='#{gz.Css \icon-user}'
-                  data-tip-color='#{gz.Css \blue}'
-                  data-tip-text='Identificación del representante legal o de quien comparece con facultades de representación y/o disposición de la persona jurídica.'></i>
-            </span>
-          </div>
+      #controlGroup50
+        #label
+          <b>f)</b> Domicilio
+        </label>
+        #control
+          <input type='text' name='address'>
         </div>
+      </div>
 
-        #{form.control-group}
-          #{form.controlSym100}
-            <span>
-              <select name='legalDocumentType'>
-                <option value='DNI'>DNI</option>
-                <option value='CE'>Carné de extranjería</option>
-                <option value='PA'>Pasaporte</option>
-                <option>Otro</option>
-              </select>
-              <i class='#{gz.Css \icon-credit-card}'
-                  data-tip-color='#{gz.Css \blue}'
-                  data-tip-text='Tipo de documento de identidad del Representante Legal'></i>
-            </span>
-          </div>
+      #controlGroup50
+        #label
+          <b>g)</b> Domicilio fiscal
+        </label>
+        #control
+          <input type='text' name='officialAddress'>
         </div>
+      </div>
 
-        #{form.control-group}
-          #{form.controlSym100}
-            <span>
-              <input type='text' name='legalDocumentNumber' placeholder='Número de identificación'>
-              <i class='#{gz.Css \icon-credit-card}'
-                  data-tip-color='#{gz.Css \blue}'
-                  data-tip-text='Número de identificación a persona jurídica.'></i>
-            </span>
-          </div>
+      #controlGroup50
+        #label
+          <b>&nbsp;</b> &nbsp;
+        </label>
+        #control
+          <input type='text' name='' style='visibility:hidden'>
         </div>
+      </div>
 
-      </fieldset>
-
-
-
-    </div>
-
-
-
-    #{form.block50}
-
-      <fieldset>
-        <legend>Domicilio</legend>
-        #{form.control-group}
-          #{form.controlSym100}
-            <span>
-              <input type='text' name='address' placeholder='Domicilio declarado'>
-              <i class='#{gz.Css \icon-home}'
-                  data-tip-color='#{gz.Css \blue}'
-                  data-tip-text='Domicilio principal de la persona jurídica'></i>
-            </span>
-          </div>
+      #controlGroup50
+        #label
+          <b>h)</b> Teléfono oficina (incluir código ciudad)
+        </label>
+        #control
+          <input type='text' name='officePhone'>
         </div>
-      </fieldset>
+      </div>
 
-
-      <fieldset>
-        <legend>Domicilio Fiscal</legend>
-        #{form.control-group}
-          #{form.controlSym100}
-            <span>
-              <input type='text' name='officialAddress' placeholder='Domicilio fiscal'>
-              <i class='#{gz.Css \icon-home}'
-                  data-tip-color='#{gz.Css \blue}'
-                  data-tip-text='Domicilio fiscal de la persona jurídica'></i>
-            </span>
-          </div>
+      #controlGroup50
+        #label
+          Persona contacto <b>&nbsp;</b>
+        </label>
+        #control
+          <input type='text' name='contact'>
         </div>
-      </fieldset>
-    </div>
+      </div>
 
-
-
-    #{form.block50}
-      <fieldset>
-
-        <legend>Datos Persona Contacto</legend>
-        #{form.control-group}
-          #{form.controlSym100}
-            <span>
-            <input type='text' name='contactPhone' placeholder='Teléfono contacto'>
-            <i class='#{gz.Css \icon-phone}'
-                data-tip-color='#{gz.Css \blue}'
-                data-tip-text='Teléfono fijo de la persona de contacto'></i>
-            </span>
-          </div>
+      #controlGroup50
+        #label
+          <b>i)</b> Origen de los fondos
+        </label>
+        #control
+          <input type='text' name='source'>
         </div>
+      </div>
 
-        #{form.control-group}
-          #{form.controlSym100}
-            <span>
-              <input type='text' name='officePhone' placeholder='Teléfono oficina'>
-              <i class='#{gz.Css \icon-phone}'
-                  data-tip-color='#{gz.Css \blue}'
-                  data-tip-text='Teléfono fijo de la oficina de la persona de contacto'></i>
-            </span>
-          </div>
+      #controlGroup50
+        #label
+          (Efectivo, No efectivo, Bienes u otros activos) <b>&nbsp;</b>
+        </label>
+        #control
+          <input type='text' name='' style='visibility:hidden'>
         </div>
+      </div>
 
+      #controlGroup
+        <label class='#{gz.Css \large-50}
+                    \ #{gz.Css \medium-50}
+                    \ #{gz.Css \small-50}'>
+          <b>j)</b> Sujeto Obligado informar UIF-Perú
+        </label>
+        <ul class='#{gz.Css \control}
+                 \ #{gz.Css \unstyled}
+                 \ #{gz.Css \inline}
+                 \ #{gz.Css \large-50}
+                  \ #{gz.Css \medium-50}
+                  \ #{gz.Css \small-50}'>
+          <li>
+            <input type='radio' name='isObliged' value='Sí'>
+            <label>Sí</label>
+          </li>
+          <li>
+            <input type='radio' name='isObliged' value='No'>
+            <label>No</label>
+          </li>
+        </ul>
+      </div>
 
+      #controlGroup
+        <label class='#{gz.Css \large-50}
+                    \ #{gz.Css \medium-50}
+                    \ #{gz.Css \small-50}'>
+          <b>&nbsp;&nbsp;</b> Designó Oficial de Cumplimiento
+        </label>
+        <ul class='#{gz.Css \control}
+                 \ #{gz.Css \unstyled}
+                 \ #{gz.Css \inline}
+                 \ #{gz.Css \large-50}
+                  \ #{gz.Css \medium-50}
+                  \ #{gz.Css \small-50}'>
+          <li>
+            <input type='radio' name='hasOfficier' value='Sí'>
+            <label>Sí</label>
+          </li>
+          <li>
+            <input type='radio' name='hasOfficier' value='No'>
+            <label>No</label>
+          </li>
+        </ul>
+      </div>
 
-        #{form.control-group}
-          #{form.controlSym100}
-            <span>
-            <input type='text' name='addressCityCode'
-                placeholder='Código Postal'>
-            <i class='#{gz.Css \icon-envelope}'
-                data-tip-color='#{gz.Css \blue}'
-                data-tip-text='Código postal de la persona contacto'></i>
-            </span>
-          </div>
+      #controlGroup50
+        #label
+          <b>k)</b> Identificación Tercero
+        </label>
+        #control
+          <input type='text' name='thirdName'>
         </div>
+      </div>
 
-
-        #{form.control-group}
-          #{form.controlSym100}
-            <span>
-              <input type='text' name='contact' placeholder='Nombre de Persona de Contacto'>
-              <i class='#{gz.Css \icon-user}'
-                  data-tip-color='#{gz.Css \blue}'
-                  data-tip-text='Persona a contactar'></i>
-            </span>
-          </div>
+      #controlGroup50
+        #label
+          <b>&nbsp;</b> Documento
+        </label>
+        #control
+          <input type='text' name='thirdDocumentNumber'>
         </div>
+      </div>
 
+      #block
+        <br>
+      </div>"
+    @shareholdersView = new ShareholdersView
+    $divShareholders = @$el.find "##{gz.Css \id-shareholders}"
+    $divShareholders.append @shareholdersView.render!.el
+    @shareholdersView.collection.set (@customer.get \shareholders)
 
-      </fieldset>
+    ## s1 = new model.Shareholder do
+    ##   \documentType   : 'PA'
+    ##   \documentNumber : '12345678989'
+    ##   \name           : 'Massive Dynamic (g)'
 
-      <fieldset>
+    ## s2 = new model.Shareholder do
+    ##   \documentType   : 'CE'
+    ##   \documentNumber : '998-7878-788-8'
+    ##   \name           : 'Al adjua mllds j12o3j 24'
 
-        <legend>Información</legend>
-
-        #{form.control-group}
-          <label class='#{gz.Css \large-75}
-                      \ #{gz.Css \medium-75}
-                      \ #{gz.Css \small-75}'>
-            ¿Es sujeto obligado informar a la UIF-Perú?
-          </label>
-          <div class='#{gz.Css \control}
-                    \ #{gz.Css \large-25}
-                    \ #{gz.Css \medium-25}
-                    \ #{gz.Css \small-25}
-                    \ #{gz.Css \append-symbol}'>
-            <span>
-              <input type='checkbox' name='isObliged'>
-              <i class='#{gz.Css \icon-legal}'
-                  data-tip-color='#{gz.Css \blue}'
-                  data-tip-text='¿Es sujeto obligado informar a la UIF-Perú?'></i>
-            </span>
-          </div>
-        </div>
-
-        #{form.control-group}
-          <label class='#{gz.Css \large-75}
-                      \ #{gz.Css \medium-75}
-                      \ #{gz.Css \small-75}'>
-            ¿Designó a su oficial de Cumplimiento?
-          </label>
-          <div class='#{gz.Css \control}
-                    \ #{gz.Css \large-25}
-                    \ #{gz.Css \medium-25}
-                    \ #{gz.Css \small-25}
-                    \ #{gz.Css \append-symbol}'>
-            <span>
-              <input type='checkbox' name='hasOfficier'>
-              <i class='#{gz.Css \icon-user}'
-                  data-tip-color='#{gz.Css \blue}'
-                  data-tip-text='¿Designó a su oficial de Cumplimiento?'></i>
-            </span>
-          </div>
-        </div>
-
-      </fieldset>
-
-    </div>
-
-    </div>"
-    # Append shareholder view.
-    div = @el.querySelector ".#{gz.Css \gz-customsbroker-sel-shareholders}"
-    shareholdersView = new ShareholdersView do
-                        shareholders : @customer.get \shareholders
-    div.appendChild shareholdersView.el
-    @shareholdersView = shareholdersView
-    ## #{form.control-group}
-    ##   #{form.label100}
-    ##     Origen de Fondos
-    ##   </label>
-    ##   #{form.control100}
-    ##     <textarea name='moneySource' placeholder='Especifique el origen de los fondos, bienes u otros activos involucrados en la transacción.'></textarea>
-    ##   </div>
-    ## </div>
+    ## @shareholdersView.collection.push s1
+    ## @shareholdersView.collection.push s2

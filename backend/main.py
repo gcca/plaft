@@ -2,10 +2,11 @@ from webapp2 import WSGIApplication, Route
 from webapp2_extras import routes
 
 from interface.views import SignInView, CustomerFormView, DashboardView, \
-    DeclarationPDFView
-from interface.handlers import CustomerHandler, DeclarationsHandler, \
+    DeclarationPDFView, SignOutView
+from interface.handlers import CustomerHandler, DeclarationHandler, \
     CustomerDeclarationHandler, CustomerLastDeclarationHandler, \
-    DispatchHandler, SignInHandler, DispatchesHandler, DispatchFix
+    DispatchHandler, SignInHandler, DispatchesHandler, DispatchFix, \
+    CustomsBrokerHandler, DeclarationsHandler
 
 from debug import DebugView
 
@@ -23,6 +24,7 @@ app = WSGIApplication([
 
     # Views
     ('/', SignInView),
+    ('/signout', SignOutView),
     ('/customer-form', CustomerFormView),
     ('/dashboard', DashboardView),
 
@@ -30,9 +32,11 @@ app = WSGIApplication([
 
     # Handlers
     RESTful('signin', SignInHandler),
+    RESTful('customsbroker', CustomsBrokerHandler),
     RESTful('customer', CustomerHandler, [
         ('lastdeclaration', CustomerLastDeclarationHandler)
     ]),
+    RESTful('declaration', DeclarationHandler),
     RESTful('declarations', DeclarationsHandler),
     RESTful(('customer', 'declaration') , CustomerDeclarationHandler),
 

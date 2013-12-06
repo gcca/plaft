@@ -93,10 +93,10 @@ def check_secure_val(secure_val):
 
 def user_required(m):
     return lambda s, *a, **k: (m(s, *a, **k) if s.user
-                               else s.redirect('/'))
+                               else s.logout().redirect('/'))
 def login_required(m):
     return lambda s, *a, **k: (m(s, *a, **k) if s.user
-                               else s.status.FORBIDDEN(Exception('Forbidden')))
+                               else s.logout().status.FORBIDDEN(Exception('Forbidden')))
 
 from google.appengine.ext import db
 class JSONgccaEncoder(json.JSONEncoder):

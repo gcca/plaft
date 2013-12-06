@@ -21,7 +21,19 @@
  */
 module.exports = class ModuleBaseView extends gz.GView
 
-  ```` # CC
+  /**
+   * DOM element.
+   * @type {string}
+   * @private
+   */
+  tagName: \div
+
+  /**
+   * @param {?Object} _ Unused.
+   * @param {!Object} desktop Desktop view.
+   * @constructor
+   */
+  (_, @desktop) -> super ...
 
   /**
    * @static
@@ -40,17 +52,3 @@ module.exports = class ModuleBaseView extends gz.GView
    * @protected
    */
   @menuTitle = ''
-
-  /**
-   * DOM element.
-   * @type {string}
-   * @private
-   */
-  tagName: \div
-
-  /**
-   * @param {?Object} _ Unused.
-   * @param {!Object} desktop Desktop view.
-   * @constructor
-   */
-  (_, @desktop) -> super ...

@@ -11,11 +11,6 @@ CustomerModel      = model.Customer
 BusinessFormView = require './customer-form/business-form'
 PersonFormView   = require './customer-form/person-form'
 
-# ---------------------
-# Declaration Form View
-# ---------------------
-DeclarationFormView = require './customer-form/declaration-form'
-
 /** ------------------
  *  Customer Form View
  *  ------------------
@@ -49,6 +44,7 @@ class CustomerFormView extends gz.GView
       evt.currentTarget
         ..innerHTML = "Guardado <i class='#{gz.Css \icon-check}'></i>"
         ..disabled = true
+        ..classList.remove (gz.Css \event-submit-customer)
       @customerView.commit!
 
     /**
@@ -65,7 +61,7 @@ class CustomerFormView extends gz.GView
    * @private
    */
   initEvents : !->
-    formSearch = @el.querySelector 'form#search'
+    formSearch = @el.querySelector "form##{gz.Css \search}"
     formSearch.onsubmit = (evt) ~>
       evt.preventDefault!
       f = evt.currentTarget
@@ -121,6 +117,21 @@ class CustomerFormView extends gz.GView
                            '''<b>Datos guardados
                            \ satisfactoriamente</b>''').elShow off
     @showModalPdf!
+    # add button open modal
+    $ul = @$el.find ".#{gz.Css \logoPlaceholder}" .parent!
+    $ul.after "<button class='#{gz.Css \ink-button} #{gz.Css \push-right}'
+                   id='#{gz.Css \logoPlaceholder-button}'>
+                 Ver declaraciones
+               </button>"
+    $ul.after "<button class='#{gz.Css \ink-button} #{gz.Css \push-right}'
+                   id='#{gz.Css \button-customer-form}'>
+                 Nueva declaración
+               </button>"
+    @$el.find "##{gz.Css \logoPlaceholder-button}" .on \click @showModalPdf
+    @$el.find "##{gz.Css \button-customer-form}" .on \click ->
+      location.href = '/customer-form'
+    # hide form search
+    @$el.find "##{gz.Css \search}" .hide!
 
   /**
    * Muestra la ventana modal de las declaraciones juradas
@@ -132,23 +143,22 @@ class CustomerFormView extends gz.GView
    * @example
    * >>> showModalPdf()
    */
-  showModalPdf: !->
-    mHeader = 'Declaración Jurada&nbsp;<small><em>pdf</em></small>'
-    mBody   = "
-      <h4>Lista</h4>
+  showModalPdf: !~>
+    mHeader = 'Declaración Jurada'
+    mBody = "
       <p>
-        Clic en los enlaces para ver la declaración jurada
+        <small style='font-size:.7em'>
+          Clic en los enlaces para ver la declaración jurada
+        </small>
       </p>
-      <ul>
+        <ul>
         <li>
           <a href='/declaration/#{@declaration.get \id}/pdf' target='_blank'>
             Declaración jurada
           </a>
         </li>
       </ul>"
-
-    gmodal = new widget.GModal mHeader, mBody
-    gmodal.elShow!
+    (new widget.GModal mHeader, mBody, widget.GModal.footerClose).elShow!
 
   /**
    * Limpia solo la zona de alertas para mostrar la alerta.
@@ -204,27 +214,12 @@ class CustomerFormView extends gz.GView
    * al elemento del DOM.
    * @see newCustomerView
    * @param {!Object} customerView
-   * @param {!Object} declarationView
    * @private
    */
-  addCustomerView: !(@customerView, @declarationView) ->
+  addCustomerView: !(@customerView) ->
     @frame-center
       ..innerHTML = ''
-      ..appendChild declarationView.el
-      ..appendChild gz.newel \br
       ..appendChild customerView.el
-
-  /**
-   * Método interno de newCustomerView. Crea el formulario
-   * de movimiento y lo guarda en el contexto del MainView
-   * @see newCustomerView
-   * @private
-   */
-  newDeclarationView: ->
-    # Always add declaration info
-    declarationView = new DeclarationFormView
-    declarationView.bind (gz.Css \event-created-declaration), @createdDeclaration, @
-    @declarationView = declarationView
 
   /**
    * Genera el formulario de cliente, después de
@@ -257,9 +252,9 @@ class CustomerFormView extends gz.GView
 
     if FormView?
     # valid FormView
-      declarationView = @newDeclarationView!
-      formView = new FormView declarationView, customer
-      @addCustomerView formView, declarationView
+      formView = new FormView customer
+      formView.bind (gz.Css \event-created-declaration), @createdDeclaration, @
+      @addCustomerView formView
 
       if customer.id
       # exists Identification Number
@@ -315,8 +310,8 @@ class CustomerFormView extends gz.GView
                             \ #{gz.Css \small-100}"
 
     @showAlert (gz.Css \info), '''
-      Ingrese el número del documento de identidad
-      <em>(RUC o DNI)</em>'''
+      <b>Para persona natural ingrese el número de <em>DNI</em>.
+      \ Para persona jurídica, el número de <em>RUC</em>.</b>'''
 
     frame.appendChild frame-center
     @frame-center = frame-center
@@ -359,7 +354,7 @@ CustomerForm-MenuLI= "
 </li>
 
 <li class='#{gz.Css \push-right}'>
-  <form id='search' class='#{gz.Css \ink-form} #{gz.Css \form-search}'>
+  <form id='#{gz.Css \search}' class='#{gz.Css \ink-form} #{gz.Css \form-search}'>
     <fieldset class='#{gz.Css \column-group} #{gz.Css \gutters}'>
       <div class='#{gz.Css \control-group}'>
         <div class='#{gz.Css \column-group}'>

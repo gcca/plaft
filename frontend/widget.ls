@@ -1,6 +1,4 @@
-/**
- * @module widget
- */
+/** @module widget */
 
 /**
  * Modal window
@@ -102,6 +100,21 @@ class Modal extends gz.GView
       </button>
     </div>"
   /** @private */ uiModal : null
+
+  /**
+   * Footer close button.
+   * @type {string}
+   * @public
+   */
+  @footerClose = "
+    <div class='#{gz.Css \push-right}'>
+      <button class='#{gz.Css \ink-button}
+                   \ #{gz.Css \red}
+                   \ #{gz.Css \ink-dismiss}'>
+        Cerrar
+      </button>
+    </div>"
+
 
 /**
  * Create stacking alerts with position fixed.
@@ -270,4 +283,3 @@ exports <<<
   GModal     : Modal
   GAutoAlert : AutoAlert
   GTypeahead : Typeahead
-

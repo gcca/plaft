@@ -3,6 +3,7 @@
  */
 
 module.exports = class DesktopView extends gz.GView
+
   /**
    * DOM element.
    * @type {string}
@@ -23,17 +24,20 @@ module.exports = class DesktopView extends gz.GView
    * @param {Object=} opts
    * @private
    */
-  changeDesktop: !(Module, opts = new Object) ->
+  changeDesktop: (Module, opts = new Object) ->
     @uiSearch.destroyTooltip!
     if @module?
       @module.remove!
       delete @module
     @module = new Module opts, @
+    ## style
+    @module.el.style.marginTop = '1em'
     ## @el.innerHTML = ''
     @el.appendChild @module.el
     @uiSearch.on (gz.Css \search), @module.onSearch if @module.onSearch?
     @uiTitle.setValue Module.menuTitle
     @trigger (gz.Css \on-appended)
+    @module
 
   /**
    * @param {Object} menuView GView.
@@ -72,7 +76,6 @@ module.exports = class DesktopView extends gz.GView
    * @private
    */
   initialize: !->
-    @el.style.paddingTop  = '1em'
     @el.style.paddingLeft = '0.3em'
 
   /** @private */ ui : null

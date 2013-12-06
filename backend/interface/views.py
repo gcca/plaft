@@ -21,9 +21,9 @@ def generic(template, args=''):
         '</body>'
         '</html>') % {'template': template, 'args': args}
 
-# ------------
-# Sign In View
-# ------------
+# ----------------
+# Sign In/Out View
+# ----------------
 class SignInView(BaseHandler):
 
     def write_signin(self, args=''):
@@ -106,6 +106,12 @@ class SignInView(BaseHandler):
             self.write_signin()
         else:
             self.write_badbrowser()
+
+class SignOutView(BaseHandler):
+
+    def get(self):
+        self.logout()
+        self.redirect('/')
 
 # ------------------
 # Customer Form View
@@ -213,12 +219,10 @@ class DeclarationPDFView(BaseHandler):
             ['Domilicio declarado' , customer.address],
             ['Domicilio fiscal'    , customer.officialAddress]
         ] + ([['', ''],
-            ['Beneficiario'            , declaration.thirdName],
-            ['    Tipo'                , declaration.thirdType],
+            ['Beneficiario'            , ''],
             ['    Nombre'              , declaration.thirdName],
-            ['    Tipo de documento'   , declaration.thirdDocumentType.toName],
             ['    Número de documento' , declaration.thirdDocumentNumber]
-        ] if declaration.third else [])) \
+        ] if declaration.thirdName else [])) \
         if declaration.customer.className is 'Person' else [
             ['Razón Social'        , customer.name],
             ['Tipo de documento'   , customer.documentType.toName],
@@ -227,25 +231,22 @@ class DeclarationPDFView(BaseHandler):
             ['Actividad'           , customer.activity],
             #[''  , customer.],
             ['', ''],
-            ['Representate legal'  , customer.legalName],
-            ['Tipo de documento'   , customer.legalDocumentType.toName],
-            ['Número de documento' , customer.legalDocumentNumber],
+            ['Representate legal'  , customer.legal],
             ['', ''],
-            ['¿Es sujeto obligado?', 'Sí' if customer.isObliged else 'No'],
-            ['¿Tiene oficial de cumplimiento?' , 'Sí' if customer.hasOfficier else 'No'],
+            ['¿Es sujeto obligado?', customer.isObliged],
+            ['¿Tiene oficial de cumplimiento?' , customer.hasOfficier],
             ['', ''],
             ['Domilicio declarado' , customer.address],
             ['Domicilio fiscal'    , customer.officialAddress],
-            ['Código de ciudad'    , customer.addressCityCode],
-            # ['Teléfono'            , customer.phone],
-            ['Contacto'            , customer.contact]
+            # ['Código de ciudad'    , customer.addressCityCode],
+            # # ['Teléfono'            , customer.phone],
+            # ['Contacto'            , customer.contact]
+            ['Origen de los fondos'  , declaration.source],
         ] + ([['', ''],
-            ['Beneficiario'            , declaration.thirdName],
-            ['    Tipo'                , declaration.thirdType],
+            ['Beneficiario'            , ''],
             ['    Nombre'              , declaration.thirdName],
-            ['    Tipo de documento'   , declaration.thirdDocumentType.toName],
             ['    Número de documento' , declaration.thirdDocumentNumber]
-        ] if declaration.third else []) + ([['', ''],
+        ] if declaration.thirdName else []) + ([['', ''],
             ['Accionistas:', '']] + self.shareholdersList(customer.shareholders))
         table = Table(data) #, [2.4*inch, 3.3*inch], 10*[.35*inch])
         story.append(table)

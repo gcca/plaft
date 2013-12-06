@@ -17,7 +17,10 @@ def main():
     cb2.store()
 
     cb3 = CustomsBroker(name='Cyberdine',
-                        documentNumber='12-12-12')
+                        documentNumber='85236987456',
+                        code='999SDS',
+                        officierName='John Connor',
+                        officierCode='AVG2013')
     cb3.store()
 
     # Customs Broker Users

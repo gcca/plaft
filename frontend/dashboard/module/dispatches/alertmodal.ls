@@ -79,7 +79,7 @@ module.exports = class AlertModal extends widget.GModal
         form.get 0
 
     /**
-     * amFooter method
+     * amFooter method.
      * @return {HTMLDivElement} Buttons
      * @private
      */
@@ -102,13 +102,13 @@ module.exports = class AlertModal extends widget.GModal
     # Events
     # ------
     /**
-     * onClickOk event method
+     * On click OK event method.
      * @private
      */
     onClickOk: !~>
         @dispatch.save (\alerts : @signalsForm.serializeJSON!), do
-            \success : ~> @hide!
-            \error : ~> alert 'ERROR: alerts'
+            \success : ~> @elHide!
+            \error : -> alert 'ERROR: alerts'
     # -- end Events --
 
     /**
@@ -117,8 +117,7 @@ module.exports = class AlertModal extends widget.GModal
      * @constructor
      * @override
      */
-    !(@dispatch) ->
-        super @amHeader, @amBody!, @amFooter!
+    !(@dispatch) -> super @amHeader, @amBody!, @amFooter!
 
     /**
      * Alert caption list.

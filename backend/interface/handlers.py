@@ -135,14 +135,12 @@ class CustomerLastDeclarationHandler(BaseHandler):
 # -----------
 # Declaration
 # -----------
-class DeclarationsHandler(BaseHandler):
+class DeclarationHandler(BaseHandler):
 
     Service = DeclarationService
 
     def get(self):
         trackingId = self.request.get('trackingId')
-        if not trackingId:
-            return self.render_json(Declaration.all()) # (-o-) DBG
         service = DeclarationService()
         try:
             declaration = service.requestDeclaration(trackingId)
@@ -152,6 +150,14 @@ class DeclarationsHandler(BaseHandler):
             self.status.NOT_FOUND(e)
         else:
             self.render_json(declaration)
+
+
+class DeclarationsHandler(BaseHandler):
+
+    Service = DeclarationService
+
+    def get(self):
+        self.render_json(Declaration.all()) # (-o-) DBG
 
 
 # --------
@@ -221,5 +227,25 @@ class DispatchFix(BaseHandler):
             self.status.BAD_REQUEST(ex)
         except ValueError, TypeError:
             self.status.BAD_REQUEST(Error('Bad id: ' + id))
+        else:
+            self.write_json('{}')
+
+
+# --------------
+# Customs Broker
+# --------------
+class CustomsBrokerHandler(BaseHandler):
+
+    def get(self):
+        self.render_json(self.user.customsBroker)
+
+    def put(self, id):
+        try:
+            self.user.customsBroker.update(self.request_dto)
+            self.user.customsBroker.store()
+        except BadValueError as ex:
+            self.status.BAD_REQUEST(ex)
+        except StoreFailedError as ex:
+            self.status.INTERNAL_ERROR(ex)
         else:
             self.write_json('{}')
