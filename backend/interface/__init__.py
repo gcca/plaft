@@ -121,6 +121,10 @@ class BaseHandler(webapp2.RequestHandler):
     def _2json(self, o):
         return jsondumps(o)
 
+    def headers_reval(self):
+        self.response.headers['pragma'] = 'no-cache'
+        self.response.headers['cache-Control'] = 'no-cache,must-revalidate,max-age=0'
+
     # better `put`
     def safe_put(self, model):
         ''' (Model) -> db.Key or NoneType

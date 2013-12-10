@@ -34,8 +34,12 @@ document.body.innerHTML = "
           <i class='#{gz.Css \icon-reorder}' style='height:auto'></i>
         </button>
       </li>
+      <li>
+        <a href='javascript:void(0);'>
+          Prevención del Lavado de Activos y Financiamiento del Terrorismo
+        </a>
+      </li>
       <li><a href='#'>CavaSoft</a></li>
-      <li><a href='/dashboard'>Dashboard</a></li>
     </ul>
 
   </nav>
@@ -53,11 +57,11 @@ document.body.innerHTML = "
     <div class='#{gz.Css \large-100}
               \ #{gz.Css \medium-100}
               \ #{gz.Css \small-100}'>
-    <h3>Lavado de Activos</h3>
+    <h5><!-- cristHian Gz. (gcca) . http://gcca.tk -->&nbsp;</h5>
   </div>
 
-  <div class='#{gz.Css \large-55}
-            \ #{gz.Css \medium-55}
+  <div class='#{gz.Css \large-50}
+            \ #{gz.Css \medium-50}
             \ #{gz.Css \small-100}'>
 
     <a href='http://www.mozilla.org/es-ES/firefox/new' target='_blank' title='Firefox'>
@@ -70,8 +74,8 @@ document.body.innerHTML = "
   </div>
 
     <div class='#{gz.Css \ink-navigation}
-              \ #{gz.Css \large-45}
-              \ #{gz.Css \medium-45}
+              \ #{gz.Css \large-50}
+              \ #{gz.Css \medium-50}
               \ #{gz.Css \small-100}'>
       <ul class='#{gz.Css \menu}
                \ #{gz.Css \vertical}
@@ -85,7 +89,7 @@ document.body.innerHTML = "
         </li>
         <li>
           <a href='/customer-form'>
-            Anexo 5: Declaración jurada de clientes
+            Anexo 5: Declaración Jurada de Conocimiento del Cliente
             <i class='#{gz.Css \icon-pencil} #{gz.Css \push-right}'></i>
           </a>
         </li>
@@ -197,13 +201,13 @@ document.body.innerHTML = "
   </div>
 </div>
 
-<footer style='padding: 0 1em 0 1em;font-size:0.8em'>
+<footer style='padding: 0 1em 0 1em;font-size:0.8em;margin-top:5em'>
   <nav class='#{gz.Css \ink-navigation}'>
     <ul class='#{gz.Css \menu} #{gz.Css \horizontal}'>
       <li>
         © Copyright 2013, CavaSoft SAC. <a href='#'>&nbsp;</a>
       </li>
-      <li class='#{gz.Css \push-right}' style='font-size:.9em;padding-top:.25em'>
+      <li class='#{gz.Css \push-right}' style='font-size:.88em;padding-top:.25em'>
         Created by &nbsp;
         <a href='http://gcca.alwaysdata.net'>cristHian Gz. (gcca)</a>
         &nbsp;&nbsp;&nbsp;&nbsp;
@@ -220,6 +224,8 @@ document.querySelector "button.#{gz.Css \green}" .onclick = ->
   new XMLHttpRequest
     ..open \post '/api/v1/signin'
     ..setRequestHeader 'Content-type' 'application/x-www-form-urlencoded'
+    ..setRequestHeader 'pragma' 'no-cache'
+    ..setRequestHeader 'cache-Control' 'no-cache,must-revalidate,max-age=0'
     ..onreadystatechange = ->
       if @readyState is 4
         document.querySelector \#signin-img

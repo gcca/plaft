@@ -18,6 +18,7 @@ class SignInHandler(BaseHandler):
         username = self.request.get('username')
         password = self.request.get('password')
         user = User.login(username, password)
+        self.headers_reval()
         if user:
             self.login(user)
             self.write_json('{}')

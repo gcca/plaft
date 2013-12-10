@@ -67,7 +67,7 @@ def valid_password(password):
     return password and PASS_RE.match(password)
 
 def make_pw_hash(name, password, salt=None):
-    if not salt: salt = bcrypt.gensalt(6)
+    if not salt: salt = bcrypt.gensalt(4)
     try: h = bcrypt.hashpw(name+password, salt)
     except ValueError: pass
     except Exception: pass

@@ -254,6 +254,7 @@ class CustomerFormView extends gz.GView
     # valid FormView
       formView = new FormView customer
       formView.bind (gz.Css \event-created-declaration), @createdDeclaration, @
+      formView.on (gz.Css \on-error-declaration), @errorDeclaration
       @addCustomerView formView
 
       if customer.id
@@ -276,8 +277,23 @@ class CustomerFormView extends gz.GView
     else
     # show message invalid Identification Number
       @showError (gz.Css \error),
-                 """El número de identificación no es válido
-                 <em> &nbsp; #documentNumber</em>"""
+                 "Número de DNI o RUC incorrecto:<em>&nbsp;#documentNumber</em>"
+
+
+  /**
+   * On error declaration event.
+   * @private
+   */
+  errorDeclaration: !~>
+    @buttonSave
+      ..innerHTML = "Guardar <i class='#{gz.Css \icon-check-empty}'></i>"
+      ..disabled = false
+      ..style
+        ..display = 'inline'
+        ..margin = '0'
+      ..className = "#{gz.Css \ink-button}
+                   \ #{gz.Css \green}
+                   \ #{gz.Css \event-submit-customer}"
 
   /**
    * Initialize view.
@@ -387,31 +403,6 @@ CustomerFormView_template = "
     </ul>
   </nav>
 
-  <nav class='#{gz.Css \ink-navigation} #{gz.Css \ink-grid} #{gz.Css \hide-all}'>
-    <ul class='#{gz.Css \menu}
-             \ #{gz.Css \vertical}
-             \ #{gz.Css \flat}
-             \ #{gz.Css \black}'>
-      <li class='#{gz.Css \title}'>
-        <a class='#{gz.Css \logoPlaceholder} #{gz.Css \push-left}'
-          href='#' title='gcca'>
-          LAc
-        </a>
-
-        <button data-target='\#topbar_menu'>
-          <span class='#{gz.Css \icon-reorder}'></span>
-        </button>
-      </li>
-    </ul>
-
-    <ul id='topbar_menu' class='#{gz.Css \menu}
-                              \ #{gz.Css \vertical}
-                              \ #{gz.Css \flat}
-                              \ #{gz.Css \black}
-                              \ #{gz.Css \hide-all}'>
-      #{CustomerForm-MenuLI}
-    </ul>
-  </nav>
   <div class='#{gz.Css \border}'></div>
 </div>
 

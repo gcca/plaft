@@ -4,7 +4,7 @@ from datetime import date
 from domain.gz import db
 from infraestructure.utils import Dto
 from domain.model import CustomsBrokerUser, CustomsBroker, Business, \
-    Dispatch, Declaration, Datastore, Operation
+    Dispatch, Declaration, Datastore, Operation, Person, Customer
 
 def main():
     # Customs Brokers
@@ -31,15 +31,24 @@ def main():
 
     # Customers
     customer1 = Business(
-        name='cristHian Gz. (gcca)',
+        name='Massive Dynamic',
+        shareholders=[
+            Dto({
+                'documentType': 'PA',
+                'name': 'Cyberdine',
+                'documentNumber': '12345678989'}),
+            Dto({
+                'documentType': 'CE',
+                'name': 'Al adjua mllds j',
+                'documentNumber': '998-7878-788-8'})],
         documentType='RUC',
         documentNumber='12345678989')
     customer1.store()
 
-    customer2 = Business(
-        name='Massive Dynamic',
-        documentType='RUC',
-        documentNumber='12345678980')
+    customer2 = Person(
+        name='cristHian Gz. (gcca)',
+        documentType='DNI',
+        documentNumber='12345678')
     customer2.store()
 
     # Declarations
@@ -110,7 +119,7 @@ class DebugView(webapp2.RequestHandler):
         self.response.out.write('Don\'t worry. Be happy')
 
     def post(self):
-        db.delete(v for m in (CustomsBrokerUser, CustomsBroker, Business,
+        db.delete(v for m in (CustomsBrokerUser, CustomsBroker, Customer,
                               Dispatch, Declaration, Datastore, Operation)
                   for v in m.all(keys_only=True))
         self.response.out.write('The End')

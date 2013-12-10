@@ -128,7 +128,7 @@ module.exports = class BusinessFormView extends BaseFormView
           <b>h)</b> Teléfono oficina (incluir código ciudad)
         </label>
         #control
-          <input type='text' name='officePhone'>
+          <input type='text' name='phone'>
         </div>
       </div>
 
@@ -146,13 +146,24 @@ module.exports = class BusinessFormView extends BaseFormView
           <b>i)</b> Origen de los fondos
         </label>
         #control
-          <input type='text' name='source'>
+          <select name='source'>
+            <option>Efectivo</option>
+            <option>Cheque</option>
+            <option>Giro</option>
+            <option>Transferencia bancaria</option>
+            <option>Deposito en cuenta</option>
+            <option>Tarjeta de crédito</option>
+            <option>Bien mueble</option>
+            <option>Bien inmueble</option>
+            <option>Otro</option>
+            <option>No efectivo</option>
+          </select>
         </div>
       </div>
 
       #controlGroup50
         #label
-          (Efectivo, No efectivo, Bienes u otros activos) <b>&nbsp;</b>
+          &nbsp;
         </label>
         #control
           <input type='text' name='' style='visibility:hidden'>
@@ -213,33 +224,10 @@ module.exports = class BusinessFormView extends BaseFormView
           <input type='text' name='thirdName'>
         </div>
       </div>
-
-      #controlGroup50
-        #label
-          <b>&nbsp;</b> Documento
-        </label>
-        #control
-          <input type='text' name='thirdDocumentNumber'>
-        </div>
-      </div>
-
       #block
-        <br>
+        <br><br>
       </div>"
     @shareholdersView = new ShareholdersView
     $divShareholders = @$el.find "##{gz.Css \id-shareholders}"
     $divShareholders.append @shareholdersView.render!.el
     @shareholdersView.collection.set (@customer.get \shareholders)
-
-    ## s1 = new model.Shareholder do
-    ##   \documentType   : 'PA'
-    ##   \documentNumber : '12345678989'
-    ##   \name           : 'Massive Dynamic (g)'
-
-    ## s2 = new model.Shareholder do
-    ##   \documentType   : 'CE'
-    ##   \documentNumber : '998-7878-788-8'
-    ##   \name           : 'Al adjua mllds j12o3j 24'
-
-    ## @shareholdersView.collection.push s1
-    ## @shareholdersView.collection.push s2

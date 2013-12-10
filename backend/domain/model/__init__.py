@@ -6,8 +6,7 @@ domain.model
 import infraestructure.utils as utils
 from domain.gz import Entity, PolyEntity, ReferenceProperty, StringProperty, \
     EmailProperty, BooleanProperty, DateProperty, TextProperty, \
-    DocumentTypeProperty, JsonProperty, BadValueError, Key, ListProperty, \
-    StoreFailedError
+    JsonProperty, BadValueError, Key, ListProperty, StoreFailedError
 
 # ----
 # User
@@ -114,15 +113,16 @@ class Customer(PolyEntity):
         lastDeclaration: Última declaración jurada emitida por el cliente.
     """
 
-    name            = StringProperty       ()
-    documentNumber  = StringProperty       ()
-    documentType    = DocumentTypeProperty ()
-    address         = TextProperty         ()
-    officialAddress = TextProperty         ()
-    isObliged       = TextProperty         ()
-    hasOfficier     = TextProperty         ()
-    activity        = TextProperty         ()
-    lastDeclaration = ReferenceProperty    (Declaration)
+    name            = StringProperty ()
+    documentNumber  = StringProperty ()
+    documentType    = TextProperty   ()
+    address         = TextProperty   ()
+    officialAddress = TextProperty   ()
+    isObliged       = TextProperty   ()
+    hasOfficier     = TextProperty   ()
+    activity        = TextProperty   ()
+    phone           = TextProperty   ()
+    lastDeclaration = ReferenceProperty (Declaration)
 
     protected = ['lastDeclaration']
 
@@ -162,30 +162,21 @@ class Person(Customer):
     Customer natural person.
 
     Attributes:
-        birthPlace: Lugar de nacimiento.
         birthday: Fecha de nacimiento.
         nationality: Nacionalidad.
-        role: TODO(gcca): ¿What's role?
         businessNumber: RUC de la persona, si la tiene.
+        publicOffice: Cargo o función pública
     """
 
-    birthPlace     = TextProperty ()
-    birthday       = DateProperty ()
-    nationality    = TextProperty ()
-    role           = TextProperty ()
-    businessNumber = TextProperty ()
-    partnerName    = TextProperty ()
-    organization   = TextProperty ()
-    addressLegal   = TextProperty ()
-    addressFiscal  = TextProperty ()
-
-    #phone          = StringProperty()
-    #mobile         = StringProperty()
-    #email          = EmailProperty()
-    #civilStatus    = CategoryProperty()
-    #partnerName    = StringProperty()
-    #occupation     = StringProperty()       # Cargo público
-    #organization   = StringProperty()       # Organismo público/extranjero
+    birthday        = TextProperty ()
+    nationality     = TextProperty ()
+    businessNumber  = TextProperty ()
+    martialPartner  = TextProperty ()
+    domesticPartner = TextProperty ()
+    mobile          = TextProperty ()
+    email           = TextProperty ()
+    civilStatus     = TextProperty ()
+    publicOffice    = TextProperty ()
 
 class Business(Customer):
     """Business Entity
@@ -196,14 +187,12 @@ class Business(Customer):
         socialObject: Objecto social.
         legal: Identificación del representante legal.
         contactPhone: Teléfono de contacto de la empresa.
-        officePhone: Teléfono de la oficina.
         shareholders: Lista de accionistas en formato JSON.
     """
 
     socialObject    = TextProperty ()
     legal           = TextProperty ()
     contact         = TextProperty ()
-    officePhone     = TextProperty ()
     shareholders    = JsonProperty ()
 
     def __init__(self, *a, **k):

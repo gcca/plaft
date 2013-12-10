@@ -99,6 +99,7 @@ class SignInView(BaseHandler):
 
     def get(self):
         agent = self.request.headers['User-Agent']
+        self.headers_reval()
         if ( # No IE!!!
                 -1 != agent.find('Firefox')
                 or -1 != agent.find('Chrome')
@@ -129,6 +130,7 @@ class DashboardView(BaseHandler):
 
     @user_required
     def get(self):
+        self.headers_reval()
         self.write(generic('dashboard'))
 
 # --------

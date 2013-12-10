@@ -2,6 +2,8 @@
  * @module customer-form
  */
 
+widget = require '../widget'
+
 /**
  * Customer Base Form View
  * -----------------------
@@ -36,6 +38,15 @@ module.exports = class BaseFormView extends gz.GView
     dataJSON <<< \documentType : 'RUC'
     delete! dataCustomer.\id
 
+    # valid data
+    if not dataJSON.\documentNumber .match /^(\d{8}|\d{11})$/
+      (new widget.GAutoAlert (gz.Css \error),
+                             "DNI o RUC erróneo:
+                              &nbsp;#{dataJSON.\documentNumber .replace ' ' '_'}"
+                             ).elShow!
+      @trigger (gz.Css \on-error-declaration)
+      return
+
     # declaration data
     dataDeclaration =
       \source              : delete dataJSON.\source
@@ -44,9 +55,9 @@ module.exports = class BaseFormView extends gz.GView
 
     optionsDeclaration =
       \success : !(declaration) ~>
-          @trigger (gz.Css \event-created-declaration), declaration
+        @trigger (gz.Css \event-created-declaration), declaration
       \error : ->
-          alert 'ERROR declaration'
+        alert 'ERROR declaration'
 
     if _.\isEqual dataCustomer, dataJSON
       @customer.createDeclaration dataDeclaration, optionsDeclaration
@@ -54,7 +65,8 @@ module.exports = class BaseFormView extends gz.GView
       @customer.save dataJSON, do
         \success : !(customer) ~>
           customer.createDeclaration dataDeclaration, optionsDeclaration
-        \error : -> alert 'ERROR customer'
+        \error : !->
+          alert 'ERROR declaration'
 
   /**
    * Get JSON form.
