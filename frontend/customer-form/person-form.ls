@@ -163,7 +163,7 @@ module.exports = class PersonFormView extends BaseFormView
           <b>1)</b> Nombre del cónyuge, de ser casado
         </label>
         #control
-          <input type='text' name='martialPartner'>
+          <input type='text' name='maritalPartner'>
         </div>
       </div>
 

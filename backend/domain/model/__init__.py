@@ -171,7 +171,7 @@ class Person(Customer):
     birthday        = TextProperty ()
     nationality     = TextProperty ()
     businessNumber  = TextProperty ()
-    martialPartner  = TextProperty ()
+    maritalPartner  = TextProperty ()
     domesticPartner = TextProperty ()
     mobile          = TextProperty ()
     email           = TextProperty ()
@@ -196,7 +196,7 @@ class Business(Customer):
     shareholders    = JsonProperty ()
 
     def __init__(self, *a, **k):
-        """Init Business """
+        """Init Business."""
         self.documentType = 'RUC'
         super(Business, self).__init__(*a, **k)
 

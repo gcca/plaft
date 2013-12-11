@@ -153,22 +153,6 @@ module.exports = class DeclarationView extends ModuleBaseView
               #{form.control}
                 <label><b>#{declaration.'thirdName'}</b></label>
               </div>
-            </div>
-
-            <h6 class='#{gz.Css \note}'><em>Documento de identidad</em></h6><br>
-
-            #{form.control-group}
-              #{form.label}Tipo</label>
-              #{form.control}
-                <label><b>#{declaration.'thirdDocumentType'}</b></label>
-              </div>
-            </div>
-
-            #{form.control-group}
-              #{form.label}Número</label>
-              #{form.control}
-                <label><b>#{declaration[\thirdDocumentNumber]}</b></label>
-              </div>
             </div>"
           else
             "<h6 class='#{gz.Css \note}'>No figura un tercero.</h6>"

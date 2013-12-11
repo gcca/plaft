@@ -7,7 +7,7 @@
 $.fn.serializeJSON = ->
   s = (@get 0).elements
   (_ s).reduce (ax, f) ->
-    if f instanceof [HTMLInputElement, HTMLSelectElement, HTMLTextAreaElement]
+    if f instanceof [HTMLInputElement, HTMLSelectElement, HTMLTextAreaElement]#:?
       if f.name
         if f.type is \checkbox
           ax[f.name] = f.checked

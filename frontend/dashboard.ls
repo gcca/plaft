@@ -136,7 +136,7 @@ class DashboardView extends gz.GView
         </li>
         <li class='#{gz.Css \active}'>
           <a href='javascript:void(0)'>
-          Current item
+            Despacho
           </a>
         </li>
       </ul>

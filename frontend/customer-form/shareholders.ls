@@ -39,7 +39,10 @@ class ShareholderView extends gz.GView
    * @type {string}
    * @private
    */
-  className: "#{gz.Css \large-100} #{gz.Css \medium-100} #{gz.Css \small-100}'>"
+  className: "#{gz.Css \large-100}
+            \ #{gz.Css \medium-100}
+            \ #{gz.Css \small-100}
+            \ #{gz.Css \parent-toggle}"
 
   /**
    * View events.
@@ -129,10 +132,11 @@ class ShareholderView extends gz.GView
 
     aHtml.push "<div class='#{gz.Css \large-10}
                           \ #{gz.Css \medium-10}
-                          \ #{gz.Css \small-100}'>"
+                          \ #{gz.Css \small-100}' style='margin-top:.3em'>"
     aHtml.push "<span id='#{gz.Css \id-icon-remove}'
                     class='#{gz.Css \icon-remove}
-                         \ #{gz.Css \icon-large}' style='cursor:pointer'>
+                         \ #{gz.Css \icon-large}
+                         \ #{gz.Css \toggle}' style='cursor:pointer'>
                 </span>"
     aHtml.push '</div>'
 

@@ -67,7 +67,8 @@ module.exports = class ConfigView extends ModuleBaseView
             </label>
             #divControl
               <input type='text' name='name'
-                  value='#{@model.get \name}'>
+                  value='#{@model.get \name}'
+                  placeholder='Razón social'>
             </div>
           </div>
 
@@ -77,7 +78,8 @@ module.exports = class ConfigView extends ModuleBaseView
             </label>
             #divControl
               <input type='text' name='documentNumber'
-                  value='#{@model.get \documentNumber}'>
+                  value='#{@model.get \documentNumber}'
+                  placeholder='RUC'>
             </div>
           </div>
 
@@ -87,7 +89,8 @@ module.exports = class ConfigView extends ModuleBaseView
             </label>
             #divControl
               <input type='text' name='code'
-                  value='#{@model.get \code}'>
+                  value='#{@model.get \code}'
+                  placeholder='Código de aduana'>
             </div>
           </div>
         </fieldset>
@@ -105,7 +108,8 @@ module.exports = class ConfigView extends ModuleBaseView
             </label>
             #divControl
               <input type='text' name='officierName'
-                  value='#{@model.get \officierName}'>
+                  value='#{@model.get \officierName}'
+                  placeholder='Nombre'>
             </div>
           </div>
 
@@ -115,7 +119,8 @@ module.exports = class ConfigView extends ModuleBaseView
             </label>
             #divControl
               <input type='text' name='officierCode'
-                  value='#{@model.get \officierCode}'>
+                  value='#{@model.get \officierCode}'
+                  placeholder='Código de oficial de cumplimiento'>
             </div>
           </div>
         </fieldset>

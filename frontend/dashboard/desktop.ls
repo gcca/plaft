@@ -76,6 +76,8 @@ module.exports = class DesktopView extends gz.GView
    * @private
    */
   initialize: !->
-    @el.style.paddingLeft = '0.3em'
+    @el.style
+      ..paddingLeft = '0.3em'
+      ..paddingBottom = '5em'
 
   /** @private */ ui : null

@@ -1,4 +1,5 @@
-# -*- coding: utf-8 -*-
+# encoding: utf-8
+from __future__ import unicode_literals
 import webapp2
 from datetime import date
 from domain.gz import db
@@ -32,6 +33,15 @@ def main():
     # Customers
     customer1 = Business(
         name='Massive Dynamic',
+        socialObject='El objeto',
+        activity='Venta de Fringes',
+        legal='William Bell',
+        address='Florida',
+        officialAddress='UE',
+        phone='564-8879',
+        contact='Nina Sharp',
+        isObliged='Sí',
+        hasOfficier='No',
         shareholders=[
             Dto({
                 'documentType': 'PA',

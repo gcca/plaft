@@ -184,9 +184,9 @@ class AutoAlert extends gz.GView
    */
   initialize: !->
     @$el.on \mouseover ~> @el.style.opacity = 'initial'
-    @$el.on \mouseleave ~> @el.style.opacity = '0.69' # \(ツ)/
+    @$el.on \mouseleave ~> @el.style.opacity = '0.69'  # \(ツ)/
     @el.classList.add if @block? then gz.Css \block else gz.Css \basic
-    @el.classList.add @type
+    @el.classList.add @type if @type isnt ''
     @el.style
       ..position   = 'fixed'
       ..width      = '96%'

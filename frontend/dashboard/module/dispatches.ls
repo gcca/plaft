@@ -54,6 +54,8 @@ module.exports = class DispatchesView extends builder.Table
       dispatch = @getDispatchByEvent evt
       dispatch.fixRegister!
       @removeRowByEvent evt
+      (new widget.GAutoAlert (gz.Css \success), registerMsg).elShow!
+
 
     /**
      * Fixed dispatch by @{code unusual}.
@@ -64,6 +66,8 @@ module.exports = class DispatchesView extends builder.Table
       dispatch = @getDispatchByEvent evt
       dispatch.fixUnusual!
       @removeRowByEvent evt
+      (new widget.GAutoAlert (gz.Css \success),
+                             registerMsg + ' como <b>inusual</b>').elShow!
 
     /**
      * Fixed dispatch by @{code suspicious}.
@@ -74,6 +78,14 @@ module.exports = class DispatchesView extends builder.Table
       dispatch = @getDispatchByEvent evt
       dispatch.fixSuspicious!
       @removeRowByEvent evt
+      (new widget.GAutoAlert (gz.Css \success),
+                             registerMsg + ' como <b>sospechoso</b>').elShow!
+
+  /**
+   * See On-click event to fix disptach.
+   * @private
+   */
+  registerMsg = 'Despacho registrado'
 
   /**
    * Fixed dispatch by @{code suspicious}.

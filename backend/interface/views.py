@@ -208,26 +208,36 @@ class DeclarationPDFView(BaseHandler):
 
         data = ([
             ['Nombre'              , customer.name],
-            ['Tipo de documento'   , customer.documentType.toName],
+            ['Tipo de documento'   , customer.documentType],
             ['Número de documento' , customer.documentNumber],
-            ['', ''],
-            ['Lugar de nacimiento' , customer.birthPlace],
-            ['Fecha de nacimiento' , customer.birthday.strftime('%m/%d/%Y') if customer.birthday else ''],
+            ['RUC' if customer.businessNumber else '', customer.businessNumber if customer.businessNumber else ''],
+            ['Fecha y lugar de nacimiento' , customer.birthday if customer.birthday else ''],
             ['Nacionalidad'        , customer.nationality],
+            ['Domilicio declarado' , customer.address],
+            ['Domicilio fiscal'    , customer.officialAddress],
+            ['Estado civil' , customer.civilStatus],
+            ['Nombre del cónyuge' , customer.maritalPartner],
+            ['Conviviente' if customer.domesticPartner else '', customer.domesticPartner if customer.domesticPartner else ''],
+            ['', ''],
+            ['Teléfono fijo' , customer.phone],
+            ['Celular'    , customer.mobile],
+            ['Correo electrónico' , customer.email],
+            ['', ''],
+            ['Profesión u ocupación' , customer.activity],
+            ['Cargo o función pública', customer.publicOffice],
+            ['', ''],
+            ['Origen de los fondos'  , declaration.source],
             ['', ''],
             ['¿Es sujeto obligado?', 'Sí' if customer.isObliged else 'No'],
             ['¿Tiene oficial de cumplimiento?' , 'Sí' if customer.hasOfficier else 'No'],
-            ['', ''],
-            ['Domilicio declarado' , customer.address],
-            ['Domicilio fiscal'    , customer.officialAddress]
+            ['', '']
         ] + ([['', ''],
             ['Beneficiario'            , ''],
             ['    Nombre'              , declaration.thirdName],
-            ['    Número de documento' , declaration.thirdDocumentNumber]
         ] if declaration.thirdName else [])) \
-        if declaration.customer.className is 'Person' else [
+        if customer.className is 'Person' else [
             ['Razón Social'        , customer.name],
-            ['Tipo de documento'   , customer.documentType.toName],
+            ['Tipo de documento'   , customer.documentType],
             ['Número de documento' , customer.documentNumber],
             ['Objeto social'       , customer.socialObject],
             ['Actividad'           , customer.activity],
@@ -246,11 +256,10 @@ class DeclarationPDFView(BaseHandler):
             ['Origen de los fondos'  , declaration.source],
         ] + ([['', ''],
             ['Beneficiario'            , ''],
-            ['    Nombre'              , declaration.thirdName],
-            ['    Número de documento' , declaration.thirdDocumentNumber]
+            ['    Nombre'              , declaration.thirdName]
         ] if declaration.thirdName else []) + ([['', ''],
             ['Accionistas:', '']] + self.shareholdersList(customer.shareholders))
-        table = Table(data) #, [2.4*inch, 3.3*inch], 10*[.35*inch])
+        table = Table(data, [2.5*inch, 2.3*inch]) #, 10*[.35*inch])
         story.append(table)
         story.append(Spacer(1, 24))
 
