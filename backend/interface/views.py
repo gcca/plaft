@@ -120,8 +120,15 @@ class SignOutView(BaseHandler):
 class CustomerFormView(BaseHandler):
 
     def get(self):
-        # via window.params.cbs: Customs Brokers
         self.write(generic('customer-form'))
+
+# -------------
+# Customer View
+# -------------
+class CustomerView(BaseHandler):
+
+    def get(self):
+        self.write(generic('customer'))
 
 # --------------
 # Dashboard View
@@ -239,6 +246,7 @@ class DeclarationPDFView(BaseHandler):
             ['Razón Social'        , customer.name],
             ['Tipo de documento'   , customer.documentType],
             ['Número de documento' , customer.documentNumber],
+            ['', ''],
             ['Objeto social'       , customer.socialObject],
             ['Actividad'           , customer.activity],
             #[''  , customer.],
@@ -251,8 +259,9 @@ class DeclarationPDFView(BaseHandler):
             ['Domilicio declarado' , customer.address],
             ['Domicilio fiscal'    , customer.officialAddress],
             # ['Código de ciudad'    , customer.addressCityCode],
-            # # ['Teléfono'            , customer.phone],
-            # ['Contacto'            , customer.contact]
+            ['Teléfono'            , customer.phone],
+            ['Contacto'            , customer.contact],
+            ['', ''],
             ['Origen de los fondos'  , declaration.source],
         ] + ([['', ''],
             ['Beneficiario'            , ''],

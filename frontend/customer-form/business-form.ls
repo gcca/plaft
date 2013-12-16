@@ -23,6 +23,7 @@ module.exports = class BusinessFormView extends BaseFormView
 
   /**
    * Initialize business form.
+   * @see BaseFormView
    * @override
    */
   initForm: !->
@@ -83,7 +84,7 @@ module.exports = class BusinessFormView extends BaseFormView
                 \ #{gz.Css \medium-100}
                 \ #{gz.Css \small-100}'>
         #label
-          <b>d)</b> Indetificación Accionistas
+          <b>d)</b> Identificación Accionistas
         </label>
       </div>
 
@@ -223,9 +224,6 @@ module.exports = class BusinessFormView extends BaseFormView
         #control
           <input type='text' name='thirdName'>
         </div>
-      </div>
-      #block
-        <br><br>
       </div>"
     @shareholdersView = new ShareholdersView
     $divShareholders = @$el.find "##{gz.Css \id-shareholders}"

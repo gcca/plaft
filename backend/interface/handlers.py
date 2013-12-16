@@ -116,7 +116,8 @@ class CustomerDeclarationHandler(BaseHandler):
         except ValueError, TypeError:
             self.status.BAD_REQUEST(Error('Bad identifier number: ' + id))
         else:
-            self.write_json('{"id":"%s"}' % declaration.id)
+            self.write_json('{"id":%s,"trackingId":"%s"}'
+                            % (declaration.id, declaration.trackingId))
 
 
 class CustomerLastDeclarationHandler(BaseHandler):
@@ -160,6 +161,12 @@ class DeclarationsHandler(BaseHandler):
     def get(self):
         self.render_json(Declaration.all()) # (-o-) DBG
 
+class DeclarationsTopHandler(BaseHandler):
+
+    Service = DeclarationService
+
+    def get(self):
+        self.render_json(Declaration.all().order('-created').fetch(limit=5))
 
 # --------
 # Dispatch

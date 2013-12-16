@@ -88,7 +88,7 @@ document.body.innerHTML = "
           </a>
         </li>
         <li>
-          <a href='/customer-form'>
+          <a href='/customer'>
             Anexo 5: Declaración Jurada de Conocimiento del Cliente
             <i class='#{gz.Css \icon-pencil} #{gz.Css \push-right}'></i>
           </a>

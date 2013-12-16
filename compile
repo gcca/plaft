@@ -43,6 +43,9 @@ signin)
 customer-form)
   fc_ll $2
   ;;
+customer)
+  fc_ll $2
+  ;;
 dashboard)
   fc_ll $2
   ;;
@@ -55,6 +58,8 @@ all)
   fc_ls none
   ext3=$ext4
   src=customer-form
+  fc_ll
+  src=customer
   fc_ll
   src=dashboard
   fc_ll

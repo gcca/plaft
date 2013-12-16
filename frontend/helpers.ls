@@ -41,7 +41,7 @@ NodeList ::=
       for node in @
         if node.checked is yes
           return node.value
-      new Object
+      ''
     !(value) ->
       for node in @
         if value == node.value
@@ -105,6 +105,9 @@ class ObjectPool
 
 GBase = API : path : '/api/v1/'
 
+GAPI =
+   path: '/api/v1/'
+
 class GModel extends window .\Backbone .\Model implements GBase
   (_, o = new Object) ->
     @mRoot? = o.mRoot
@@ -134,6 +137,7 @@ exports <<<
   GView       : window .\Backbone .\View
   GModel      : GModel
   GCollection : GCollection
+  GAPI        : GAPI
 window .\Ink .\UI
   exports <<<
     Ink:

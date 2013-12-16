@@ -68,6 +68,12 @@ class Customer extends GModel
     declaration = new Declaration declarationJSON, mRoot : @
     declaration.save new Object, options
 
+  /**
+   * Check if customer is a business.
+   * @return {boolean}
+   */
+  isBusiness: -> (@get \documentNumber).length is 11
+
 /**
  * Customer collection
  * @class Customers

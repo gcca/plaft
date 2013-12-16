@@ -266,6 +266,4 @@ module.exports = class PersonFormView extends BaseFormView
             <label>No</label>
           </li>
         </ul>
-      </div>
-
-      <br><br>"
+      </div>"

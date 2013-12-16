@@ -66,7 +66,7 @@ module.exports = class BaseFormView extends gz.GView
         \success : !(customer) ~>
           customer.createDeclaration dataDeclaration, optionsDeclaration
         \error : !->
-          alert 'ERROR declaration'
+          alert 'ERROR customer (46svd45)'
 
   /**
    * Get JSON form.

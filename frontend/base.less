@@ -174,6 +174,8 @@ a, input, button, select, textarea {outline:none !important;}
 ::-moz-focus-inner {border:0 !important;}
 button, li a, thead, tbody { .user-select; }
 
+a { cursor: pointer; }
+
 
 // InK
 .ink-clear       { clear: both;  }
@@ -182,6 +184,18 @@ button, li a, thead, tbody { .user-select; }
 input, textarea, select {
   color: #666;
 }
+
+// Base
+.parent-toggle {
+  .toggle {
+    visibility: hidden;
+  }  // .toggle
+
+  &:hover .toggle {
+    visibility: visible;
+  }
+}  // .parent-toggle
+
 
 // Events (Base)
 .dismiss {filter:none}
