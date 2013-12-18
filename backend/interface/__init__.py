@@ -12,7 +12,7 @@ from domain.model import User, CustomsBrokerUser
 
 
 class BaseHandler(webapp2.RequestHandler):
-    ''' Base Handler '''
+    """Base Handler."""
 
     rc = rc_factory()
     ct = ct_factory()

@@ -178,6 +178,12 @@ class DeclarationPDFView(BaseHandler):
             list.append(['', ''])
         return list
 
+    def addressList(self, caption, address):
+        chunkLength = 52
+        return ([[caption, address[:chunkLength]]]
+                + [['', address[i:i+chunkLength]]
+                   for i in range(chunkLength, len(address), chunkLength)])
+
     def get(self, id):
         try:
             declaration = Declaration.by(int(id))
@@ -220,10 +226,10 @@ class DeclarationPDFView(BaseHandler):
             ['Número'     , customer.documentNumber],
             ['RUC' , customer.businessNumber if customer.businessNumber else '-'],
             ['Fecha y lugar de nacimiento' , customer.birthday if customer.birthday else ''],
-            ['Nacionalidad'        , customer.nationality],
-            ['Domilicio declarado' , customer.address],
-            ['Domicilio fiscal'    , customer.officialAddress],
-            ['', ''],
+            ['Nacionalidad'        , customer.nationality]]
+            + self.addressList('Domilicio declarado', customer.address)
+            + self.addressList('Domicilio fiscal', customer.officialAddress)
+            + [['', ''],
             ['Teléfono fijo' , customer.phone],
             ['Celular'    , customer.mobile],
             ['Correo electrónico' , customer.email],
@@ -251,10 +257,10 @@ class DeclarationPDFView(BaseHandler):
             ['', ''],
             ['Accionistas:', '']]
             + self.shareholdersList(customer.shareholders) + [
-            ['Representate legal'  , customer.legal],
-            ['Domilicio'           , customer.address],
-            ['Domicilio fiscal'    , customer.officialAddress],
-            ['', ''],
+            ['Representate legal'  , customer.legal]]
+            + self.addressList('Domilicio', customer.address)
+            + self.addressList('Domicilio fiscal', customer.officialAddress)
+            + [['', ''],
             ['Teléfono'            , customer.phone],
             ['Contacto'            , customer.contact],
             ['', ''],

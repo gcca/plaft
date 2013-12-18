@@ -39,6 +39,7 @@ class CustomerView extends gz.GView
     "submit ##{gz.Css \id-form-search}": !(evt) ->
       evt.preventDefault!
       documentNumber = evt.currentTarget.elements.'query'.value
+      localStorage.setItem (gz.Css \query), documentNumber
       @editCustomer documentNumber
 
     /**
@@ -75,9 +76,9 @@ class CustomerView extends gz.GView
      */
     "focus .#{gz.Css \input-query}": !(evt) ->
       evt.currentTarget
-        ..placeholder = '_'
+        ..placeholder = 'Buscar'
         ..parentElement.nextElementSibling.lastElementChild \
-          .style.display = 'inline'
+          .style.display = 'none'
 
     /**
      * On blur input for search customer.
@@ -85,11 +86,10 @@ class CustomerView extends gz.GView
      * @private
      */
     "blur .#{gz.Css \input-query}": (evt) ->
-      setTimeout ->
-        evt.currentTarget.parentElement.nextElementSibling \
-          .lastElementChild.style.display = 'none'
-      , 500
-      evt.currentTarget.placeholder = 'Buscar'
+      evt.currentTarget
+        ..placeholder = '_'
+        ..parentElement.nextElementSibling.lastElementChild \
+          .style.display = 'inline'
 
     /**
      * On declaration list click.
@@ -265,8 +265,7 @@ class CustomerView extends gz.GView
     $body.html @templateBody!
 
     # body.table
-    $tbodyEl = $body.find \tbody
-    @$tbodyEl = $tbodyEl
+    @$tbodyEl = $body.find \tbody
     apiUrl = gz.GAPI.path
 
     $.get (apiUrl + 'declarations/top'), (declarations, status) ~>
@@ -274,7 +273,7 @@ class CustomerView extends gz.GView
         declarationsHtml = new Array
         for declaration in declarations
           declarationsHtml.push (@addRow declaration)
-        $tbodyEl.append declarationsHtml.join ''
+        @$tbodyEl.append declarationsHtml.join ''
       else
         alert 'ERROR: Dispacthes (5c6sr)'
 
@@ -283,12 +282,23 @@ class CustomerView extends gz.GView
     @$bodyForm = $body.find "##{gz.Css \body-form}"
     #   set body
     @$el.append $body
-    $body.find 'input' .focus!
+    @$el.append "<div class='#{gz.Css \large-100}
+                           \ #{gz.Css \medium-100}
+                           \ #{gz.Css \small-100}' style='margin-bottom:6em'>
+                   &nbsp;
+                 </div>"
     #   set button save
     @$buttonSave = @$el.find "##{gz.Css \id-save}"
     @$buttonSave.hide!
     #   set logo
     @$logo = @$el.find "##{gz.Css \id-logo}"
+    #   set search
+    $input = $body.find 'input'
+    query = localStorage.getItem (gz.Css \query)
+    if query?
+      $input.val query
+      $body.find "##{gz.Css \id-form-search}" .submit!
+    $input.focus
     super!
 
   /**
@@ -329,12 +339,12 @@ class CustomerView extends gz.GView
               .control.large-100.medium-100.small-100.append-button
                 span
                   input.input-query(type="text", name="query",
-                                    placeholder="Buscar")
+                                    placeholder="_")
                 button.ink-button
                   i.icon-search
                   | &nbsp;
-                  .hide-all(style="display:none") Buscar
-      .large-100.medium-100.small-100#body-form
+                  .show-all(style="display:inline") Buscar
+      .large-100.medium-100.small-100#body-form(style="margin-bottom:1em")
       .large-100.medium-100.small-100
         table.ink-table.alternating.hover
           thead
@@ -346,3 +356,5 @@ class CustomerView extends gz.GView
   '''
 
 (new CustomerView).render!
+## $ \input .val \12345678989
+## $ \button .click!

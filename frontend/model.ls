@@ -1,6 +1,6 @@
-/**
- * Domain Layer
- *
+/** ------------
+ *  Domain Layer
+ *  ------------
  * @fileoverview Utilities for hadnling remote services. {@code GModel}
  *     and {@code Collection}for managing entities.
  * @author gcca@gcca.tk (cristHian Gz)
