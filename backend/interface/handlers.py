@@ -108,7 +108,8 @@ class CustomerDeclarationHandler(BaseHandler):
         '''
         service = CustomerService()
         try:
-            declaration = service.createDeclaration(int(pid), self.request_dto)
+            declaration = service.createDeclaration(int(pid),
+                                                    self.request_dto)
         except SpecificationError as e:
             self.status.BAD_REQUEST(e)
         except StoreFailedError as e:

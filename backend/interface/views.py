@@ -12,7 +12,8 @@ def generic(template, args=''):
         '<html>'
         '<head>'
         '<link rel="stylesheet" href="/static/%(template)s.css">'
-        '<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">'
+        '<meta name="viewport" content="width=device-width, '
+        'initial-scale=1.0, maximum-scale=1.0, user-scalable=no">'
         '<title>PLAFT-sw</title>'
         '</head>'
         '<body>'
@@ -214,61 +215,60 @@ class DeclarationPDFView(BaseHandler):
         story.append(Spacer(1, 36))
 
         data = ([
-            ['Nombre'              , customer.name],
-            ['Tipo de documento'   , customer.documentType],
-            ['Número de documento' , customer.documentNumber],
-            ['RUC' if customer.businessNumber else '', customer.businessNumber if customer.businessNumber else ''],
+            ['Nombres y Apellidos' , customer.name],
+            ['Documento'   , customer.documentType],
+            ['Número'     , customer.documentNumber],
+            ['RUC' , customer.businessNumber if customer.businessNumber else '-'],
             ['Fecha y lugar de nacimiento' , customer.birthday if customer.birthday else ''],
             ['Nacionalidad'        , customer.nationality],
             ['Domilicio declarado' , customer.address],
             ['Domicilio fiscal'    , customer.officialAddress],
-            ['Estado civil' , customer.civilStatus],
-            ['Nombre del cónyuge' , customer.maritalPartner],
-            ['Conviviente' if customer.domesticPartner else '', customer.domesticPartner if customer.domesticPartner else ''],
             ['', ''],
             ['Teléfono fijo' , customer.phone],
             ['Celular'    , customer.mobile],
             ['Correo electrónico' , customer.email],
             ['', ''],
             ['Profesión u ocupación' , customer.activity],
+            ['Estado civil' , customer.civilStatus],
+            ['    Nombre del cónyuge' , customer.maritalPartner],
+            ['    Conviviente', customer.domesticPartner if customer.domesticPartner else '-'],
+            ['', ''],
             ['Cargo o función pública', customer.publicOffice],
             ['', ''],
             ['Origen de los fondos'  , declaration.source],
             ['', ''],
             ['¿Es sujeto obligado?', 'Sí' if customer.isObliged else 'No'],
             ['¿Tiene oficial de cumplimiento?' , 'Sí' if customer.hasOfficier else 'No'],
-            ['', '']
         ] + ([['', ''],
             ['Beneficiario'            , ''],
-            ['    Nombre'              , declaration.thirdName],
-        ] if declaration.thirdName else [])) \
-        if customer.className is 'Person' else [
+            ['    Nombre'              , declaration.thirdName]])) \
+        if customer.className is 'Person' else ([
             ['Razón Social'        , customer.name],
-            ['Tipo de documento'   , customer.documentType],
-            ['Número de documento' , customer.documentNumber],
+            ['RUC'                 , customer.documentNumber],
             ['', ''],
             ['Objeto social'       , customer.socialObject],
-            ['Actividad'           , customer.activity],
-            #[''  , customer.],
+            ['Actividad económica' , customer.activity],
             ['', ''],
+            ['Accionistas:', '']]
+            + self.shareholdersList(customer.shareholders) + [
             ['Representate legal'  , customer.legal],
-            ['', ''],
-            ['¿Es sujeto obligado?', customer.isObliged],
-            ['¿Tiene oficial de cumplimiento?' , customer.hasOfficier],
-            ['', ''],
-            ['Domilicio declarado' , customer.address],
+            ['Domilicio'           , customer.address],
             ['Domicilio fiscal'    , customer.officialAddress],
-            # ['Código de ciudad'    , customer.addressCityCode],
+            ['', ''],
             ['Teléfono'            , customer.phone],
             ['Contacto'            , customer.contact],
             ['', ''],
             ['Origen de los fondos'  , declaration.source],
-        ] + ([['', ''],
-            ['Beneficiario'            , ''],
-            ['    Nombre'              , declaration.thirdName]
-        ] if declaration.thirdName else []) + ([['', ''],
-            ['Accionistas:', '']] + self.shareholdersList(customer.shareholders))
-        table = Table(data, [2.5*inch, 2.3*inch]) #, 10*[.35*inch])
+            ['', ''],
+            ['¿Es sujeto obligado?', customer.isObliged],
+            ['¿Tiene oficial de cumplimiento?' , customer.hasOfficier]]
+            + ([['', ''],
+                ['Beneficiario'  , ''],
+                ['    Nombre'    ,
+                 declaration.thirdName if declaration.thirdName else '-']
+            ]))
+
+        table = Table(data, [2.2*inch, 3*inch]) #, 10*[.35*inch])
         story.append(table)
         story.append(Spacer(1, 24))
 

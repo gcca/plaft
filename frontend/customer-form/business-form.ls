@@ -115,7 +115,11 @@ module.exports = class BusinessFormView extends BaseFormView
         </div>
       </div>
 
-      #controlGroup50
+      <div class='#{gz.Css \control-group}
+                \ #{gz.Css \large-50}
+                \ #{gz.Css \medium-50}
+                \ #{gz.Css \small-100}
+                \ #{gz.Css \hide-small}'>
         #label
           <b>&nbsp;</b> &nbsp;
         </label>
@@ -162,7 +166,11 @@ module.exports = class BusinessFormView extends BaseFormView
         </div>
       </div>
 
-      #controlGroup50
+      <div class='#{gz.Css \control-group}
+                \ #{gz.Css \large-50}
+                \ #{gz.Css \medium-50}
+                \ #{gz.Css \small-100}
+                \ #{gz.Css \hide-small}'>
         #label
           &nbsp;
         </label>

@@ -266,4 +266,13 @@ module.exports = class PersonFormView extends BaseFormView
             <label>No</label>
           </li>
         </ul>
+      </div>
+
+      #controlGroup50
+        #label
+          <b>o)</b> Identificación Tercero
+        </label>
+        #control
+          <input type='text' name='thirdName'>
+        </div>
       </div>"

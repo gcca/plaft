@@ -12,6 +12,9 @@ BusinessView = require './customer-form/business-form'
  *  Customer View
  *  -------------
  * Index page.
+ * Workflow: Find a customer (business or person), create/update info, save
+ * read pdf declaration.
+ *
  * @class CustomerView
  */
 class CustomerView extends gz.GView
@@ -29,70 +32,75 @@ class CustomerView extends gz.GView
    */
   events:
     /**
-     * On
+     * On search a customer.
+     * @param {Object} evt
      * @private
      */
-    "click ##{gz.Css \id-new-person}": ->
-      @model.clear!
-      @declaration = void
-      @setCustomerView (new PersonView @model)
-
-    "click ##{gz.Css \id-new-business}": ->
-      @model.clear!
-      @declaration = void
-      @setCustomerView (new BusinessView @model)
-
-    "click ##{gz.Css \id-edit}": ->
-      documentNumber = @$el.find 'input[name=query]' .val!
-      @editCustomer documentNumber
-
-    "click ##{gz.Css \id-delete}": ->
-      @model.clear!
-      @declaration = void
-      @customerView = null
-      @$buttonSave.hide!
-      @$bodyForm.html ''
-
-    "click ##{gz.Css \id-print}": ->
-      if @declaration?
-        @showPdf "/declaration/#{@declaration.id}/pdf"
-      else
-        (new widget.GAutoAlert (gz.Css \info),
-                       "Es necesario guardar la declaración.").elShow!
-
-
-    "click ##{gz.Css \id-save}": ->
-      @customerView.commit!
-      @$buttonSave.html "Guardado &nbsp; <i class='#{gz.Css \icon-check}'></i>"
-
-    "submit ##{gz.Css \id-form-search}": (evt) ->
+    "submit ##{gz.Css \id-form-search}": !(evt) ->
       evt.preventDefault!
       documentNumber = evt.currentTarget.elements.'query'.value
       @editCustomer documentNumber
 
-    "click a.#{gz.Css \link-pdf}": (evt) ->
+    /**
+     * On save (generate) a declaration.
+     * @private
+     */
+    "click ##{gz.Css \id-save}": !->
+      @$el.find "##{gz.Css \id-declaration-list}" .show!
+      @customerView.commit!
+      @$buttonSave.prop \disabled true
+      @$buttonSave.html "Guardado &nbsp;<i class='#{gz.Css \icon-check}'></i>"
+
+    /**
+     * On click to show pdf from list (table).
+     * @param {Object} evt
+     * @private
+     */
+    "click a.#{gz.Css \link-pdf}": !(evt) ->
       evt.preventDefault!
       a = evt.currentTarget
       @showPdf a.href
 
-    "focus .#{gz.Css \input-query}": (evt) ->
+    /**
+     * On keyup for input[name=name]. Show customer name on topbar.
+     * @param {!Object} evt Event object.
+     * @private
+     */
+    'keyup input[name=name]': !(evt) -> @$logo.html evt.currentTarget.value
+
+    /**
+     * On focus input for search customer.
+     * @param {Object} evt
+     * @private
+     */
+    "focus .#{gz.Css \input-query}": !(evt) ->
       evt.currentTarget
         ..placeholder = '_'
-        ..parentElement.nextElementSibling.lastElementChild
-          ..style.display = 'inline'
+        ..parentElement.nextElementSibling.lastElementChild \
+          .style.display = 'inline'
 
+    /**
+     * On blur input for search customer.
+     * @param {Object} evt
+     * @private
+     */
     "blur .#{gz.Css \input-query}": (evt) ->
       setTimeout ->
-        evt.currentTarget
-          ..value = ''
-          ..parentElement.nextElementSibling.lastElementChild
-            ..style.display = 'none'
+        evt.currentTarget.parentElement.nextElementSibling \
+          .lastElementChild.style.display = 'none'
       , 500
       evt.currentTarget.placeholder = 'Buscar'
+
+    /**
+     * On declaration list click.
+     * @private
+     */
+    "click ##{gz.Css \id-declaration-list}": -> @$bodyForm.html ''
 
   /**
    * Edit customer.
    * @param {string} documentNumber
+   * @see event {@code 'submit #id-form-search'}
    * @private
    */
   editCustomer: (documentNumber) ->
@@ -100,30 +108,23 @@ class CustomerView extends gz.GView
     if dnLength is 8 or dnLength is 11
       @model.clear!
       @model.set \documentNumber : documentNumber
+      CustomerView = if dnLength is 11 then BusinessView else PersonView
       @model.fetch do
         \success : (customer) ~>
-          CustomerView = if customer.isBusiness!
-                           then BusinessView else PersonView
+          @$logo.html customer.get \name
           @setCustomerView (new CustomerView customer)
         \error : ~>
-          @$bodyForm.html ''
-          (new widget.GAutoAlert (gz.Css \error),
-                                 "No existe el documento <em>
+          @$logo.html documentNumber
+          @setCustomerView (new CustomerView @model)
+          (new widget.GAutoAlert (gz.Css \info),
+                                 "Registro de nuevo cliente:<em>
                                   &nbsp;#documentNumber</em>").elShow!
-
     else
       @$buttonSave.hide!
-      @showDocumentError documentNumber
-
-  /**
-   * @see submit event
-   * @private
-   */
-  showDocumentError: (documentNumber) ->
-    @$bodyForm.html ''
-    (new widget.GAutoAlert (gz.Css \error),
-                           "Número de DNI o RUC incrorecto:<em>
-                            &nbsp;#documentNumber</em>").elShow!
+      @$bodyForm.html ''
+      (new widget.GAutoAlert (gz.Css \error),
+                             "Número de DNI o RUC incrorecto:<em>
+                              &nbsp;#documentNumber</em>").elShow!
 
   /**
    * Add customer view. Declaration form.
@@ -133,28 +134,36 @@ class CustomerView extends gz.GView
     @customerView.on (gz.Css \event-created-declaration), @onSavedDeclaration
     @$bodyForm.html ''
     @$bodyForm.append @customerView.render!.el
+    @$buttonSave.prop \disabled false
     @$buttonSave.html "Guardar &nbsp;
                        <i class='#{gz.Css \icon-check-empty}'></i>"
     @$buttonSave.show!
 
   /**
+   * On saved declaration adds row to table.
+   * @see setCustomerView
    * @private
    */
   onSavedDeclaration: !(@declaration) ~>
-    @$tbodyEl.html ((@addRow @declaration.attributes,
-                             "<span class='#{gz.Css \ink-badge}
-                                         \ #{gz.Css \green}'
-                                  style='margin-left:1.5em'>
-                                <i class='#{gz.Css \icon-star}'></i>
-                              </span>") + @$tbodyEl.html!)
+    @showPdf "/declaration/#{@declaration.id}/pdf"
+    @$tbodyEl.html ((@addRowWithLink @declaration.attributes) \
+                    + @$tbodyEl.html!)
 
   /**
+   * Show modal PDF.
+   * @param urld {string} Url to pdf.
    * @private
    */
   showPdf: !(urld) ->
     mHeader = 'Declaración Jurada'
     mBody = "<iframe src='#urld'
-               style='border:0;width:100%;height:100%'></iframe>"
+                 style='border:0;width:100%;height:100%'></iframe>
+             <!-- <div style='position:absolute;top:0;z-index:-1;padding:2em'>
+               <p>Su navegador no cuenta con un visor de pdf.</p>
+               <p>Clic en el botón
+                 <button class='#{gz.Css \ink-button} #{gz.Css \blue}'>
+                   Abrir</button> de la barra inferior.</p>
+             </div> -->"
     mFooter = "<div class='#{gz.Css \push-right}'>
                  <a href='#urld' class='#{gz.Css \ink-button} #{gz.Css \blue}'
                      target='_blank'>
@@ -166,31 +175,65 @@ class CustomerView extends gz.GView
                    Cerrar
                  </button>
                </div>"
-    (new widget.GModal mHeader, mBody, mFooter).elShow!
+    (new widget.GModal mHeader, mBody, mFooter)
+      ..body.style
+        ..padding = '0'
+        ..position = 'relative'
+        ..zIndex = '1'
+      ..elShow!
 
   /**
+   * Add row with link.
+   * @param {Object} declaration
+   * @param {string=} endCell Optional cell visual decoration.
+   * @return {string}
    * @private
    */
-  addRow: (declaration, endCell = '') -> "
+  addRowWithLink: (declaration) -> "
     <tr>
+      #{@addRowBase declaration}
       <td>
-        #{declaration.'customer'.\documentNumber} &nbsp;
-        <small>
-          #{
-            if declaration.'customer'.'documentNumber'.length is 11
-              then 'RUC'
-              else 'DNI'
-           }
-        </small>
-      </td>
-      <td>#{declaration.'customer'.\name}</td>
-      <td>
-        <a class='#{gz.Css \link-pdf}' href='/declaration/#{declaration.id}/pdf'>
+        <a class='#{gz.Css \link-pdf}'
+            href='/declaration/#{declaration.id}/pdf'>
           #{declaration.\trackingId}
         </a>
-        #endCell
+        <span class='#{gz.Css \ink-badge} #{gz.Css \green}'
+            style='margin-left:1.5em'>
+          <i class='#{gz.Css \icon-star}'></i>
+        </span>
       </td>
     </tr>"
+
+  /**
+   * Add single row.
+   * @param {Object} declaration
+   * @return {string}
+   * @private
+   */
+  addRow: (declaration) -> "
+    <tr>
+      #{@addRowBase declaration}
+      <td>&nbsp;</td>
+    </tr>"
+
+  /**
+   * Add base row.
+   * @param {Object} declaration
+   * @return {string}
+   * @private
+   */
+  addRowBase: (declaration) -> "
+    <td>
+      #{declaration.'customer'.\documentNumber} &nbsp;
+      <small>
+        #{
+          if declaration.'customer'.'documentNumber'.length is 11
+            then 'RUC'
+            else 'DNI'
+         }
+      </small>
+    </td>
+    <td>#{declaration.'customer'.\name}</td>"
 
   /**
    * Initialize view.
@@ -244,6 +287,8 @@ class CustomerView extends gz.GView
     #   set button save
     @$buttonSave = @$el.find "##{gz.Css \id-save}"
     @$buttonSave.hide!
+    #   set logo
+    @$logo = @$el.find "##{gz.Css \id-logo}"
     super!
 
   /**
@@ -256,7 +301,7 @@ class CustomerView extends gz.GView
       nav.ink-navigation.ink-grid
         ul.menu.horizontal.shadowed.black
           li.hide-small
-            a Anexo 5: Declaración Jurada de Conocimiento del Cliente
+            a#id-logo Anexo 5: Declaración Jurada de Conocimiento del Cliente
           li.push-right
             button.ink-button.green#id-save
               | Guardar &nbsp;
@@ -264,38 +309,19 @@ class CustomerView extends gz.GView
       .border
   '''
 
+  /**
+   * Body template. Toolbar, declaration table list and customer form.
+   * @return {string}
+   * @private
+   */
   templateBody: gzc.Jade '''
     .whatIs
       h1 &nbsp;
       p
-    .column-group.gutters#id-toolbar
-      .large-70.medium-75.small-100(style="margin-bottom:0")
-        nav.ink-navigation
-          ul.menu.horizontal.rounded.shadowed.white
-            li.large-25.medium-25.small-100
-              a(style="width:100%")
-                i.icon-folder-open
-                | &nbsp; Nuevo &nbsp;
-                i.icon-caret-down
-              ul.submenu(style="width:11em")
-                li: a#id-new-person
-                  i.icon-user
-                  | &nbsp; Persona natural
-                li: a#id-new-business
-                  i.icon-sitemap
-                  | &nbsp; Persona jurídica
-            li.large-25.medium-25.small-100
-              a(style="width:100%")#id-edit
-                i.icon-edit
-                | &nbsp; Modificar
-            li.large-25.medium-25.small-100
-              a(style="width:100%")#id-delete
-                i.icon-eraser
-                | &nbsp; Eliminar
-            li.large-25.medium-25.small-100
-              a(style="width:100%")#id-print
-                i.icon-print
-                | &nbsp; Imprimir
+    .column-group.gutters
+      .large-70.medium-75.hide-small(style="margin-bottom:0") &nbsp;
+        button.ink-button#id-declaration-list(style="display:none")
+          | Ver lista
       .large-30.medium-25.small-100(style="margin-bottom:0")
         form.ink-form#id-form-search(style="margin-top:.3em")
           .control-group.content-right
@@ -315,20 +341,8 @@ class CustomerView extends gz.GView
             tr
               th.content-left Documento
               th.content-left Cliente
-              th.content-left Declaración Jurada
+              th.content-left &nbsp;
           tbody
   '''
-## // button.ink-button#id-button-new(style="width:25%") Nuevo
-## .ink-dropdown.black(style="width:22%;padding-right:.7em")
-##   button.ink-button.toggle(data-target="\#{Css id-dropdown}",
-##                            style="width:100%")
-##     | Nuevo &nbsp;
-##     span.icon-caret-down
-##   ul.dropdown-menu#id-dropdown
-##     li: a(href="#") Persona natural
-##     li: a(href="#") Persona jurídica
-## button.ink-button#id-button-edit(style="width:22%") Modificar
-## button.ink-button#id-button-delete(style="width:22%") Eliminar
-## button.ink-button#id-button-print(style="width:22%") Imprimir
 
 (new CustomerView).render!

@@ -124,7 +124,7 @@ document.body.innerHTML = "
                          margin-left:4px;
                          margin-right:5px;
                          margin-top:6px;
-                         visibility:hidden'>
+                         visibility:hidden' src='/static/img/ss.gif'>
               #{
                 if (document.cookie.match /ud=(.*\|.*\|.*)/) then
                   "<button class='#{gz.Css \ink-button}
@@ -138,7 +138,7 @@ document.body.innerHTML = "
               }
               <button class='#{gz.Css \ink-button}
                            \ #{gz.Css \green}
-                           \ #{gz.Css \push-right}' type='button'>
+                           \ #{gz.Css \push-right}'>
                 Ingresar
               </button>
             </div>
@@ -216,23 +216,27 @@ document.body.innerHTML = "
     </ul>
   </nav>
 </footer>"
-document.querySelector "button.#{gz.Css \green}" .onclick = ->
-  document.querySelector \#signin-img
-    ..src = '/static/img/ss.gif'
-    ..style.visibility = \visible
+
+document.querySelector 'form' .onsubmit = (evt) ->
+  evt.preventDefault!
+  document.querySelector \#signin-img .style.visibility = \visible
   form = document.querySelector \form .elements
   new XMLHttpRequest
     ..open \post '/api/v1/signin'
     ..setRequestHeader 'Content-type' 'application/x-www-form-urlencoded'
     ..setRequestHeader 'pragma' 'no-cache'
     ..setRequestHeader 'cache-Control' 'no-cache,must-revalidate,max-age=0'
+    ..setRequestHeader 'X-Requested-With' 'XMLHttpRequest'
     ..onreadystatechange = ->
       if @readyState is 4
-        document.querySelector \#signin-img
-          ..src = ''
-          ..style.visibility = \hidden
+        document.querySelector \#signin-img .style.visibility = \hidden
         if @status is 200
-          location.href = '/dashboard'
+          toDashboard = ->
+            if 30 < document.cookie.length
+              location.replace '/dashboard'
+            else
+              toDashboard!
+          setTimeout toDashboard, 100
         else
           if not (document.querySelector ".#{gz.Css \tip}")?
             for i in (document.querySelectorAll ".#{gz.Css \control-group}")
@@ -240,5 +244,5 @@ document.querySelector "button.#{gz.Css \green}" .onclick = ->
             document.createElement \p
               ..className = "#{gz.Css \tip} #{gz.Css \push-left}"
               ..innerHTML = 'Usuario o clave incorrectos'
-              i.firstElementChild.insertBefore ..
+              i.insertBefore .., i.firstElementChild
     ..send "username=#{form.'username'.value}&password=#{form.'password'.value}"
