@@ -53,6 +53,6 @@ module.exports = class DeclarationsView extends builder.Table
           \-moz-user-select    : \text
           \-webkit-user-select : \text
 
-  /** @private */ @menuCaption = '<span style="font-size:0.7em">Declaraciones</span>'
+  /** @private */ @menuCaption = '<div style="font-size:0.7em;display:inline">Declaraciones</div>'
   /** @private */ @menuIcon = gz.Css \icon-ambulance
   /** @private */ @menuTitle = 'Lista de declaraciones juradas <em>(DBZ)</em>'

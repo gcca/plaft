@@ -309,3 +309,16 @@ module.exports = class DeclarationView extends ModuleBaseView
   /** @private */ @menuCaption = 'Declaración'
   /** @private */ @menuIcon    = gz.Css \icon-file-text
   /** @private */ @menuTitle   = 'Declaración Jurada'
+  /** @private */ @menuHelp    = "
+    <b></b>
+
+    <h5>Registrar despacho</h5>
+
+    <p>
+      Usando el <b>código de declaración jurada</b> para registrar
+      \ un nuevo despacho. En caso de ser <em>importador frecuente</em>
+      \ o <em>buen contribuyente</em> se debe usar el <b>RUC</b>.
+    </p>
+
+    <img src='/static/help/declaration.png'>
+    "

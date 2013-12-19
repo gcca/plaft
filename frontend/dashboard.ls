@@ -47,6 +47,21 @@ class DashboardView extends gz.GView
     "click ##{gz.Css \id-cog}": !(evt) ->
       @desktopView.changeDesktop ConfigView .render!
 
+    /**
+     * On click help-me button.
+     * @param {Object} evt Event object.
+     * @private
+     */
+    "click ##{gz.Css \id-helpme}": !(evt) ->
+      @el.classList.toggle (gz.Css \helpme-dashboard)
+      evt.currentTarget
+        ..firstElementChild
+          ..classList.toggle (gz.Css \icon-question)
+          ..classList.toggle (gz.Css \icon-question-sign)
+        ..disabled = not ..disabled
+      new gz.Ink.UI.Tabs ".#{gz.Css \helpme-tabs}", do
+        \preventUrlChange : on
+
   /**
    * Initialize view.
    * @private
@@ -77,7 +92,8 @@ class DashboardView extends gz.GView
                  \ #{gz.Css \rounded}
                  \ #{gz.Css \shadowed}'>
           <li style='width:100%'>
-            <a id='#{gz.Css \id-cog}' href='javascript:void(0);' style='width:100%'>
+            <a id='#{gz.Css \id-cog}' href='javascript:void(0);'
+                style='width:100%'>
               <i class='#{gz.Css \icon-cog}'></i>
               &nbsp;&nbsp;
               <span>Agencia</span>
@@ -173,14 +189,25 @@ class DashboardView extends gz.GView
           PLAFT-sw
         </a>
       </li>
+      <li class='#{gz.Css \push-right}'>
+        <a href='javascript:void(0);'>
+          <button id='#{gz.Css \id-helpme}'
+              class='#{gz.Css \ink-button} #{gz.Css \blue}'
+              style='padding:.1em .4em;margin:0'>
+            <i class='#{gz.Css \icon-question}'></i>
+          </button>
+        </a>
+      </li>
     </ul>
   </nav>
   <div class='#{gz.Css \border}'></div>
 </div>
+
 <div class='#{gz.Css \whatIs}'>
   <h1>&nbsp;</h1>
   <p></p>
 </div>
+
 <div class='#{gz.Css \ink-grid}'>
   <div class='#{gz.Css \column-group} #{gz.Css \half-gutters}'></div>
 </div>"

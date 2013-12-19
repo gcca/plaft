@@ -1,6 +1,4 @@
-/**
- * @module dashboard
- */
+/** @module dashboard */
 
 /**
  * @private
@@ -23,7 +21,7 @@ module.exports = class MenuView extends gz.GView
    * @type {string}
    * @private
    */
-  tagName : \nav
+  tagName: \nav
 
   /**
    * Style.
@@ -63,7 +61,7 @@ module.exports = class MenuView extends gz.GView
    * Initialize view.
    * @private
    */
-  initialize : !->
+  initialize: !->
     @ul = gz.newel \ul
     @ul.className = "#{gz.Css \menu}
                    \ #{gz.Css \vertical}
@@ -78,6 +76,11 @@ module.exports = class MenuView extends gz.GView
       a.innerHTML = "<i class='#{module.menuIcon}'></i>&nbsp;&nbsp;
                      #{module.menuCaption}"
       a.module = module
+
+      if module.menuHelp?
+        a.className = "#{gz.Css \helpme-tooltip}
+                     \ #{gz.Css \right} #{gz.Css \hm-large} jojo"
+        $ a .append "<span>#{module.menuHelp}</span>"
 
       li.appendChild a
       @ul.appendChild li

@@ -41,6 +41,7 @@ class CustomerView extends gz.GView
       documentNumber = evt.currentTarget.elements.'query'.value
       localStorage.setItem (gz.Css \query), documentNumber
       @editCustomer documentNumber
+      setTimeout (~> @$el.find 'input[name=name]' .focus!), 300
 
     /**
      * On save (generate) a declaration.
@@ -155,6 +156,14 @@ class CustomerView extends gz.GView
    * @private
    */
   showPdf: !(urld) ->
+    ## isSafari = Object::toString.call(window.HTMLElement) \
+    ##              .indexOf(\Constructor) > 0
+    ## isIE = ``/*@cc_on!@*/false`` || !!document.documentMode;
+    isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0
+    isFirefox = typeof InstallTrigger isnt \undefined
+    isChrome = !!window.chrome && !isOpera;
+    if not (isFirefox or isChrome)
+      urld = "/static/pdfjs/web/viewer.html?file=#urld"
     mHeader = 'Declaración Jurada'
     mBody = "<iframe src='#urld'
                  style='border:0;width:100%;height:100%'></iframe>
@@ -313,7 +322,7 @@ class CustomerView extends gz.GView
           li.hide-small
             a#id-logo Anexo 5: Declaración Jurada de Conocimiento del Cliente
           li.push-right
-            button.ink-button.green#id-save
+            button.ink-button.green#id-save(style="margin:1px 0 0")
               | Guardar &nbsp;
               i.icon-check-empty
       .border

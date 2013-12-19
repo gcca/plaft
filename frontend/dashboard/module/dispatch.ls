@@ -133,6 +133,8 @@ module.exports = class DispatchView extends ModuleBaseView
   @menuIcon    = gz.Css \icon-file
   /** @private */
   @menuTitle   = 'Despacho (Anexo 6)'
+  /** @private */
+  @menuHelp    = void
 
   /** @private */ operationView: null
 

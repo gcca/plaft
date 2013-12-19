@@ -201,3 +201,4 @@ module.exports = class DispatchesView extends builder.Table
   /** @private */ @menuCaption = 'Despachos'
   /** @private */ @menuIcon    = gz.Css \icon-paste
   /** @private */ @menuTitle   = 'Lista de despachos'
+  /** @private */ @menuHelp    = void
