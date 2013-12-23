@@ -14,7 +14,7 @@ def generic(template, args=''):
         '<link rel="stylesheet" href="/static/%(template)s.css">'
         '<meta name="viewport" content="width=device-width, '
         'initial-scale=1.0, maximum-scale=1.0, user-scalable=no">'
-        '<title>PLAFT-sw</title>'
+        '<title>PLAFTsw</title>'
         '</head>'
         '<body>'
         '<script>window.params={%(args)s}</script>'

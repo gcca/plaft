@@ -314,11 +314,15 @@ module.exports = class DeclarationView extends ModuleBaseView
 
     <h5>Registrar despacho</h5>
 
-    <p>
-      Usando el <b>código de declaración jurada</b> para registrar
-      \ un nuevo despacho. En caso de ser <em>importador frecuente</em>
-      \ o <em>buen contribuyente</em> se debe usar el <b>RUC</b>.
-    </p>
+    <ol>
+      <li>Buscar por código de declaración o RUC.
+        <small>&nbsp;(<em>RUC</em> si es importador frecuente,
+        &nbsp;<em>código</em> en caso contrario.)</small>
+      </li>
+      <li>Verificar datos del cliente.</li>
+      <li>Ingresar datos del sujeto obligado y de la factura comercial.</li>
+      <li>Ingresar <b>Número de Orden</b>.</li>
+      <li>Generar despacho (movimiento).</li>
+    </ol>
 
-    <img src='/static/help/declaration.png'>
-    "
+    <img src='/static/help/declaration.png'>"

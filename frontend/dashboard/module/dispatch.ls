@@ -127,26 +127,40 @@ module.exports = class DispatchView extends ModuleBaseView
     @desktop.uiSearch.elFocus!
     super!
 
-  /** @private */
-  @menuCaption = 'Despacho'
-  /** @private */
-  @menuIcon    = gz.Css \icon-file
-  /** @private */
-  @menuTitle   = 'Despacho (Anexo 6)'
-  /** @private */
-  @menuHelp    = void
-
-  /** @private */ operationView: null
-
   /**
    * Template (Dispatch).
    * @return {string}
    * @private
    */
   template: -> "
-    <button class='#{gz.Css \ink-button} #{gz.Css \green} #{gz.Css \push-right}'>
+    <button class='#{gz.Css \ink-button}
+                 \ #{gz.Css \green}
+                 \ #{gz.Css \push-right}'>
       Guardar
     </button>
     <div class='#{gz.Css \ink-tabs} #{gz.Css \top}'>
       <ul class='#{gz.Css \tabs-nav}'></ul>
     </div>"
+
+  /** @private */
+  @menuCaption = 'Despacho'
+  /** @private */
+  @menuIcon    = gz.Css \icon-file
+  /** @private */
+  @menuTitle   = 'Despacho'
+  /** @private */
+  @menuHelp    = "
+    <b></b>
+
+    <h5>Despacho (Anexo 2)</h5>
+
+    <ol>
+      <li>Buscar por <b>Número de orden</b>.</li>
+      <li>Secciones de involucrados.</li>
+      <li>Ingreso de información.</li>
+      <li>Guardar información.</li>
+    </ol>
+
+    <img src='/static/help/dispatch.png'>"
+
+  /** @private */ operationView: null

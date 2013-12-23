@@ -64,8 +64,8 @@ class SearchView extends gz.GView
         style='text-align: justify;margin-right:1em'>#value</div>
       <gcca style='display:none'></gcca>"
     @ttip.'options'.'text' = \gcca
-    @ttip.'tooltips'[0].'_makeTooltip'!
-    setTimeout (~> @ttip.'tooltips'[0].'_removeTooltip'!), 3600
+    @ttip.'tooltips'.0.'_makeTooltip'!
+    setTimeout (~> @ttip.'tooltips'.0.'_removeTooltip'!), 3600
 
   /**
    * Destroy tooltip.

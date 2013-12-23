@@ -162,12 +162,6 @@ class DeclarationsHandler(BaseHandler):
     def get(self):
         self.render_json(Declaration.all()) # (-o-) DBG
 
-class DeclarationsTopHandler(BaseHandler):
-
-    Service = DeclarationService
-
-    def get(self):
-        self.render_json(Declaration.all().order('-created').fetch(limit=5))
 
 # --------
 # Dispatch

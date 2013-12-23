@@ -249,31 +249,37 @@ class Typeahead extends gz.GView
   tagName: \input
 
   /**
+   */
+  elWidth: !(pWidth) ->
+    @el
+      ..style.width = '100%'
+      ..parentElement.style.width = '100%'
+
+  /**
    * Initialize view.
    * @private
    */
-  initialize: !-> @render!
-
-  /**
-   * Render view.
-   * @return {Object}
-   */
-  render: ->
+  initialize: !(opts) ->
     next = @$el.next!
     isNext = next.get 0
     next.remove! if isNext
     @$el.\typeahead do
-      \prefetch : '/static/pos.json'
-      \template : '
-        <p style="float:right;font-style:italic;"><%= language %></p>
-        <p style="font-weight:bold;"><%= name %></p>
-        <p style="font-size:14px;text-align:justify"><%= description %></p>'
-      \engine   :
-        \compile : (t) ->
-          cc = _.\template t
-          \render : (ctx) -> cc ctx
+      ## \prefetch : '/static/pos.json'
+      \local : opts.mData
+      \template : opts.mTemplate
+      ## \engine   :
+      ##   \compile : (t) ->
+      ##     ## cc = _.\template t
+      ##     console.log t
+      ##     \render : (ctx) ->
+      ##       console.log ctx
+      ##       ## cc ctx
+      ##       "ass"
     @$el.after next if isNext
-    super!
+## <p style="float:right;font-style:italic;"><%= language %></p>
+## <p style="font-weight:bold;"><%= name %></p>
+## <p style="font-size:14px;text-align:justify"><%= description %></p>
+
 
 /**
  * Public widgets.

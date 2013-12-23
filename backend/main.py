@@ -6,7 +6,7 @@ from interface.views import SignInView, CustomerFormView, DashboardView, \
 from interface.handlers import CustomerHandler, DeclarationHandler, \
     CustomerDeclarationHandler, CustomerLastDeclarationHandler, \
     DispatchHandler, SignInHandler, DispatchesHandler, DispatchFix, \
-    CustomsBrokerHandler, DeclarationsHandler, DeclarationsTopHandler
+    CustomsBrokerHandler, DeclarationsHandler
 
 from debug import DebugView
 
@@ -38,9 +38,7 @@ app = WSGIApplication([
         ('lastdeclaration', CustomerLastDeclarationHandler)
     ]),
     RESTful('declaration', DeclarationHandler),
-    RESTful('declarations', DeclarationsHandler, [
-        ('top', DeclarationsTopHandler)
-    ]),
+    RESTful('declarations', DeclarationsHandler),
     RESTful(('customer', 'declaration') , CustomerDeclarationHandler),
 
       # Dispatch

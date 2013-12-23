@@ -42,6 +42,7 @@ module.exports = class MenuView extends gz.GView
      * @private
      */
     'click a': !(evt) ->
+      evt.preventDefault!
       @trigger (gz.Css \change-desktop), evt.currentTarget.module
       el = evt.currentTarget.parentElement
       @prevEl.classList.remove gz.Css \active if @prevEl?
@@ -72,14 +73,14 @@ module.exports = class MenuView extends gz.GView
       li = gz.newel \li
       a  = gz.newel \a
 
-      a.href = 'javascript:void(0)'
       a.innerHTML = "<i class='#{module.menuIcon}'></i>&nbsp;&nbsp;
                      #{module.menuCaption}"
       a.module = module
 
       if module.menuHelp?
         a.className = "#{gz.Css \helpme-tooltip}
-                     \ #{gz.Css \right} #{gz.Css \hm-large} jojo"
+                     \ #{gz.Css \right}
+                     \ #{gz.Css \hm-large} jojo"
         $ a .append "<span>#{module.menuHelp}</span>"
 
       li.appendChild a

@@ -34,7 +34,7 @@
     }
   }  // .table.options-toggleable
 
-  a.helpme-tooltip > span {display:none}
+  .helpme-tooltip > span {display:none !important}
 
   &.helpme-dashboard {
     cursor: help !important;
@@ -42,7 +42,7 @@
       cursor: help !important;
     }
 
-    a.helpme-tooltip {
+    .helpme-tooltip {
       // outline:none;
       // text-decoration:none;
       // border-bottom:dotted 1px blue;
@@ -62,7 +62,7 @@
         display: none;
 	      visibility: hidden;
 	      z-index: 10;
-	      position: absolute;
+	      position: absolute !important;
 
 	      // font-size: 12px;
 	      // font-style: normal;
@@ -72,9 +72,9 @@
 	      -o-border-radius: 20px;
 	      border-radius: 20px;
 
-        -webkit-box-shadow: 2px 2px 2px #999;
-	      -moz-box-shadow: 2px 2px 2px #999;
-	      box-shadow: 2px 2px 2px #999;
+        -webkit-box-shadow: 2px 2px 2px rgba(110, 110, 110, 0.5);
+	      -moz-box-shadow: 2px 2px 2px rgba(110, 110, 110, 0.5);
+	      box-shadow: 2px 2px 2px rgba(110, 110, 110, 0.5);
 
 	      // -webkit-transition-property:opacity, margin-top, visibility, margin-left;
 	      // -webkit-transition-duration:0.4s, 0.3s, 0.4s, 0.3s;
@@ -94,17 +94,17 @@
 
 
 	      background: #fff;
-	      border: 1px solid #555;
+	      border: 1px solid #ddd;
       }  // & > span
 
       /*& > span:hover,*/
-	    &:hover > span, &.jojo > span {
+	    &:hover > span, &.jojos > span {
 		    opacity: 1;
 		    text-decoration: none;
 		    visibility: visible;
 		    overflow: visible;
 		    margin-top: 50px;
-		    display: inline;
+		    display: inline !important;
 		    margin-left: -60px;
 	    }  // &:hover > span
 
@@ -128,14 +128,14 @@
 		    box-shadow: inset 0 1px 0 #fff;
 
         background: #fff;
-	      border-top: 1px solid #555;
-	      border-right: 1px solid #555;
+	      border-top: 1px solid #ddd;
+	      border-right: 1px solid #ddd;
 	    }  // span b
 
       &.right {
         > span {
           margin-top: -15px;
-          margin-left: 20px;
+          margin-left: 26px;
 
           > b {
             margin-left: -28px;
@@ -149,7 +149,7 @@
         }
       }  // &.right
 
-    }  // a.helpme-tooltip
+    }  // .helpme-tooltip
 
   }  // .gz-dashboard
 

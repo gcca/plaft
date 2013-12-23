@@ -41,7 +41,6 @@ class CustomerView extends gz.GView
       documentNumber = evt.currentTarget.elements.'query'.value
       localStorage.setItem (gz.Css \query), documentNumber
       @editCustomer documentNumber
-      setTimeout (~> @$el.find 'input[name=name]' .focus!), 300
 
     /**
      * On save (generate) a declaration.
@@ -71,28 +70,6 @@ class CustomerView extends gz.GView
     'keyup input[name=name]': !(evt) -> @$logo.html evt.currentTarget.value
 
     /**
-     * On focus input for search customer.
-     * @param {Object} evt
-     * @private
-     */
-    "focus .#{gz.Css \input-query}": !(evt) ->
-      evt.currentTarget
-        ..placeholder = 'Buscar'
-        ..parentElement.nextElementSibling.lastElementChild \
-          .style.display = 'none'
-
-    /**
-     * On blur input for search customer.
-     * @param {Object} evt
-     * @private
-     */
-    "blur .#{gz.Css \input-query}": (evt) ->
-      evt.currentTarget
-        ..placeholder = '_'
-        ..parentElement.nextElementSibling.lastElementChild \
-          .style.display = 'inline'
-
-    /**
      * On declaration list click.
      * @private
      */
@@ -114,6 +91,7 @@ class CustomerView extends gz.GView
         \success : (customer) ~>
           @$logo.html customer.get \name
           @setCustomerView (new CustomerView customer)
+          @$el.find 'input[name=name]' .focus!
         \error : ~>
           @$logo.html documentNumber
           @setCustomerView (new CustomerView @model)
@@ -147,8 +125,6 @@ class CustomerView extends gz.GView
    */
   onSavedDeclaration: !(@declaration) ~>
     @showPdf "/declaration/#{@declaration.id}/pdf"
-    @$tbodyEl.html ((@addRowWithLink @declaration.attributes) \
-                    + @$tbodyEl.html!)
 
   /**
    * Show modal PDF.
@@ -192,59 +168,6 @@ class CustomerView extends gz.GView
       ..elShow!
 
   /**
-   * Add row with link.
-   * @param {Object} declaration
-   * @param {string=} endCell Optional cell visual decoration.
-   * @return {string}
-   * @private
-   */
-  addRowWithLink: (declaration) -> "
-    <tr>
-      #{@addRowBase declaration}
-      <td>
-        <a class='#{gz.Css \link-pdf}'
-            href='/declaration/#{declaration.id}/pdf'>
-          #{declaration.\trackingId}
-        </a>
-        <span class='#{gz.Css \ink-badge} #{gz.Css \green}'
-            style='margin-left:1.5em'>
-          <i class='#{gz.Css \icon-star}'></i>
-        </span>
-      </td>
-    </tr>"
-
-  /**
-   * Add single row.
-   * @param {Object} declaration
-   * @return {string}
-   * @private
-   */
-  addRow: (declaration) -> "
-    <tr>
-      #{@addRowBase declaration}
-      <td>&nbsp;</td>
-    </tr>"
-
-  /**
-   * Add base row.
-   * @param {Object} declaration
-   * @return {string}
-   * @private
-   */
-  addRowBase: (declaration) -> "
-    <td>
-      #{declaration.'customer'.\documentNumber} &nbsp;
-      <small>
-        #{
-          if declaration.'customer'.'documentNumber'.length is 11
-            then 'RUC'
-            else 'DNI'
-         }
-      </small>
-    </td>
-    <td>#{declaration.'customer'.\name}</td>"
-
-  /**
    * Initialize view.
    * @private
    */
@@ -273,19 +196,6 @@ class CustomerView extends gz.GView
     $body = $ "<div class='#{gz.Css \ink-grid}'>"
     $body.html @templateBody!
 
-    # body.table
-    @$tbodyEl = $body.find \tbody
-    apiUrl = gz.GAPI.path
-
-    $.get (apiUrl + 'declarations/top'), (declarations, status) ~>
-      if status is \success
-        declarationsHtml = new Array
-        for declaration in declarations
-          declarationsHtml.push (@addRow declaration)
-        @$tbodyEl.append declarationsHtml.join ''
-      else
-        alert 'ERROR: Dispacthes (5c6sr)'
-
     # end
     #   set customer form base
     @$bodyForm = $body.find "##{gz.Css \body-form}"
@@ -303,11 +213,18 @@ class CustomerView extends gz.GView
     @$logo = @$el.find "##{gz.Css \id-logo}"
     #   set search
     $input = $body.find 'input'
+    tooltip = new gz.Ink.UI.Tooltip $input.0, do
+                \text  : 'Ingresar RUC (Persona Jurídica) o DNI (Persona natural)'
+                \where : gz.Css \down
+                \color : gz.Css \blue
     query = localStorage.getItem (gz.Css \query)
-    if query?
+    if query? and query isnt ''
       $input.val query
       $body.find "##{gz.Css \id-form-search}" .submit!
-    $input.focus
+    else
+      $input.focus!
+      setTimeout (-> tooltip.'tooltips'.0.'_makeTooltip'!), 300
+      setTimeout (~> tooltip.'tooltips'.0.'_removeTooltip'!), 3600
     super!
 
   /**
@@ -348,20 +265,11 @@ class CustomerView extends gz.GView
               .control.large-100.medium-100.small-100.append-button
                 span
                   input.input-query(type="text", name="query",
-                                    placeholder="_")
+                                    placeholder="Buscar")
                 button.ink-button
                   i.icon-search
                   | &nbsp;
-                  .show-all(style="display:inline") Buscar
       .large-100.medium-100.small-100#body-form(style="margin-bottom:1em")
-      .large-100.medium-100.small-100
-        table.ink-table.alternating.hover
-          thead
-            tr
-              th.content-left Documento
-              th.content-left Cliente
-              th.content-left &nbsp;
-          tbody
   '''
 
 (new CustomerView).render!

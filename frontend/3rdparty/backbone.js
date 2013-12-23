@@ -569,8 +569,6 @@ Backbone.View.prototype.stopListening = Backbone.Events.stopListening;
 
 /** @type {string} */
 Backbone.View.prototype.tagName;
-/** @type {{id: string, className: string, tagName: string}} */
-Backbone.View.prototype.options;
 /**
  * @param {...*} args
  */
