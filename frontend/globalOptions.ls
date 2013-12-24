@@ -1,11 +1,13 @@
 /** @module globalOptions */
 
+
 /**
  * Class for {@code globalOptions} identification.
  * @private
  */
 class GlobalOptions extends Array
   isGlobalOptions: true
+
 
 /**
  * Table 1. Documento de identidad.
@@ -19,6 +21,7 @@ exports.IDENTIFICATION =
   'DOCUMENTO NACIONAL DE IDENTIDAD'
   'PASAPORTE'
   'OTRO'
+
 
 /**
  * Table 2. Ocupación, oficio o profesión.
@@ -185,3 +188,45 @@ exports.JOB_TITLE =
   'VOCAL DE LA CORTE SUPERIOR O SUPREMA'
   'OTRO'
   'NO DECLARA'
+
+
+/**
+ * Table 4. Estado Civil.
+ * @public
+ */
+exports.CIVIL_STATE =
+  'SOLTERO'
+  'CASADO'
+  'VIUDO'
+  'DIVORCIADO'
+  'CONVIVIENTE'
+
+
+/**
+ * Table 5. Tipo de fondos.
+ * @public
+ */
+exports.PAYMENT_TYPE =
+  'EFECTIVO'
+  'NO EFECTVO'
+
+
+/**
+ * Table 6. Tipo de operación.
+ * @public
+ */
+exports.OPERATION_TYPE =
+  'IMPORTACIÓN DEFINITIVA.'
+  'REIMPORTACIÓN EN EL MISMO ESTADO.'
+  'EXPORTACIÓN DEFINITIVA.'
+  'EXPORTACIÓN TEMPORAL PARA REIMPORTACIÓN EN EL MISMO ESTADO.'
+  'EXPORTACIÓN TEMPORAL PARA PERFECCIONAMIENTO PASIVO.'
+  'ADMISIÓN TEMPORAL PARA PERFECCIONAMIENTO ACTIVO.'
+  'ADMISIÓN TEMPORAL PARA REEXPORTACIÓN EN EL MISMO ESTADO.'
+  'RESTITUCIÓN DE DERECHOS – DRAWBACK.'
+  'REPOSICIÓN DE MERCANCÍAS CON FRANQUICIA ARANCELARIA'
+  'DEPÓSITO ADUANERO.'
+  'REEMBARQUE.'
+  'TRÁNSITO ADUANERO.'
+  'OTRA OPERACIÓN DE COMERCIO EXTERIOR.'
+  'OTRAS QUE DETERMINE LA SBS.'
