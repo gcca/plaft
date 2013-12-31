@@ -34,7 +34,8 @@ module.exports = class DesktopView extends gz.GView
     @module.el.style.marginTop = '1em'
     ## @el.innerHTML = ''
     @el.appendChild @module.el
-    @uiSearch.on (gz.Css \search), @module.onSearch if @module.onSearch?
+    @uiSearch.off (gz.Css \on-search)
+    @uiSearch.on (gz.Css \on-search), @module.onSearch if @module.onSearch?
     @uiTitle.setValue Module.menuTitle
     @trigger (gz.Css \on-appended)
     @module

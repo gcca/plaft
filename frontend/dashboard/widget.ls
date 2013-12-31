@@ -1,17 +1,21 @@
-/**
- * @module dashboard.widget
- */
+/** @module dashboard.widget */
 
 /**
  * Global search.
- * Module must have {@code onSearch} method to catch event search from this view.
+ * Module must have {@code onSearch} method to catch event search
+ * from this view.
  * @class SearchView
  *
  * @example
  * >>> class ExampleModuleView extends ModuleBaseView
- * ...   onSearch: !(queryText) ~>
+ *       # @param {!string} query Query text.
+ *       #
+ *       # @param {function(string)} search Set color decorator
+ *       #   to {@code searchView}.
+ * ...   onSearch: !(queryText, searchState) ~>
  * ...     # {@code queryText} string in search {@code <input>}.
  * ...     ...
+ * ...     searchState (gz.Css \success)
  * ...   ...
  */
 class SearchView extends gz.GView
@@ -35,7 +39,9 @@ class SearchView extends gz.GView
      * @private
      */
     'keyup': !(evt) ->
-      @trigger (gz.Css \search), evt.currentTarget.value if evt.keyCode is 13
+      # @trigger (gz.Css \search), evt.currentTarget.value if evt.keyCode is 13
+      if evt.keyCode is 13
+        a = @trigger (gz.Css \on-search), evt.currentTarget.value, @elState
 
   /**
    * Set input placeholder.
@@ -78,6 +84,35 @@ class SearchView extends gz.GView
         ..'tooltips'[0].'_removeTooltip'!
 
   /**
+   * Set state color.
+   * @param {string} searchState String with state {@code css}:
+   *   gz.Css \success, \warning, \error
+   * @public
+   */
+  elState: !(searchState) ~>
+    @el.style.cssText += '
+      -webkit-transition: all 0s ease-out;
+      -moz-transition: all 0s ease-out;
+      -o-transition: all 0s ease-out;
+      transition: all 0s ease-out;'
+    @_controlGroup.classList.add searchState
+    setTimeout ~>
+      @el.style.cssText += '
+        -webkit-transition: all 1.5s ease-out;
+        -moz-transition: all 1.5s ease-out;
+        -o-transition: all 1.5s ease-out;
+        transition: all 1.5s ease-out;'
+      @_controlGroup.classList.remove searchState
+      setTimeout ~>
+        @el.style.cssText += '
+        -webkit-transition: all 0s ease-out;
+        -moz-transition: all 0s ease-out;
+        -o-transition: all 0s ease-out;
+        transition: all 0s ease-out;'
+      , 1500
+    , 3000
+
+  /**
    * Initialize view.
    * @private
    */
@@ -90,6 +125,9 @@ class SearchView extends gz.GView
       \spacing : 12
       \template : @tmplt
       \templatefield : \gcca
+
+    @_controlGroup = @$el.parents ".#{gz.Css \control-group}" .get 0
+      ..classList.add (gz.Css \validation)
 
   /** @private */ ttip  : null
   /** @private */ tmplt : null

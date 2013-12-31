@@ -270,7 +270,7 @@ module.exports = class StakeholderView extends SectionBaseView
   /**
    * Fieldset template.
    * Creates {@code <fieldset>} insert half elements from {@code vFields}.
-   * @param {Array<Array<?string|Array<string>>>} vFields
+   * @param {Array<Array<null|string|Array<string>>>} vFields
    * @return {HTMLElement}
    * @see render
    * @private
@@ -340,7 +340,7 @@ module.exports = class StakeholderView extends SectionBaseView
 
   /**
    * View template.
-   * @param {Array<Array<?string|Array<string>>>} vFields
+   * @param {Array<Array<null|string|Array<string>>>} vFields
    * @return {string}
    * @private
    */

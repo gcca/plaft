@@ -1,6 +1,7 @@
 /** @module dashboard */
 
 /**
+ * Module list.
  * @private
  */
 modules = [
@@ -11,7 +12,12 @@ modules = [
   DeclarationsView = require './module/declarations'
 ]
 
-/**
+/** ---------
+ *  Menu View
+ *  ---------
+ * Vista que controla el menú de módulos. Cada elemento de la lista es un
+ * módulo que se carga al hacer clic.
+ *
  * @class MenuView
  */
 module.exports = class MenuView extends gz.GView
@@ -45,9 +51,12 @@ module.exports = class MenuView extends gz.GView
       evt.preventDefault!
       @trigger (gz.Css \change-desktop), evt.currentTarget.module
       el = evt.currentTarget.parentElement
-      @prevEl.classList.remove gz.Css \active if @prevEl?
+      @disableCurrent!
       @prevEl = el
       el.classList.add gz.Css \active
+
+  disableCurrent: !->
+    @prevEl.classList.remove gz.Css \active if @prevEl?
 
   /**
    * Set current item-module.
@@ -55,7 +64,7 @@ module.exports = class MenuView extends gz.GView
    * @public
    */
   currentModule: (indexItem) !->
-    a = ($ @ul .find 'a')[indexItem]
+    a = ($ @tUl .find 'a')[indexItem]
     a.click! if a?
 
   /**
@@ -63,27 +72,30 @@ module.exports = class MenuView extends gz.GView
    * @private
    */
   initialize: !->
-    @ul = gz.newel \ul
-    @ul.className = "#{gz.Css \menu}
+    @tUl = gz.newel \ul
+    @tUl.className = "#{gz.Css \menu}
                    \ #{gz.Css \vertical}
                    \ #{gz.Css \grey}
                    \ #{gz.Css \rounded}
                    \ #{gz.Css \shadowed}"
     for module in modules
-      li = gz.newel \li
-      a  = gz.newel \a
+      tLi = gz.newel \li
+      tA  = gz.newel \a
 
-      a.innerHTML = "<i class='#{module.menuIcon}'></i>&nbsp;&nbsp;
-                     #{module.menuCaption}"
-      a.module = module
+      tA.innerHTML = "<i class='#{module.menuIcon}'></i>&nbsp;&nbsp;
+                          #{module.menuCaption}"
+      tA.module = module
 
       if module.menuHelp?
-        a.className = "#{gz.Css \helpme-tooltip}
-                     \ #{gz.Css \right}
-                     \ #{gz.Css \hm-large} jojo"
-        $ a .append "<span>#{module.menuHelp}</span>"
+        tA.className = "#{gz.Css \helpme-tooltip}
+                      \ #{gz.Css \right}
+                      \ #{gz.Css \hm-large} jojo"
+        $ tA .append "<span>#{module.menuHelp}</span>"
 
-      li.appendChild a
-      @ul.appendChild li
+      tLi.appendChild tA
+      @tUl.appendChild tLi
 
-    @el.appendChild @ul
+    @el.appendChild @tUl
+
+  /** @private */ prevEl : null
+  /** @private */ tUl    : null

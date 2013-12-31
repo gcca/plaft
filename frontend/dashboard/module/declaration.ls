@@ -1,18 +1,18 @@
-/**
- * @module dashboard.module
- */
+/** @module dashboard.module */
 
-/** @const */
 form  = require '../../form'
 model = require '../../model'
 widget = require '../../widget'
 
 ModuleBaseView = require './base'
+InvoicesView = require './declaration/invoices'
+
 
 /** @private */ DeclarationModel             = model.Declaration
 /** @private */ CustomerModel                = model.Customer
 /** @private */ CustomerLastDeclarationModel = model.CustomerLastDeclaration
 /** @private */ DispatchModel                = model.Dispatch
+
 
 /**
  * @class DeclarationView
@@ -31,9 +31,10 @@ module.exports = class DeclarationView extends ModuleBaseView
      * @param {Object} evt Event object.
      * @private
      */
-    'click button': !(evt) ->
+    "click button##{gz.Css \id-submit-declaration}": !(evt) ->
       dispatchJSON = @$el.find \form .serializeJSON!
       dispatchJSON.\declaration = @declaration
+      dispatchJSON.\invoices = @invoicesView.JSONFields!
       dispatch = new DispatchModel dispatchJSON
       dispatch.save new Object, do
         \success : ~>
@@ -47,10 +48,13 @@ module.exports = class DeclarationView extends ModuleBaseView
 
   /**
    * On search from searchView event.
-   * @param {!string} query Query text: declaration trackingId or documentNumber.
+   * @param {!string} query Query text: declaration trackingId
+   *   or documentNumber.
+   * @param {function(string)} searchState Set color decorator
+   *   to {@code searchView}.
    * @private
    */
-  onSearch: !(query) ~>
+  onSearch: !(query, searchState) ~>
     type = null
     if query.length is 8
       type = 'trackingId'
@@ -59,6 +63,8 @@ module.exports = class DeclarationView extends ModuleBaseView
       type = 'documentNumber'
       Model = CustomerLastDeclarationModel
     else
+      searchState gz.Css \error
+      @$el.html ''
       (new widget.GAutoAlert (gz.Css \error),
                              '<b>ERROR</b>: Debe ingresar un código
                              \ de declaración jurada o un número RUC.').elShow!
@@ -69,9 +75,10 @@ module.exports = class DeclarationView extends ModuleBaseView
     @declaration.fetch do
       \success : (declaration) ~>
         if declaration.isNew!
-          @onSearchInfoNoDeclaration
+          @onSearchInfoNoDeclaration!
         else
           @renderInfo declaration.attributes
+        searchState gz.Css \success
       \error : @onSearchInfoNoDeclaration
 
   /**
@@ -88,6 +95,8 @@ module.exports = class DeclarationView extends ModuleBaseView
    */
   initialize: !-> @render!
 
+  /** @private */ invoicesView: null
+
   /**
    * Render customer info form.
    * @param {!Object} declaration
@@ -95,12 +104,8 @@ module.exports = class DeclarationView extends ModuleBaseView
    */
   renderInfo: !(declaration) ->
     @$el.html @template declaration
-    @$el.find "##{gz.Css \id-alert}" .on \change !(evt) ~>
-      ta = @$el.find '[name=clerkAlert]'
-      if evt.target.checked
-        ta .css \minHeight '2.5em' .show! .animate \height : '10em', 700, \ease
-      else
-        ta .animate \height : '0', 300, \linear, -> ta .css \height '0' .hide!
+    @invoicesView = new InvoicesView
+    @$el.find "##{gz.Css \id-invoices}" .append @invoicesView.render!.el
 
   /**
    * Render view.
@@ -119,9 +124,32 @@ module.exports = class DeclarationView extends ModuleBaseView
    * @return {string}
    * @private
    */
-  template: (declaration) -> "
-    <form class='#{gz.Css \ink-form} #{gz.Css \ink-form-new}'
-        style='margin-left:-2em'>
+  template: (declaration) ->
+    tBlock100 = "<div class='#{gz.Css \large-100}
+                           \ #{gz.Css \medium-100}
+                           \ #{gz.Css \small-100}'>"
+
+    tFieldset50 = "<fieldset class='#{gz.Css \large-50}
+                                  \ #{gz.Css \medium-50}
+                                  \ #{gz.Css \small-100}'>"
+
+    tControlGroup = "<div class='#{gz.Css \control-group}
+                               \ #{gz.Css \large-100}
+                               \ #{gz.Css \medium-100}
+                               \ #{gz.Css \small-100}'>"
+
+    tLabel = "<label class='#{gz.Css \large-100}
+                          \ #{gz.Css \medium-100}
+                          \ #{gz.Css \small-100}'>"
+
+    tControl = "<div class='#{gz.Css \control}
+                          \ #{gz.Css \large-100}
+                          \ #{gz.Css \medium-100}
+                          \ #{gz.Css \small-100}'>"
+
+    "<form class='#{gz.Css \ink-form} #{gz.Css \ink-form-new}
+                \ #{gz.Css \column-group} #{gz.Css \gutters}'
+        style='margin-left:-2em;margin-bottom:0'>
       #{form.block50}
         <fieldset>
           <legend>Cliente</legend>
@@ -160,34 +188,64 @@ module.exports = class DeclarationView extends ModuleBaseView
         </fieldset>
       </div>
 
-      #{form.block100}
-        <fieldset>
-          <legend>Alerta</legend>
 
-          #{form.control-group}
-            <div class='#{gz.Css \control}
-                      \ #{gz.Css \large-100}
-                      \ #{gz.Css \medium-100}
-                      \ #{gz.Css \small-100}'>
-              <label>
-                <span>&nbsp;&nbsp;¿Hay alertas?</span>
-                <input id='#{gz.Css \id-alert}' type='checkbox'>
-              </label>
-            </div>
-          </div>
-
-          #{form.control-group}
-            #{form.control100}
-              <textarea name='clerkAlert' style='display:none'
-                  placeholder='Motivo de la alerta'>
-              </textarea>
-            </div>
-            </div>
-        </fieldset>
+      <div class='#{gz.Css \large-100}
+                \ #{gz.Css \medium-100}
+                \ #{gz.Css \small-100}'
+          style='margin-bottom:0;margin-top:-2em'>
+        &nbsp;
       </div>
 
-      #{form.block50}
 
+      #tFieldset50
+
+        #tControlGroup
+          #tLabel
+            N&ordm; Orden de despacho
+          </label>
+          #tControl
+            <input type='text' name='orderNumber'>
+          </div>
+        </div>
+
+        #tControlGroup
+          #tLabel
+            Código de Agente de Aduana
+          </label>
+          #tControl
+            <input type='text' name='customsBrokerCode'>
+          </div>
+        </div>
+
+      </fieldset>
+
+
+      #tFieldset50
+
+        #tControlGroup
+          #tLabel
+            Régimen aduanero
+          </label>
+          #tControl
+            <input type='text' name='customsRegime'>
+          </div>
+        </div>
+
+        #tControlGroup
+          #tLabel
+            Despacho de Aduana
+          </label>
+          #tControl
+            <input type='text' name='customsCode'>
+          </div>
+        </div>
+
+      </fieldset>
+
+
+
+      <!--
+      #{form.block50}
         <fieldset>
         <legend>Datos SO</legend>
 
@@ -298,13 +356,26 @@ module.exports = class DeclarationView extends ModuleBaseView
       #{form.block100}
         #{form.control-group}
           #{form.control100}
-            <button type='button' class='#{gz.Css \ink-button}'>
+            <button id='#{gz.Css \id-submit-declaration}'
+                type='button' class='#{gz.Css \ink-button}'>
               Generar Despacho
             </button>
           </div>
         </div>
-      </div>
-    </form>"
+      </div> -->
+    </form>
+    <div id='#{gz.Css \id-invoices}' class='#{gz.Css \large-100}
+                                          \ #{gz.Css \medium-100}
+                                          \ #{gz.Css \small-100}'>
+      <h4 style='margin-bottom:1em'>
+        Facturas Comerciales
+      </h4>
+    </div>
+
+    <button type='button' id='#{gz.Css \id-submit-declaration}'
+        class='#{gz.Css \ink-button} #{gz.Css \green} #{gz.Css \push-right}'>
+      Generar Despacho
+    </button>"
 
   /** @private */ @menuCaption = 'Declaración'
   /** @private */ @menuIcon    = gz.Css \icon-file-text

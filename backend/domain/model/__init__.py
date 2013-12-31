@@ -70,15 +70,16 @@ class Declaration(Entity):
         references: Referencias del cliente.
         customer: Referencia hacia el cliente que genera la declaración jurada.
         thirdName: Nombre o razón social del tercero.
-        thirdDocumentNumber: Número del documento de identificación del tercero.
+        thirdDocumentNumber: Número del documento de identificación
+                             del tercero.
     """
 
-    trackingId          = StringProperty       ()
-    source              = TextProperty         ()
-    references          = TextProperty         ()
-    customer            = JsonProperty         ()
-    thirdName           = TextProperty         ()
-    thirdDocumentNumber = TextProperty         ()
+    trackingId          = StringProperty ()
+    source              = TextProperty   ()
+    references          = TextProperty   ()
+    customer            = JsonProperty   ()
+    thirdName           = TextProperty   ()
+    thirdDocumentNumber = TextProperty   ()
 
     def _nextTrackingId(self):
         """() -> str
@@ -338,12 +339,7 @@ class Dispatch(Entity):
         customsCode: Codigo de Aduana.
         numberInvoice: Número de Factura Comercial.
         businessName: Razón Social.
-        invoiceAddress: Dirección.
-        invoiceValue: Valor / Importe.
-        invoiceCurrencyValue : Moneda Valor / Importe.
-        invoiceAdjustment: Ajuste Valor.
-        invoiceCurrencyAdjustment: Moneda Ajuste Valor.
-
+        invoices: Lista de facturas.
         TODO(...): Update doc.
     """
 
@@ -354,13 +350,8 @@ class Dispatch(Entity):
     customsRegime              = TextProperty   ()
     customsCode                = TextProperty   ()
     businessName               = TextProperty   ()
-    invoiceNumber              = TextProperty   ()
-    invoiceAddress             = TextProperty   ()
-    invoiceValue               = TextProperty   ()
-    invoiceAdjustment          = TextProperty   ()
-    invoiceCurrencyValue       = TextProperty   ()
-    invoiceCurrencyAdjustment  = TextProperty   ()
     register                   = JsonProperty   ()
     alerts                     = JsonProperty   ()
+    invoices                   = JsonProperty   ()
     operation = ReferenceProperty(Operation, collection_name='dispatches')
     declaration = ReferenceProperty(Declaration, collection_name='dispatches')

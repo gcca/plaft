@@ -4,16 +4,15 @@ gz     = require './helpers'
 model  = require './model'
 widget = require './dashboard/widget'
 
-MenuView    = require './dashboard/menu'
-DesktopView = require './dashboard/desktop'
-
-ConfigView = require './dashboard/module/config'
+MenuView     = require './dashboard/menu'
+DesktopView  = require './dashboard/desktop'
+SettingsView = require './dashboard/settings'
 
 # ----------
 # Global App
 # ----------
 gzApp = new Object
-
+  _.\extend .., gz.GEvents
 customsBroker = new model.CustomsBroker
 customsBroker.fetch do
   \success : !(customsBroker) ->
@@ -39,15 +38,6 @@ class DashboardView extends gz.GView
    * @private
    */
   events:
-    /**
-     * Configuartion module.
-     * @param {Object} evt Event object.
-     * @private
-     */
-    "click ##{gz.Css \id-cog}": !(evt) ->
-      evt.preventDefault!
-      @desktopView.changeDesktop ConfigView .render!
-
     /**
      * On click help-me button.
      * @param {Object} evt Event object.
@@ -83,22 +73,6 @@ class DashboardView extends gz.GView
     tools.className = "#{gz.Css \large-100}
                      \ #{gz.Css \medium-100}
                      \ #{gz.Css \small-100}"
-    tools.innerHTML = "
-      <nav class='#{gz.Css \ink-navigation}'>
-        <ul class='#{gz.Css \menu}
-                 \ #{gz.Css \horizontal}
-                 \ #{gz.Css \white}
-                 \ #{gz.Css \rounded}
-                 \ #{gz.Css \shadowed}'>
-          <li style='width:100%'>
-            <a id='#{gz.Css \id-cog}' style='width:100%'>
-              <i class='#{gz.Css \icon-cog}'></i>
-              &nbsp;&nbsp;
-              <span>Agencia</span>
-            </a>
-          </li>
-        </ul>
-      </nav>"
     left.appendChild tools
 
     menu = gz.newel \div
@@ -124,9 +98,22 @@ class DashboardView extends gz.GView
 
     body.appendChild right
 
-    # attributes
-    /** @private */ @menuView = menuView
-    /** @private */ @desktopView = desktopView
+    settingsView = new SettingsView desktopView: desktopView
+    tools.appendChild settingsView.render!.el
+
+    ## Events module desktops
+    settingsView.on (gz.Css \on-dashboard-settings-change-desktop), ->
+      menuView.disableCurrent!
+
+    menuView.on (gz.Css \change-desktop), ->
+      settingsView.disableCurrent!
+
+    @menuView = menuView
+    @desktopView = desktopView
+
+  # attributes
+  /** @private */ menuView    : null
+  /** @private */ desktopView : null
 
 # ---------
 # Templates
@@ -215,8 +202,9 @@ class DashboardView extends gz.GView
 # ---------
 (new DashboardView).render!
 ($ "ul.#{gz.Css \grey}").children!.next!.children!.first!.click!
+($ "ul.#{gz.Css \grey}").children!.children!.first!.click!
 evt = $.Event \keyup
   ..keyCode = 13
-## ## $ 'input' .val 'GGGGG666' .trigger evt
-$ 'input' .val '2013-05' .trigger evt
+$ 'input' .val '12345678989' .trigger evt
 ## $ "ul.#{gz.Css \grey}" .children! .last! .children! .first! .click!
+## setTimeout (-> $($('ul').get 1).children!.first!.children!.first!.click!), 700

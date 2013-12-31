@@ -134,6 +134,7 @@ exports <<<
   tie         : (sf, fn) -> fn.bind sf
   newel       : window.document.createElement.bind window.document
   G           : window .\Backbone
+  GEvents     : window .\Backbone .\Events
   GView       : window .\Backbone .\View
   GModel      : GModel
   GCollection : GCollection
