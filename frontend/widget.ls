@@ -250,10 +250,16 @@ class Typeahead extends gz.GView
 
   /**
    */
-  elWidth: !(pWidth) ->
+  elWidth: !(vWidth) ->
     @el
-      ..style.width = '100%'
-      ..parentElement.style.width = '100%'
+      ..style.width                        = vWidth
+      ..parentElement.style.width          = vWidth
+      ..previousElementSibling.style.width = vWidth
+
+  elCss: !(vStyle, vValue) ->
+    @el
+      ..style[vStyle]                        = vValue
+      ..previousElementSibling.style[vStyle] = vValue
 
   /**
    * Initialize view.
@@ -265,8 +271,9 @@ class Typeahead extends gz.GView
     next.remove! if isNext
     @$el.\typeahead do
       ## \prefetch : '/static/pos.json'
-      \local : opts.mData
+      \local    : opts.mData
       \template : opts.mTemplate
+      \limit    : if opts.mLimit then opts.mLimit else 5
       ## \engine   :
       ##   \compile : (t) ->
       ##     ## cc = _.\template t

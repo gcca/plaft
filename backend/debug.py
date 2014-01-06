@@ -24,10 +24,33 @@ def main():
                         officierCode='AVG2013')
     cb3.store()
 
+    jurisdictions = [Dto({"code": "118", "name": "MAR\u00cdTIMA DEL CALLAO"}),
+                     Dto({"code": "046", "name": "PAITA"}),
+                     Dto({"code": "019", "name": "TUMBES"}),
+                     Dto({"code": "235", "name": "A\u00c9REA DEL CALLAO"}),
+                     Dto({"code": "154", "name": "AREQUIPA"}),
+                     Dto({"code": "172", "name": "TACNA"}),
+                     Dto({"code": "082", "name": "SALAVERRY"}),
+                     Dto({"code": "145", "name": "MOLLENDO - MATARANI"}),
+                     Dto({"code": "163", "name": "ILO"}),
+                     Dto({"code": "127", "name": "PISCO"}),
+                     Dto({"code": "181", "name": "PUNO"}),
+                     Dto({"code": "028", "name": "TALARA"}),
+                     Dto({"code": "262", "name": "DESAGUADERO"}),
+                     Dto({"code": "244", "name": "POSTAL DE LIMA"}),
+                     Dto({"code": "992", "name": "LIMA METROPOLITANA"})]
+    cb4 = CustomsBroker(name='Scharff Logistica Integrada S.A.',
+                        documentNumber='20463958590',
+                        code='7053',
+                        officierName='John Connor',
+                        officierCode='AVG2013',
+                        jurisdictions=jurisdictions)
+    cb4.store()
+
     # Customs Broker Users
     cbu1 = CustomsBrokerUser.register('gcca@meil.io',
                                       '123',
-                                      customsBroker=cb3)
+                                      customsBroker=cb4)
     cbu1.store()
 
     # Customers

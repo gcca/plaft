@@ -8,15 +8,8 @@ MenuView     = require './dashboard/menu'
 DesktopView  = require './dashboard/desktop'
 SettingsView = require './dashboard/settings'
 
-# ----------
-# Global App
-# ----------
-gzApp = new Object
-  _.\extend .., gz.GEvents
-customsBroker = new model.CustomsBroker
-customsBroker.fetch do
-  \success : !(customsBroker) ->
-    gzApp.customsBroker = customsBroker
+# global application variable
+gzApp = require './dashboard/gzapp'
 
 
 /**
@@ -165,7 +158,7 @@ class DashboardView extends gz.GView
     <ul class='#{gz.Css \menu} #{gz.Css \horizontal}
              \ #{gz.Css \shadowed} #{gz.Css \black}'>
       <li>
-        <a href='javascript:void(0);'>
+        <a href='/'>
           <i class='#{gz.Css \icon-home}'></i>
         </a>
       </li>
@@ -201,10 +194,10 @@ class DashboardView extends gz.GView
 # Body Init
 # ---------
 (new DashboardView).render!
-($ "ul.#{gz.Css \grey}").children!.next!.children!.first!.click!
-($ "ul.#{gz.Css \grey}").children!.children!.first!.click!
-evt = $.Event \keyup
-  ..keyCode = 13
-$ 'input' .val '12345678989' .trigger evt
-## $ "ul.#{gz.Css \grey}" .children! .last! .children! .first! .click!
-## setTimeout (-> $($('ul').get 1).children!.first!.children!.first!.click!), 700
+## ($ "ul.#{gz.Css \grey}").children!.next!.children!.first!.click!
+## ($ "ul.#{gz.Css \grey}").children!.children!.first!.click!
+## evt = $.Event \keyup
+##   ..keyCode = 13
+## $ 'input' .val '12345678989' .trigger evt
+## ### $ "ul.#{gz.Css \grey}" .children! .last! .children! .first! .click!
+## ## setTimeout (-> $($('ul').get 1).children!.first!.children!.first!.click!), 500

@@ -118,6 +118,8 @@ module.exports = class DispatchView extends ModuleBaseView
     @sectionViewList = new Array
     @render!
 
+  /** @private */ operationView: null
+
   /**
    * Render view.
    * @return {Object}
@@ -162,5 +164,3 @@ module.exports = class DispatchView extends ModuleBaseView
     </ol>
 
     <img src='/static/help/dispatch.png'>"
-
-  /** @private */ operationView: null

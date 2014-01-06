@@ -9,7 +9,8 @@ class InvoiceView extends gz.GView
   tagName: \form
 
   className: "#{gz.Css \ink-form} #{gz.Css \ink-form-new}
-            \ #{gz.Css \column-group} #{gz.Css \gutters}"
+            \ #{gz.Css \column-group} #{gz.Css \gutters}
+            \ #{gz.Css \parent-toggle}"
 
   onClickRemove: !~>
     @invoiceViews.splice (@invoiceViews.indexOf @), 1
@@ -79,39 +80,12 @@ class InvoiceView extends gz.GView
           </div>
         </div>
 
-        #tControlGroup
-          #tLabel
-            Dirección
-          </label>
-          #tControl
-            <input type='text' name='address'>
-          </div>
-        </div>
-
       </fieldset>
 
 
       <fieldset class='#{gz.Css \large-45}
                      \ #{gz.Css \medium-45}
                      \ #{gz.Css \small-100}' style='margin-bottom:0'>
-
-        #tControlGroup
-          #tLabelRight
-            Ciudad
-          </label>
-          #tControlRight
-            <input type='text' name='city'>
-          </div>
-        </div>
-
-        #tControlGroup
-          #tLabelRight
-            País
-          </label>
-          #tControlRight
-            <input type='text' name='country'>
-          </div>
-        </div>
 
         #tControlGroup
           #tLabelRight
@@ -135,7 +109,8 @@ class InvoiceView extends gz.GView
     tSpan = gz.newel \span
       ..className = "#{gz.Css \icon-remove}
                    \ #{gz.Css \icon-2x}
-                   \ #{gz.Css \push-right}"
+                   \ #{gz.Css \push-right}
+                   \ #{gz.Css \toggle}"
       ..onclick = @onClickRemove
       ..style.cursor = 'pointer'
     @$el.append tSpan

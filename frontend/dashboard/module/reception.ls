@@ -1,11 +1,11 @@
 /** @module dashboard.module */
 
-form  = require '../../form'
-model = require '../../model'
+form   = require '../../form'
+model  = require '../../model'
 widget = require '../../widget'
 
 ModuleBaseView = require './base'
-InvoicesView = require './declaration/invoices'
+InvoicesView   = require './reception/invoices'
 
 
 /** @private */ DeclarationModel             = model.Declaration
@@ -40,6 +40,7 @@ module.exports = class DeclarationView extends ModuleBaseView
         \success : ~>
           @desktop.uiSearch.elClear!
           @remove!
+          @desktop.uiSearch.elFocus!
           (new widget.GAutoAlert (gz.Css \success),
                                  '<b>DESPACHO</b>: Se ha creado el despacho
                                  \ de manera exitosa.').elShow!
@@ -106,6 +107,11 @@ module.exports = class DeclarationView extends ModuleBaseView
     @$el.html @template declaration
     @invoicesView = new InvoicesView
     @$el.find "##{gz.Css \id-invoices}" .append @invoicesView.render!.el
+    @$el.find '[name=orderNumber]' .focus!
+    # Synchronize Name - Code
+    selectName = @$el.find '[name=jurisdictionName]' .get 0
+    selectCode = @$el.find '[name=jurisdictionCode]' .get 0
+    gzApp.shortcuts.ui.jurisdictions.synchronizeSelects selectName, selectCode
 
   /**
    * Render view.
@@ -115,6 +121,7 @@ module.exports = class DeclarationView extends ModuleBaseView
     @desktop.uiSearch.showTooltip '
       <b>Buscar por <em>RUC</em>
       \ o <em>código de declaración jurada</em>.</b>'
+    # Init focus
     @desktop.uiSearch.elFocus!
     super!
 
@@ -125,6 +132,7 @@ module.exports = class DeclarationView extends ModuleBaseView
    * @private
    */
   template: (declaration) ->
+    # Constants for layout
     tBlock100 = "<div class='#{gz.Css \large-100}
                            \ #{gz.Css \medium-100}
                            \ #{gz.Css \small-100}'>"
@@ -147,54 +155,99 @@ module.exports = class DeclarationView extends ModuleBaseView
                           \ #{gz.Css \medium-100}
                           \ #{gz.Css \small-100}'>"
 
+    # html elements
+    gzApp.shortcuts.ui.iHtml.jurisdictions.optionsSelected!
+      optionsJurisdictionName = ..optionsName
+      optionsJurisdictionCode = ..optionsCode
+
+    # template
     "<form class='#{gz.Css \ink-form} #{gz.Css \ink-form-new}
                 \ #{gz.Css \column-group} #{gz.Css \gutters}'
         style='margin-left:-2em;margin-bottom:0'>
-      #{form.block50}
-        <fieldset>
-          <legend>Cliente</legend>
 
+      #tFieldset50
+        <legend>Cliente</legend>
+
+        #{form.control-group}
+          #{form.label}Nombre</label>
+          #{form.control}
+            <label><b>#{declaration.'customer'.'name'}</b></label>
+          </div>
+        </div>
+
+        #{form.control-group}
+          #{form.label}RUC</label>
+          #{form.control}
+            <label><b>#{declaration.'customer'.'documentNumber'}</b></label>
+          </div>
+        </div>
+      </fieldset>
+
+      #tFieldset50
+        <legend>Tercero</legend>
+
+        #{
+        if declaration.'thirdName' then "
           #{form.control-group}
             #{form.label}Nombre</label>
             #{form.control}
-              <label><b>#{declaration.'customer'.'name'}</b></label>
+              <label><b>#{declaration.'thirdName'}</b></label>
             </div>
+          </div>"
+        else
+          "<h6 class='#{gz.Css \note}'>No figura un tercero.</h6>"
+        }
+      </fieldset>
+
+      <fieldset class='#{gz.Css \large-100}
+                     \ #{gz.Css \medium-100}
+                     \ #{gz.Css \small-100}'>
+
+        <div class='#{gz.Css \control-group}
+                  \ #{gz.Css \large-50}
+                  \ #{gz.Css \medium-50}
+                  \ #{gz.Css \small-100}'>
+          #tLabel
+            Código de Agente de Aduana
+          </label>
+          #tControl
+            <label><b>#{gzApp.customsBroker.get \code}</b></label>
+            <input type='hidden' name='customsBrokerCode'
+                value='#{gzApp.customsBroker.get \code}'>
           </div>
+        </div>
 
-          #{form.control-group}
-            #{form.label}RUC</label>
-            #{form.control}
-              <label><b>#{declaration.'customer'.'documentNumber'}</b></label>
-            </div>
+        <div class='#{gz.Css \control-group}
+                  \ #{gz.Css \large-50}
+                  \ #{gz.Css \medium-50}
+                  \ #{gz.Css \small-100}'>
+          #tLabel
+            Aduana Despacho
+          </label>
+          <div class='#{gz.Css \control}
+                    \ #{gz.Css \large-75}
+                    \ #{gz.Css \medium-75}
+                    \ #{gz.Css \small-100}'>
+            <select name='jurisdictionName'>
+              #optionsJurisdictionName
+            </select>
           </div>
-        </fieldset>
-      </div>
-
-      #{form.block50}
-        <fieldset>
-          <legend>Tercero</legend>
-
-          #{
-          if declaration.'thirdName' then "
-            #{form.control-group}
-              #{form.label}Nombre</label>
-              #{form.control}
-                <label><b>#{declaration.'thirdName'}</b></label>
-              </div>
-            </div>"
-          else
-            "<h6 class='#{gz.Css \note}'>No figura un tercero.</h6>"
-          }
-        </fieldset>
-      </div>
+          <span class='#{gz.Css \large-5}
+                     \ #{gz.Css \medium-5}
+                     \ #{gz.Css \small-100}'
+              style='margin-top:0;margin-bottom:-1.5em'></span>
+          <div class='#{gz.Css \control}
+                    \ #{gz.Css \large-20}
+                    \ #{gz.Css \medium-20}
+                    \ #{gz.Css \small-100}'>
+            <select name='jurisdictionCode'>
+              #optionsJurisdictionCode
+            </select>
+          </div>
+        </div>
 
 
-      <div class='#{gz.Css \large-100}
-                \ #{gz.Css \medium-100}
-                \ #{gz.Css \small-100}'
-          style='margin-bottom:0;margin-top:-2em'>
-        &nbsp;
-      </div>
+      </fieldset>
 
 
       #tFieldset50
@@ -205,15 +258,6 @@ module.exports = class DeclarationView extends ModuleBaseView
           </label>
           #tControl
             <input type='text' name='orderNumber'>
-          </div>
-        </div>
-
-        #tControlGroup
-          #tLabel
-            Código de Agente de Aduana
-          </label>
-          #tControl
-            <input type='text' name='customsBrokerCode'>
           </div>
         </div>
 
@@ -231,138 +275,8 @@ module.exports = class DeclarationView extends ModuleBaseView
           </div>
         </div>
 
-        #tControlGroup
-          #tLabel
-            Despacho de Aduana
-          </label>
-          #tControl
-            <input type='text' name='customsCode'>
-          </div>
-        </div>
-
       </fieldset>
 
-
-
-      <!--
-      #{form.block50}
-        <fieldset>
-        <legend>Datos SO</legend>
-
-        #{form.control-group}
-          #{form.control100}
-            <input name='customsBrokerCode' type='text'
-                placeholder='Codigo de Agente de Aduana' value=''>
-          </div>
-        </div>
-
-        #{form.control-group}
-          #{form.control100}
-            <input name='dateReceived' type='text'
-                placeholder='Fecha de recepción' value=''>
-          </div>
-        </div>
-
-
-        #{form.control-group}
-          #{form.control100}
-            <input name='customerReferences' type='text'
-                placeholder='Referencias' value=''>
-          </div>
-        </div>
-
-        #{form.control-group}
-          #{form.control100}
-            <input name='customsRegime' type='text'
-                placeholder='Regimen aduanero'value=''>
-          </div>
-        </div>
-
-        #{form.control-group}
-          #{form.control100}
-          <input name='customsCode' type='text'
-              placeholder='Código de Aduana' value=''>
-          </div>
-        </div>
-
-        </fieldset>
-
-      </div>
-
-      #{form.block50}
-        <fieldset>
-        <legend>Factura Comercial</legend>
-
-        #{form.control-group}
-          #{form.control100}
-            <input name='invoiceNumber' type='text'
-                placeholder='Número Factura' value=''>
-          </div>
-        </div>
-
-        #{form.control-group}
-          #{form.control100}
-            <input name='businessName' type='text'
-                placeholder='Razón social' value=''>
-          </div>
-        </div>
-
-        #{form.control-group}
-          #{form.control100}
-            <input name='invoiceAddress' type='text'
-                placeholder='Dirección' value=''>
-          </div>
-        </div>
-
-        #{form.control-group}
-          #{form.control100}
-            <input name='invoiceValue' type='text'
-                placeholder='Valor / Importe' value=''>
-          </div>
-        </div>
-
-        #{form.control-group}
-          #{form.control100}
-            <input name='invoiceCurrencyValue' type='text'
-                placeholder='Moneda V/I' value=''>
-          </div>
-        </div>
-
-        #{form.control-group}
-          #{form.control100}
-            <input name='invoiceAdjustment' type='text'
-                placeholder='Ajuste Valor' value=''>
-          </div>
-        </div>
-
-        #{form.control-group}
-          #{form.control100}
-            <input name='invoiceCurrencyAdjustment' type='text'
-                placeholder='Moneda AV' value=''>
-          </div>
-        </div>
-
-        #{form.control-group}
-          #{form.control100}
-            <input name='orderNumber' type='text'
-                placeholder='Orden de Despacho' value=''>
-          </div>
-        </div>
-
-        </fieldset>
-
-      </div>
-
-      #{form.block100}
-        #{form.control-group}
-          #{form.control100}
-            <button id='#{gz.Css \id-submit-declaration}'
-                type='button' class='#{gz.Css \ink-button}'>
-              Generar Despacho
-            </button>
-          </div>
-        </div>
-      </div> -->
     </form>
     <div id='#{gz.Css \id-invoices}' class='#{gz.Css \large-100}
                                           \ #{gz.Css \medium-100}
@@ -377,9 +291,9 @@ module.exports = class DeclarationView extends ModuleBaseView
       Generar Despacho
     </button>"
 
-  /** @private */ @menuCaption = 'Declaración'
+  /** @private */ @menuCaption = 'Recepción'
   /** @private */ @menuIcon    = gz.Css \icon-file-text
-  /** @private */ @menuTitle   = 'Declaración Jurada'
+  /** @private */ @menuTitle   = 'Recepción'
   /** @private */ @menuHelp    = "
     <b></b>
 

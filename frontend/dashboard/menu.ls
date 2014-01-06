@@ -5,7 +5,7 @@
  * @private
  */
 modules = [
-  DeclarationView  = require './module/declaration'
+  ReceptionView    = require './module/reception'
   DispatchView     = require './module/dispatch'
   DispatchesView   = require './module/dispatches'
   MainView         = require './module/main'

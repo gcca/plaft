@@ -24,7 +24,7 @@ document.body.innerHTML = "
              \ #{gz.Css \shadowed}
              \ #{gz.Css \black}'>
 
-      <li class='#{gz.Css \active}'>
+      <li>
         <a href='javascript:void(0);'>
           <i class='#{gz.Css \icon-home}'></i>
         </a>
@@ -39,7 +39,7 @@ document.body.innerHTML = "
           Prevención del Lavado de Activos y Financiamiento del Terrorismo
         </a>
       </li>
-      <li><a href='#'>CavaSoft</a></li>
+      <li class='#{gz.Css \push-right}'><a href='#'>CavaSoft</a></li>
     </ul>
 
   </nav>
@@ -209,7 +209,7 @@ document.body.innerHTML = "
       </li>
       <li class='#{gz.Css \push-right}' style='font-size:.88em;padding-top:.25em'>
         Created by &nbsp;
-        <a href='http://gcca.alwaysdata.net'>cristHian Gz. (gcca)</a>
+        <a href='http://gcca.tk' target='_blank'>cristHian Gz. (gcca)</a>
         &nbsp;&nbsp;&nbsp;&nbsp;
         <a href='/static/doc/index.html'>Doc</a>
       </li>
@@ -233,7 +233,7 @@ document.querySelector 'form' .onsubmit = (evt) ->
         if @status is 200
           toDashboard = ->
             if 30 < document.cookie.length
-              location.replace '/dashboard'
+              setTimeout (-> location.replace '/dashboard'), 200
             else
               toDashboard!
           setTimeout toDashboard, 100

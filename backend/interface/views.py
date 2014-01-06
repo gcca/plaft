@@ -4,6 +4,7 @@ from infraestructure.utils import user_required
 from interface import BaseHandler
 from domain.model import Declaration, Customer
 
+
 # --------------
 # Basic Template
 # --------------
@@ -17,10 +18,11 @@ def generic(template, args=''):
         '<title>PLAFTsw</title>'
         '</head>'
         '<body>'
-        '<script>window.params={%(args)s}</script>'
+        '<script>window.gzps={%(args)s}</script>'
         '<script src="/static/%(template)s.js"></script>'
         '</body>'
         '</html>') % {'template': template, 'args': args}
+
 
 # ----------------
 # Sign In/Out View
@@ -109,11 +111,13 @@ class SignInView(BaseHandler):
         else:
             self.write_badbrowser()
 
+
 class SignOutView(BaseHandler):
 
     def get(self):
         self.logout()
         self.redirect('/')
+
 
 # ------------------
 # Customer Form View
@@ -123,6 +127,7 @@ class CustomerFormView(BaseHandler):
     def get(self):
         self.write(generic('customer-form'))
 
+
 # -------------
 # Customer View
 # -------------
@@ -131,6 +136,7 @@ class CustomerView(BaseHandler):
     def get(self):
         self.write(generic('customer'))
 
+
 # --------------
 # Dashboard View
 # --------------
@@ -138,8 +144,11 @@ class DashboardView(BaseHandler):
 
     @user_required
     def get(self):
-        self.headers_reval()
-        self.write(generic('dashboard'))
+        args = ('a:%s,b:%s' # customsBroker, user
+                % (self.user.customsBroker.json,
+                   self.user.json))
+        self.write(generic('dashboard', args))
+
 
 # --------
 # Movement

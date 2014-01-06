@@ -26,7 +26,7 @@ class User(PolyEntity):
     email    = EmailProperty  (required = True)
     password = StringProperty (required = True)
 
-    protected = ['id', 'password']
+    protected = ['password']
 
     @classmethod
     def register(self, email, password, **k):
@@ -214,12 +214,13 @@ class CustomsBroker(Entity):
         documentNumber: Número RUC.
     """
 
-    name           = StringProperty ()
-    documentNumber = StringProperty ()
-    code           = StringProperty (default='')
-    officierName   = TextProperty   ()
-    officierCode   = StringProperty ()
-    datastore      = ReferenceProperty(Datastore)
+    name           = StringProperty    ()
+    documentNumber = StringProperty    ()
+    code           = StringProperty    (default='')
+    officierName   = TextProperty      ()
+    officierCode   = StringProperty    ()
+    jurisdictions  = JsonProperty      ()
+    datastore      = ReferenceProperty (Datastore)
 
     protected = ['datastore']
 
@@ -251,7 +252,12 @@ class CustomsBrokerUser(User):
     """
 
     aModel = CustomsBroker
+
     customsBroker = ReferenceProperty(CustomsBroker, collection_name='users')
+    jurisdictionName = TextProperty ()
+    jurisdictionCode = TextProperty ()
+
+    protected = User.protected + ['customsBroker']
 
     @classmethod
     def register(self, name, password, customsBroker, **_):
@@ -343,15 +349,11 @@ class Dispatch(Entity):
         TODO(...): Update doc.
     """
 
-    orderNumber                = StringProperty ()
-    customsBrokerCode          = TextProperty   ()
-    dateReceived               = DateProperty   ()
-    customerReferences         = TextProperty   () # Esto no debería esta acá
-    customsRegime              = TextProperty   ()
-    customsCode                = TextProperty   ()
-    businessName               = TextProperty   ()
-    register                   = JsonProperty   ()
-    alerts                     = JsonProperty   ()
-    invoices                   = JsonProperty   ()
+    orderNumber       = StringProperty ()
+    customsBrokerCode = TextProperty ()
+    jurisdictionName  = TextProperty ()
+    jurisdictionCode  = TextProperty ()
+    customsRegime     = TextProperty ()
+    invoices          = JsonProperty ()
     operation = ReferenceProperty(Operation, collection_name='dispatches')
     declaration = ReferenceProperty(Declaration, collection_name='dispatches')

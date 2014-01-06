@@ -6,7 +6,7 @@ from interface.views import SignInView, CustomerFormView, DashboardView, \
 from interface.handlers import CustomerHandler, DeclarationHandler, \
     CustomerDeclarationHandler, CustomerLastDeclarationHandler, \
     DispatchHandler, SignInHandler, DispatchesHandler, DispatchFix, \
-    CustomsBrokerHandler, DeclarationsHandler
+    CustomsBrokerHandler, DeclarationsHandler, CustomsBrokerUserHandler
 
 from debug import DebugView
 
@@ -32,16 +32,18 @@ app = WSGIApplication([
     ('/declaration/(\\d+)/pdf', DeclarationPDFView),
 
     # Handlers
-    RESTful('signin', SignInHandler),
-    RESTful('customsbroker', CustomsBrokerHandler),
+    RESTful('signin'        , SignInHandler),
+    RESTful('customsbroker' , CustomsBrokerHandler),
+    RESTful('user'          , CustomsBrokerUserHandler),
+
     RESTful('customer', CustomerHandler, [
         ('lastdeclaration', CustomerLastDeclarationHandler)
     ]),
-    RESTful('declaration', DeclarationHandler),
-    RESTful('declarations', DeclarationsHandler),
-    RESTful(('customer', 'declaration') , CustomerDeclarationHandler),
+    RESTful('declaration'  , DeclarationHandler),
+    RESTful('declarations' , DeclarationsHandler),
+    RESTful(('customer', 'declaration'), CustomerDeclarationHandler),
 
-      # Dispatch
+    # Dispatch
     RESTful('dispatch', DispatchHandler),
     Route(r'/api/v1/dispatch/<id:\w+>/fix/<type:\w+>', DispatchFix),
 

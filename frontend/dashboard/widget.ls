@@ -40,8 +40,15 @@ class SearchView extends gz.GView
      */
     'keyup': !(evt) ->
       # @trigger (gz.Css \search), evt.currentTarget.value if evt.keyCode is 13
-      if evt.keyCode is 13
-        a = @trigger (gz.Css \on-search), evt.currentTarget.value, @elState
+      @triggerSearch! if evt.keyCode is 13
+
+
+  /**
+   * Trigger search event.
+   * @public
+   */
+  triggerSearch: !->
+    @trigger (gz.Css \on-search), @el.value, @elState
 
   /**
    * Set input placeholder.
@@ -128,6 +135,10 @@ class SearchView extends gz.GView
 
     @_controlGroup = @$el.parents ".#{gz.Css \control-group}" .get 0
       ..classList.add (gz.Css \validation)
+
+    @el.nextElementSibling
+      ..style.cursor = 'pointer'
+      ..onclick = ~> @triggerSearch!
 
   /** @private */ ttip  : null
   /** @private */ tmplt : null

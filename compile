@@ -40,9 +40,6 @@ signin)
   if [ "0" == "$2" ]; then opt=-O; SALL=; fi
   if [ "" == "$SALL" ]; then fc_ll; elif [ ls == "$2" ]; then fc_ls none; else fc_less; fi
   ;;
-customer-form)
-  fc_ll $2
-  ;;
 customer)
   fc_ll $2
   ;;
@@ -57,8 +54,6 @@ all)
   fc_less
   fc_ls none
   ext3=$ext4
-  src=customer-form
-  fc_ll
   src=customer
   fc_ll
   src=dashboard

@@ -33,6 +33,18 @@ class Shareholder extends GModel
 class Shareholders extends GCollection
   model: Shareholder
 
+
+# ----
+# User
+# ----
+/**
+ * User model
+ * @class User
+ */
+class User extends GModel
+  urlRoot: \user
+
+
 # --------
 # Customer
 # --------
@@ -82,6 +94,7 @@ class Customers extends GCollection
   url: \customer
   model: Customer
 
+
 # -----------
 # Declaration
 # -----------
@@ -100,6 +113,7 @@ class Declarations extends GCollection
   urlRoot: \declarations
   model: Declaration
 
+
 # --------------------
 # Customer Declaration
 # --------------------
@@ -109,6 +123,7 @@ class Declarations extends GCollection
  */
 class CustomerLastDeclaration extends Declaration
   urlRoot: \customer/lastdeclaration
+
 
 # --------
 # Dispatch
@@ -171,6 +186,7 @@ class CustomsBroker extends GModel
 exports <<<
   Shareholder             : Shareholder
   Shareholders            : Shareholders
+  User                    : User
   Customer                : Customer
   Customers               : Customers
   Declaration             : Declaration

@@ -47,6 +47,10 @@ module.exports = class SettingsView extends gz.GView
     # <li>
     tLi.appendChild tA
     # ret <li>
+    tLi.style.width = '50%'
+    tA.style
+      ..width     = '100%'
+      ..textAlign = 'center'
     tLi
 
   disableCurrent: ->

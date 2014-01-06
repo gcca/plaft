@@ -3,7 +3,7 @@
 
 from interface import BaseHandler, RESTfulHandler
 from infraestructure.utils import login_required
-from domain.model import Declaration, User, Dispatch  # (-o-) DBG
+from domain.model import Declaration, User, Dispatch, CustomsBrokerUser
 from domain.gz import SpecificationError, NotFoundError, DuplicateError, \
     StoreFailedError, BadValueError, Error
 from application.service import CustomerService, DeclarationService, \
@@ -246,6 +246,25 @@ class CustomsBrokerHandler(BaseHandler):
         try:
             self.user.customsBroker.update(self.request_dto)
             self.user.customsBroker.store()
+        except BadValueError as ex:
+            self.status.BAD_REQUEST(ex)
+        except StoreFailedError as ex:
+            self.status.INTERNAL_ERROR(ex)
+        else:
+            self.write_json('{}')
+
+# -------------------
+# Customs Broker User
+# -------------------
+class CustomsBrokerUserHandler(BaseHandler):
+
+    def get(self):
+        self.render_json(self.user)
+
+    def put(self, id):
+        try:
+            self.user.update(self.request_dto)
+            self.user.store()
         except BadValueError as ex:
             self.status.BAD_REQUEST(ex)
         except StoreFailedError as ex:

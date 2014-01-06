@@ -1,4 +1,4 @@
-/** @module dashboard.module */
+/** @module dashboard.module.settings.customs */
 
 /**
  * Import {@code GAutoAlert}.
@@ -6,64 +6,13 @@
  */
 widget = require '../../../widget'
 
+JurisdictionsView = require './customs/jurisdictions'
+
 /**
  * Import Module Base.
  * @private
  */
 ModuleBaseView = require '../base'
-
-
-/**
- * @class JurisdictionView
- * @private
- */
-class JurisdictionView extends gz.GView
-
-  tagName: \form
-
-  className: "#{gz.Css \ink-form}"
-
-  JSONFields: -> @$el.serializeJSON!
-
-  render: ->
-    @$el.html "
-      <div class='#{gz.Css \control-group}'>
-        <div class='#{gz.Css \control}'>
-          <input type='text' name='name' placeholder='Jurisdicción'>
-        </div>
-      </div>"
-    super!
-
-
-/**
- * @class JurisdictionsView
- * @private
- */
-class JurisdictionsView extends gz.GView
-
-  tagName: \div
-
-  JSONFields: -> [juris.JSONFields! for juris in @jurisdictionViews]
-
-  onAddJurisdiction: !(evt) ~>
-    evt.preventDefault!
-    jurisdictionView = new JurisdictionView
-    @jurisdictionViews.push jurisdictionView
-    @$el.append jurisdictionView.render!.el
-
-  initialize: !->
-    @jurisdictionViews = new Array
-
-  /** @private */ jurisdictionViews: null
-
-  render: ->
-    @$el.html "
-      <button type='button' class='#{gz.Css \ink-button}'
-          style='margin-bottom:1em'>
-        Agregar <i class='#{gz.Css \icon-plus}'></i>
-      </button>"
-    @el.lastElementChild.onclick = @onAddJurisdiction
-    super!
 
 
 /**
@@ -80,19 +29,18 @@ module.exports = class CustomsView extends ModuleBaseView
   onClickSaveForm: !(evt) ~>
     dataJSON = @$el.find \form .serializeJSON!
     dataJSON.\jurisdictions = @jurisdictionsView.JSONFields!
-    console.log dataJSON
-    ## @model.save dataJSON, do
-    ##   \success : ->
-    ##     (new widget.GAutoAlert (gz.Css \success),
-    ##                            "<b>DESPACHO:</b> Datos guardados.").elShow!
-    ##   \error : ->
-    ##     alert 'ERROR: Config (a456)'
+    @model.save dataJSON, do
+      \success : ->
+        (new widget.GAutoAlert (gz.Css \success),
+                               "<b>DESPACHO:</b> Datos guardados.").elShow!
+      \error : ->
+        alert 'ERROR: Config (a456)'
 
   /** @private */ @menuCaption = 'Agencia de aduanas'
-  /** @private */ @menuIcon = gz.Css \icon-cog
-  /** @private */ @menuTitle = 'Configuración de Agencia de Aduanas'
+  /** @private */ @menuIcon    = gz.Css \icon-cog
+  /** @private */ @menuTitle   = 'Configuración de Agencia de Aduanas'
 
-  jurisdictionsView: null
+  /** @private */ jurisdictionsView: null
 
   /**
    * Render view.
@@ -103,13 +51,15 @@ module.exports = class CustomsView extends ModuleBaseView
     @model = gzApp.customsBroker
     # Form
     @$el.html @templateMainForm!
-    @jurisdictionsView = new JurisdictionsView
-    # Jurisdiction
+    # Jurisdictions
+    jurisdictionArray = gzApp.customsBroker.get \jurisdictions
+    lCollection = new gz.GCollection jurisdictionArray
+    @jurisdictionsView = new JurisdictionsView collection: lCollection
     @el.lastElementChild.lastElementChild \
       .appendChild @jurisdictionsView.render!.el
     # Button "Save"
-    $tFieldset = $ "<fieldset class='#{gz.Css \large-100}
-                                   \ #{gz.Css \medium-100}
+    $tFieldset = $ "<fieldset class='#{gz.Css \large-50}
+                                   \ #{gz.Css \medium-50}
                                    \ #{gz.Css \small-100}'>
                     </fieldset>"
     $tButton = $ "<button type='button'
