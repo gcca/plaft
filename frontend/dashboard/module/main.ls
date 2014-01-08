@@ -174,8 +174,11 @@ module.exports = class MainView extends ModuleBaseView
 
     # =============== ANIM ===============
     addNewPoint = ->
-      polyjsdata['update'] addToSubset(1)
-      c['make'] spec
-      setTimeout addNewPoint, 1500
+      try
+        polyjsdata['update'] addToSubset(1)
+        c['make'] spec
+        setTimeout addNewPoint, 1500
+      catch
+        return
 
     setTimeout addNewPoint, 1500

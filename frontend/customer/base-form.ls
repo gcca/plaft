@@ -94,11 +94,12 @@ module.exports = class BaseFormView extends gz.GView
    */
   initialize: !->
     @initForm!
-    @el.id = \customer
     @el.onsubmit = (evt) -> evt.preventDefault!
-    @el.className += " #{gz.Css \ink-form} #{gz.Css \top-space}
-                     \ #{gz.Css \column-group} #{gz.Css \gutters}"
+    @el.className = "#{gz.Css \ink-form}
+                   \ #{gz.Css \top-space}
+                   \ #{gz.Css \column-group}
+                   \ #{gz.Css \gutters}"
     @$el.populateJSON @customer.attributes
-    ($ '[data-tip-text]' @el) .each (_, el) -> new gz.Ink.UI.Tooltip el
+    ($ '[data-tip-text]' @el) .each (_, e) -> new gz.Ink.UI.Tooltip e
 
   /** @private */ customer        : null

@@ -8,7 +8,10 @@ MenuView     = require './dashboard/menu'
 DesktopView  = require './dashboard/desktop'
 SettingsView = require './dashboard/settings'
 
-# global application variable
+/**
+ * Global application variable.
+ * @private
+ */
 gzApp = require './dashboard/gzapp'
 
 
@@ -86,7 +89,8 @@ class DashboardView extends gz.GView
                      \ #{gz.Css \small-100}"
     right.innerHTML = right_vTemplate
     searchView = new widget.GSearchView el: ($ right .find 'input' .get 0)
-    desktopView = new DesktopView menuView, searchView
+    elNavigation = $(right).find "##{gz.Css \id-navigation}" .get 0
+    desktopView = new DesktopView menuView, searchView, elNavigation
     right.appendChild desktopView.el
 
     body.appendChild right
@@ -115,22 +119,14 @@ class DashboardView extends gz.GView
 <div class='#{gz.Css \large-100} #{gz.Css \medium-100} #{gz.Css \small-100}'>
   <div class='#{gz.Css \large-75} #{gz.Css \medium-75} #{gz.Css \small-100}'>
     <nav class='#{gz.Css \ink-navigation}'>
-      <ul class='#{gz.Css \breadcrumbs}
+      <ul id='#{gz.Css \id-navigation}' class='#{gz.Css \breadcrumbs}
                \ #{gz.Css \flat}
                \ #{gz.Css \orange}
                \ #{gz.Css \rounded}
                \ #{gz.Css \shadowed}'>
         <li>
           <a href='#'>
-          <i class='#{gz.Css \icon-home}'></i>
-          &nbsp;
-          &nbsp;
-          Inicio
-          </a>
-        </li>
-        <li class='#{gz.Css \active}'>
-          <a href='javascript:void(0)'>
-            Despacho
+            <i class='#{gz.Css \icon-home}'></i>
           </a>
         </li>
       </ul>

@@ -1,10 +1,9 @@
-/**
- * @module customer-form
- */
+/** @module customer-form */
 
 BaseFormView = require './base-form'
 ShareholdersView = require './shareholders'
 model = require '../model'
+
 
 /**
  * Business form view.
@@ -30,26 +29,39 @@ module.exports = class BusinessFormView extends BaseFormView
     block = "<div class='#{gz.Css \large-100}
                        \ #{gz.Css \medium-100}
                        \ #{gz.Css \small-100}'>"
+
     block50 = "<div class='#{gz.Css \large-50}
                          \ #{gz.Css \medium-100}
                          \ #{gz.Css \small-100}'>"
+
     controlGroup = "<div class='#{gz.Css \control-group}
                               \ #{gz.Css \large-100}
                               \ #{gz.Css \medium-100}
-                              \ #{gz.Css \small-100}'>"
+                              \ #{gz.Css \small-100}
+                              \ #{gz.Css \parent-toggle}'>"
+
     controlGroup50 = "<div class='#{gz.Css \control-group}
                                 \ #{gz.Css \large-50}
                                 \ #{gz.Css \medium-50}
-                                \ #{gz.Css \small-100}'>"
+                                \ #{gz.Css \small-100}
+                                \ #{gz.Css \parent-toggle}'>"
+
     label = "<label>"
-    control = "<div class='#{gz.Css \control}'>"
+
+    control       = "<div class='#{gz.Css \control} #{gz.Css \append-symbol}'>"
+    controlSingle = "<div class='#{gz.Css \control}'>"
+
     @$el.html "
       #controlGroup50
         #label
           <b>a)</b> Denominación o Razón Social
         </label>
         #control
-          <input type='text' name='name'>
+          <span>
+            <input type='text' name='name'>
+            <i class='#{gz.Css \icon-question} #{gz.Css \toggle}'
+                data-tip-text='Denominación o razón social.'></i>
+          </span>
         </div>
       </div>
 
@@ -58,7 +70,12 @@ module.exports = class BusinessFormView extends BaseFormView
           <b>b)</b> RUC
         </label>
         #control
-          <input type='text' name='documentNumber'>
+          <span>
+            <input type='text' name='documentNumber'>
+            <i class='#{gz.Css \icon-question} #{gz.Css \toggle}'
+                data-tip-text='Registro Único de Contribuyentes (RUC),
+                              \ de ser el caso.'></i>
+          </span>
         </div>
       </div>
 
@@ -67,7 +84,11 @@ module.exports = class BusinessFormView extends BaseFormView
           <b>c)</b> Objecto Social
         </label>
         #control
-          <input type='text' name='socialObject'>
+          <span>
+            <input type='text' name='socialObject'>
+            <i class='#{gz.Css \icon-question} #{gz.Css \toggle}'
+                data-tip-text='Objeto social'></i>
+          </span>
         </div>
       </div>
 
@@ -76,15 +97,29 @@ module.exports = class BusinessFormView extends BaseFormView
           Actividad económica principal
         </label>
         #control
-          <input type='text' name='activity'>
+          <span>
+            <input type='text' name='activity'>
+            <i class='#{gz.Css \icon-question} #{gz.Css \toggle}'
+                data-tip-text='Actividad económica principal (comercial,
+                              \ industrial, construcción, transporte,
+                              \ etc.).'></i>
+          </span>
         </div>
       </div>
 
-      <div id='#{gz.Css \id-shareholders}' class='#{gz.Css \large-100}
-                \ #{gz.Css \medium-100}
-                \ #{gz.Css \small-100}'>
+      <div id='#{gz.Css \id-shareholders}'
+          class='#{gz.Css \large-100}
+               \ #{gz.Css \medium-100}
+               \ #{gz.Css \small-100}
+               \ #{gz.Css \parent-toggle}'>
         #label
           <b>d)</b> Identificación Accionistas
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <i class='#{gz.Css \icon-question} #{gz.Css \toggle}'
+               data-tip-text='Identificación de los accionistas, socios
+                             \ o asociados, que tengan un porcentaje igual
+                             \ o mayor al 5% de las acciones
+                             \ o participaciones de la persona jurídica.'></i>
         </label>
       </div>
 
@@ -93,7 +128,14 @@ module.exports = class BusinessFormView extends BaseFormView
           <b>e)</b> Identificación Representante Legal
         </label>
         #control
-          <input type='text' name='legal'>
+          <span>
+            <input type='text' name='legal'>
+            <i class='#{gz.Css \icon-question} #{gz.Css \toggle}'
+                data-tip-text='Identificación del representante legal
+                              \ o de quien comparece con facultades
+                              \ de representación y/o disposición
+                              \ de la persona jurídica.'></i>
+          </span>
         </div>
       </div>
 
@@ -102,7 +144,11 @@ module.exports = class BusinessFormView extends BaseFormView
           <b>f)</b> Domicilio
         </label>
         #control
-          <input type='text' name='address'>
+          <span>
+            <input type='text' name='address'>
+            <i class='#{gz.Css \icon-question} #{gz.Css \toggle}'
+                data-tip-text='Domicilio.'></i>
+          </span>
         </div>
       </div>
 
@@ -111,7 +157,11 @@ module.exports = class BusinessFormView extends BaseFormView
           <b>g)</b> Domicilio fiscal
         </label>
         #control
-          <input type='text' name='officialAddress'>
+          <span>
+            <input type='text' name='officialAddress'>
+            <i class='#{gz.Css \icon-question} #{gz.Css \toggle}'
+                data-tip-text='Domicilio fiscal.'></i>
+          </span>
         </div>
       </div>
 
@@ -124,7 +174,10 @@ module.exports = class BusinessFormView extends BaseFormView
           <b>&nbsp;</b> &nbsp;
         </label>
         #control
-          <input type='text' name='' style='visibility:hidden'>
+          <span>
+            <input type='text' name='' style='visibility:hidden'>
+            <i class='#{gz.Css \icon}-'></i>
+          </span>
         </div>
       </div>
 
@@ -133,7 +186,16 @@ module.exports = class BusinessFormView extends BaseFormView
           <b>h)</b> Teléfono oficina (incluir código ciudad)
         </label>
         #control
-          <input type='text' name='phone'>
+          <span>
+            <input type='text' name='phone'>
+            <i class='#{gz.Css \icon-question} #{gz.Css \toggle}'
+                data-tip-text='Teléfonos fijos de la oficina y/o de la persona
+                              \ de contacto incluyendo el código de la ciudad,
+                              \ sea que se trate del local principal, agencia,
+                              \ sucursal u otros locales donde desarrollan
+                              \ las actividades propias al giro
+                              \ de su negocio.'></i>
+          </span>
         </div>
       </div>
 
@@ -142,15 +204,23 @@ module.exports = class BusinessFormView extends BaseFormView
           Persona contacto <b>&nbsp;</b>
         </label>
         #control
-          <input type='text' name='contact'>
+          <span>
+            <input type='text' name='contact'>
+            <i class='#{gz.Css \icon-question} #{gz.Css \toggle}'
+                data-tip-text='Nombre de la persona de contacto.'></i>
+          </span>
         </div>
       </div>
 
       #controlGroup50
         #label
           <b>i)</b> Origen de los fondos
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <i class='#{gz.Css \icon-question} #{gz.Css \toggle}'
+              data-tip-text='El origen de los fondos, bienes u otros activos
+                            \ involucrados en dicha transacción.'></i>
         </label>
-        #control
+        #controlSingle
           <select name='source'>
             <option>Efectivo</option>
             <option>Cheque</option>
@@ -175,7 +245,10 @@ module.exports = class BusinessFormView extends BaseFormView
           &nbsp;
         </label>
         #control
-          <input type='text' name='' style='visibility:hidden'>
+          <span>
+            <input type='text' name='' style='visibility:hidden'>
+            <i class='#{gz.Css \icon}-'></i>
+          </span>
         </div>
       </div>
 
@@ -184,6 +257,9 @@ module.exports = class BusinessFormView extends BaseFormView
                     \ #{gz.Css \medium-50}
                     \ #{gz.Css \small-50}'>
           <b>j)</b> Sujeto Obligado informar UIF-Perú
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <i class='#{gz.Css \icon-question} #{gz.Css \toggle}'
+              data-tip-text='¿Es sujeto obligado informar a la UIF-Perú?'></i>
         </label>
         <ul class='#{gz.Css \control}
                  \ #{gz.Css \unstyled}
@@ -207,13 +283,17 @@ module.exports = class BusinessFormView extends BaseFormView
                     \ #{gz.Css \medium-50}
                     \ #{gz.Css \small-50}'>
           <b>&nbsp;&nbsp;</b> Designó Oficial de Cumplimiento
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <i class='#{gz.Css \icon-question} #{gz.Css \toggle}'
+              data-tip-text='En caso marcó SI, indique si designó
+                            \ a su Oficial de Cumplimiento.'></i>
         </label>
         <ul class='#{gz.Css \control}
                  \ #{gz.Css \unstyled}
                  \ #{gz.Css \inline}
                  \ #{gz.Css \large-50}
-                  \ #{gz.Css \medium-50}
-                  \ #{gz.Css \small-50}'>
+                 \ #{gz.Css \medium-50}
+                 \ #{gz.Css \small-50}'>
           <li>
             <input type='radio' name='hasOfficier' value='Sí'>
             <label>Sí</label>
@@ -230,9 +310,19 @@ module.exports = class BusinessFormView extends BaseFormView
           <b>k)</b> Identificación Tercero
         </label>
         #control
-          <input type='text' name='thirdName'>
+          <span>
+            <input type='text' name='thirdName'>
+            <i class='#{gz.Css \icon-question} #{gz.Css \toggle}'
+                data-tip-text='Identificación del tercero, sea persona
+                              \ natural (nombres y apellidos) o persona
+                              \ jurídica (razón o denominación social)
+                              \ por cuyo intermedio se realiza la operación,
+                              \ de ser el caso.'></i>
+          </span>
         </div>
       </div>"
+
+    # Shareholders View
     @shareholdersView = new ShareholdersView
     $divShareholders = @$el.find "##{gz.Css \id-shareholders}"
     $divShareholders.append @shareholdersView.render!.el

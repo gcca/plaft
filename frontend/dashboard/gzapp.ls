@@ -7,8 +7,8 @@ module.exports = gzApp = new Object
 # Fecth models CustomsBroker and CustomsBrokerUser
 gzApp.customsBroker = new model.CustomsBroker window.'gzps'.\a
   ..jurisdictions =
-    names : [..\name for gzApp.customsBroker.get \jurisdictions]
-    codes : [..\code for gzApp.customsBroker.get \jurisdictions]
+    names: [..\name for gzApp.customsBroker.get \jurisdictions]
+    codes: [..\code for gzApp.customsBroker.get \jurisdictions]
 
 gzApp.user = new model.User window.'gzps'.\b
 

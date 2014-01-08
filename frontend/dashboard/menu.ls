@@ -6,8 +6,8 @@
  */
 modules = [
   ReceptionView    = require './module/reception'
-  DispatchView     = require './module/dispatch'
   DispatchesView   = require './module/dispatches'
+  DispatchView     = require './module/dispatch'
   MainView         = require './module/main'
   DeclarationsView = require './module/declarations'
 ]

@@ -188,10 +188,13 @@ class DeclarationPDFView(BaseHandler):
         return list
 
     def addressList(self, caption, address):
-        chunkLength = 52
-        return ([[caption, address[:chunkLength]]]
-                + [['', address[i:i+chunkLength]]
-                   for i in range(chunkLength, len(address), chunkLength)])
+        if address:
+            chunkLength = 52
+            return ([[caption, address[:chunkLength]]]
+                    + [['', address[i:i+chunkLength]]
+                       for i in range(chunkLength, len(address), chunkLength)])
+        else:
+            return [[caption, '']]
 
     def get(self, id):
         try:
@@ -255,8 +258,7 @@ class DeclarationPDFView(BaseHandler):
             ['¿Es sujeto obligado?', 'Sí' if customer.isObliged else 'No'],
             ['¿Tiene oficial de cumplimiento?' , 'Sí' if customer.hasOfficier else 'No'],
         ] + ([['', ''],
-            ['Beneficiario'            , ''],
-            ['    Nombre'              , declaration.thirdName]])) \
+            ['Identificación del tercero'   , declaration.thirdName]])) \
         if customer.className is 'Person' else ([
             ['Razón Social'        , customer.name],
             ['RUC'                 , customer.documentNumber],
@@ -278,8 +280,7 @@ class DeclarationPDFView(BaseHandler):
             ['¿Es sujeto obligado?', customer.isObliged],
             ['¿Tiene oficial de cumplimiento?' , customer.hasOfficier]]
             + ([['', ''],
-                ['Beneficiario'  , ''],
-                ['    Nombre'    ,
+                ['Identificación del tercero',
                  declaration.thirdName if declaration.thirdName else '-']
             ]))
 

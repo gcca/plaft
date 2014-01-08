@@ -7,6 +7,7 @@ widget = require '../../widget'
 ModuleBaseView = require './base'
 InvoicesView   = require './reception/invoices'
 
+globalOptions = require '../../globalOptions'
 
 /** @private */ DeclarationModel             = model.Declaration
 /** @private */ CustomerModel                = model.Customer
@@ -15,10 +16,10 @@ InvoicesView   = require './reception/invoices'
 
 
 /**
- * @class DeclarationView
+ * @class ReceptionView
  * @extends ModuleBaseView
  */
-module.exports = class DeclarationView extends ModuleBaseView
+module.exports = class ReceptionView extends ModuleBaseView
 
   /**
    * View events.
@@ -160,6 +161,9 @@ module.exports = class DeclarationView extends ModuleBaseView
       optionsJurisdictionName = ..optionsName
       optionsJurisdictionCode = ..optionsCode
 
+    optionsRegime = ["<option>#opType</option>" \
+                     for opType in globalOptions.OPERATION_TYPE]
+
     # template
     "<form class='#{gz.Css \ink-form} #{gz.Css \ink-form-new}
                 \ #{gz.Css \column-group} #{gz.Css \gutters}'
@@ -271,7 +275,9 @@ module.exports = class DeclarationView extends ModuleBaseView
             Régimen aduanero
           </label>
           #tControl
-            <input type='text' name='customsRegime'>
+            <select name='customsRegime'>
+              #optionsRegime
+            </select>
           </div>
         </div>
 

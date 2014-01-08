@@ -4,8 +4,8 @@ gz = require './helpers'
 model = require './model'
 widget = require './widget'
 
-PersonView   = require './customer-form/person-form'
-BusinessView = require './customer-form/business-form'
+PersonView   = require './customer/person-form'
+BusinessView = require './customer/business-form'
 
 
 /** -------------
@@ -68,12 +68,6 @@ class CustomerView extends gz.GView
      * @private
      */
     'keyup input[name=name]': !(evt) -> @$logo.html evt.currentTarget.value
-
-    /**
-     * On declaration list click.
-     * @private
-     */
-    "click ##{gz.Css \id-declaration-list}": -> @$bodyForm.html ''
 
   /**
    * Edit customer.
@@ -214,7 +208,8 @@ class CustomerView extends gz.GView
     #   set search
     $input = $body.find 'input'
     tooltip = new gz.Ink.UI.Tooltip $input.0, do
-                \text  : 'Ingresar RUC (Persona Jurídica) o DNI (Persona natural)'
+                \text  : 'Ingresar RUC (Persona Jurídica)
+                         \ o DNI (Persona natural)'
                 \where : gz.Css \down
                 \color : gz.Css \blue
     query = localStorage.getItem (gz.Css \query)
@@ -224,11 +219,16 @@ class CustomerView extends gz.GView
     else
       $input.focus!
       setTimeout (-> tooltip.'tooltips'.0.'_makeTooltip'!), 300
-      setTimeout (~> tooltip.'tooltips'.0.'_removeTooltip'!), 3600
+      setTimeout (-> tooltip.'tooltips'.0.'_removeTooltip'!), 3600
     super!
 
   /**
    * View template.
+   *
+   * Height space when small.
+   *   li.hide-all.show-small
+   *     a &nbsp;
+   *
    * @return {string} Html.
    * @private
    */
@@ -238,6 +238,8 @@ class CustomerView extends gz.GView
         ul.menu.horizontal.shadowed.black
           li.hide-small
             a#id-logo Anexo 5: Declaración Jurada de Conocimiento del Cliente
+          li.hide-all.show-small
+            a &nbsp;
           li.push-right
             button.ink-button.green#id-save(style="margin:1px 0 0")
               | Guardar &nbsp;
@@ -256,8 +258,6 @@ class CustomerView extends gz.GView
       p
     .column-group.gutters
       .large-70.medium-75.hide-small(style="margin-bottom:0") &nbsp;
-        button.ink-button#id-declaration-list(style="display:none")
-          | Ver lista
       .large-30.medium-25.small-100(style="margin-bottom:0")
         form.ink-form#id-form-search(style="margin-top:.3em")
           .control-group.content-right

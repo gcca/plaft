@@ -7,16 +7,15 @@
 $.fn.serializeJSON = ->
   s = (@get 0).elements
   (_ s).reduce (ax, f) ->
-    if f instanceof [HTMLInputElement, HTMLSelectElement, HTMLTextAreaElement]#:?
-      if f.name
-        if f.type is \checkbox
-          ax[f.name] = f.checked
-        else if f.type is \radio
-          ax[f.name] = s[f.name].value
-        else
-          value = f.value
-          value = if value != '' then value else null
-          ax[f.name] = if f.fnIsJSON then JSON.parse value else value
+    if f.name
+      if f.type is \checkbox
+        ax[f.name] = f.checked
+      else if f.type is \radio
+        ax[f.name] = s[f.name].value
+      else
+        value = f.value
+        value = if value != '' then value else null
+        ax[f.name] = if f.fnIsJSON then JSON.parse value else value
     ax
   , new Object
 

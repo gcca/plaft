@@ -58,14 +58,13 @@ module.exports = class CustomsView extends ModuleBaseView
     @el.lastElementChild.lastElementChild \
       .appendChild @jurisdictionsView.render!.el
     # Button "Save"
-    $tFieldset = $ "<fieldset class='#{gz.Css \large-50}
-                                   \ #{gz.Css \medium-50}
+    $tFieldset = $ "<fieldset class='#{gz.Css \large-100}
+                                   \ #{gz.Css \medium-100}
                                    \ #{gz.Css \small-100}'>
                     </fieldset>"
     $tButton = $ "<button type='button'
                       class='#{gz.Css \ink-button}
-                           \ #{gz.Css \green}
-                           \ #{gz.Css \push-right}'>
+                           \ #{gz.Css \green}'>
                     Guardar
                   </button>"
       ..on \click @onClickSaveForm
@@ -80,13 +79,16 @@ module.exports = class CustomsView extends ModuleBaseView
    */
   templateMainForm: ->
     divControlGroup = "<div class='#{gz.Css \control-group}'>"
+
     label = "<label class='#{gz.Css \large-25}
                          \ #{gz.Css \medium-30}
                          \ #{gz.Css \small-100}'>"
+
     divControl = "<div class='#{gz.Css \control}
                             \ #{gz.Css \large-75}
                             \ #{gz.Css \medium-70}
                             \ #{gz.Css \small-100}'>"
+
     "<form class='#{gz.Css \ink-form}
                 \ #{gz.Css \column-group}
                 \ #{gz.Css \gutters}' style='margin-top:0'>
@@ -132,6 +134,7 @@ module.exports = class CustomsView extends ModuleBaseView
 
 
         <legend>Oficial de cumplimiento</legend>
+
         #divControlGroup
           #label
             Nombre
@@ -156,10 +159,13 @@ module.exports = class CustomsView extends ModuleBaseView
 
       </fieldset>
 
+
       <fieldset class='#{gz.Css \large-50}
                      \ #{gz.Css \medium-100}
                      \ #{gz.Css \small-100}'>
+
         <legend>Jurisdicciones</legend>
+
       </fieldset>
 
     </form>"

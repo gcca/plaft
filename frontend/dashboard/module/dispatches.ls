@@ -21,6 +21,9 @@ AlertModal = require './dispatches/alertmodal'
  */
 DispatchCollection = model.Dispatches
 
+EvaluationView = require './dispatches/evaluation'
+
+
 /**
  * @class DispatchesView
  * @extends builder.Table
@@ -44,6 +47,11 @@ module.exports = class DispatchesView extends builder.Table
       AlertModal::'_events'."#{gz.Css \dismiss}"[0].\ctx = alertModal
       alertModal.buttonTarget = btn
       alertModal.elShow!
+
+    "click ##{gz.Css \dispatch-edit}": !(evt) ->
+      v = new EvaluationView
+      @desktop.pushPage v.render!
+
 
     /**
      * Fixed dispatch by @{code register}.
@@ -126,7 +134,7 @@ module.exports = class DispatchesView extends builder.Table
             data-tip-text="Señales de alerta",
             data-tip-color="{Css blue}")
           span.icon-file-alt
-        button.ink-button(
+        button.ink-button#dispatch-edit(
             data-tip-text="Editar",
             data-tip-color="{Css blue}")
           span.icon-edit

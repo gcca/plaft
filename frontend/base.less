@@ -185,6 +185,7 @@ input, textarea, select {
   color: #666;
 }
 
+
 .ink-form .control-group.validation.success input,
 .ink-form .control-group.validation.success textarea,
 .ink-form .control-group.validation.success select {
@@ -197,6 +198,27 @@ input, textarea, select {
 }
 .ink-form .control-group.validation.success p.tip {
   color: rgba(42, 88, 13, 0.6);
+}
+
+
+.ink-form fieldset {
+  &.column-group.gutters legend { margin-left: 1.2em; }
+  &.column-group.gutters + fieldset { margin-top: -1.2em; }
+  legend {
+    margin-bottom: .7em;
+    & + * { margin: 0; }
+  }
+}
+
+
+.ink-grid {
+  padding: 0 1.5em;
+
+  @media screen and (min-width: 650px) and (max-width: 959px) {
+    padding: 0 1em; }
+
+  @media screen and (max-width: 649px) {
+    padding: 0 .7em; }
 }
 
 // Base
@@ -216,8 +238,7 @@ input, textarea, select {
 
 
 .whatIs {
-  // margin: 3.6em 0 2em;
-  margin: 0;
+  margin: 0 0 .3em;
   font-size: 1.25em;
 
   p {

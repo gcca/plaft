@@ -229,15 +229,12 @@ document.querySelector 'form' .onsubmit = (evt) ->
     ..setRequestHeader 'X-Requested-With' 'XMLHttpRequest'
     ..onreadystatechange = ->
       if @readyState is 4
-        document.querySelector \#signin-img .style.visibility = \hidden
         if @status is 200
           toDashboard = ->
-            if 30 < document.cookie.length
               setTimeout (-> location.replace '/dashboard'), 200
-            else
-              toDashboard!
-          setTimeout toDashboard, 100
+          setTimeout toDashboard, 700
         else
+          document.querySelector \#signin-img .style.visibility = \hidden
           if not (document.querySelector ".#{gz.Css \tip}")?
             for i in (document.querySelectorAll ".#{gz.Css \control-group}")
               i.className += " #{gz.Css \validation} #{gz.Css \error}"
