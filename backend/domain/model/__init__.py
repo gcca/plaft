@@ -350,10 +350,12 @@ class Dispatch(Entity):
     """
 
     orderNumber       = StringProperty ()
-    customsBrokerCode = TextProperty ()
-    jurisdictionName  = TextProperty ()
-    jurisdictionCode  = TextProperty ()
-    customsRegime     = TextProperty ()
-    invoices          = JsonProperty ()
+    customsBrokerCode = TextProperty   ()
+    jurisdictionName  = TextProperty   ()
+    jurisdictionCode  = TextProperty   ()
+    customsRegime     = TextProperty   ()
+    invoices          = JsonProperty   ()
+    alerts            = JsonProperty   ()
+    evaluation        = JsonProperty   ()
     operation = ReferenceProperty(Operation, collection_name='dispatches')
     declaration = ReferenceProperty(Declaration, collection_name='dispatches')

@@ -1,6 +1,4 @@
-/**
- * @module dashboard.module
- */
+/** @module dashboard.module */
 
 model  = require '../../model'
 widget = require '../../widget'
@@ -14,6 +12,7 @@ StakeholderView = require './dispatch/stakeholder'
  * @private
  */
 DispatchModel = model.Dispatch
+
 
 /**
  * @class DispatchView

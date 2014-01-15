@@ -49,7 +49,8 @@ module.exports = class DispatchesView extends builder.Table
       alertModal.elShow!
 
     "click ##{gz.Css \dispatch-edit}": !(evt) ->
-      v = new EvaluationView
+      btn = evt.currentTarget
+      v = new EvaluationView dispatch: @dispatches.get btn.dataset.\id
       @desktop.pushPage v.render!
 
 
@@ -135,6 +136,7 @@ module.exports = class DispatchesView extends builder.Table
             data-tip-color="{Css blue}")
           span.icon-file-alt
         button.ink-button#dispatch-edit(
+            data-id=id,
             data-tip-text="Editar",
             data-tip-color="{Css blue}")
           span.icon-edit
@@ -203,7 +205,8 @@ module.exports = class DispatchesView extends builder.Table
           ]
         @showTable!
         # @see e.elTooltip for managing tooltip.
-        $ '[data-tip-text]' .each (_, e) -> e.elTooltip = new gz.Ink.UI.Tooltip e
+        $ '[data-tip-text]' .each (_, e) ->
+          e.elTooltip = new gz.Ink.UI.Tooltip e
     super!
 
   /** @private */ @menuCaption = 'Despachos'

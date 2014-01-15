@@ -226,15 +226,26 @@ ITYPES =
       'Teléfono de la persona a favor de quien se realiza la operación.'
 
   # THIRD --------------------------------------------------------------------
-  * * '9'
-      'La persona que solicita o físicamente realiza la operación actúa en representación del:'
-      * '(1) Ordenante'
-        '(2) Beneficiario'
-    * '10'
-      'Condición de residencia de la persona que solicita o físicamente realiza la operación:'
-      * '(1) Residente'
-        '(2) No residente'
-      null
+  * * '64'
+      'Tipo de persona en cuya cuenta se realiza la operación: (1) Persona Natural ó (2) Persona Jurídica. Si consignó la opción (2) no llenar los items 65 al 66 ni los items 68 al 69'
+
+    * '65'
+      'Tipo de documento de la persona en cuya cuenta se realiza la operación: Consignar el código de acuerdo a la Tabla Nº 1.'
+
+    * '66'
+      'Número de documento de la persona en cuya cuenta se realiza la operación.'
+
+    * '67'
+      'Apellido paterno o razón social (persona jurídica) de la persona en cuya cuenta se realiza la operación.'
+
+    * '68'
+      'Apellido materno de la persona en cuya cuenta se realiza la operación.'
+
+    * '69'
+      'Nombres de la persona en cuya cuenta se realiza la operación.'
+
+    * '70'
+      'La persona a favor de quien se realiza la operación es: (1) Importador (ingreso de mercancía); (2) Destinatario del embarque (salida de mercancía); (3) proveedor del extranjero (ingreso de mercancía); (4) Exportador (salida de mercancía).'
 
 
 /** ---------------

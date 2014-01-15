@@ -55,6 +55,22 @@ class DashboardView extends gz.GView
     @el.className = gz.Css \gz-dashboard
     @el.innerHTML = DashboardView_template
 
+    ## Button up
+    $buttonUp = @$el.find "##{gz.Css \id-button-up}"
+    $buttonUp.on \click ->
+      scrollingToTop = ->
+        if scrollY > 0
+           scrollTo 0 (scrollY - 169)
+           scrollingToTop
+             ..intervalt = parseInt ((Math.log ..intervalt) * 3)
+           setTimeout scrollingToTop, scrollingToTop.intervalt
+      scrollingToTop.intervalt = 2
+      scrollingToTop!
+
+    $navUp = @$el.find "##{gz.Css \id-navigation-up}"
+    window.onscroll = !-> if scrollY > 256 then $navUp.show! else $navUp.hide!
+
+    ## BODY
     body = @el.lastElementChild.firstElementChild
     body.innerHTML = ''
 
@@ -88,7 +104,7 @@ class DashboardView extends gz.GView
                      \ #{gz.Css \medium-100}
                      \ #{gz.Css \small-100}"
     right.innerHTML = right_vTemplate
-    searchView = new widget.GSearchView el: ($ right .find 'input' .get 0)
+    searchView = new widget.GSearchView el : ($ right .find 'input' .get 0)
     elNavigation = $(right).find "##{gz.Css \id-navigation}" .get 0
     desktopView = new DesktopView menuView, searchView, elNavigation
     right.appendChild desktopView.el
@@ -105,6 +121,7 @@ class DashboardView extends gz.GView
     menuView.on (gz.Css \change-desktop), ->
       settingsView.disableCurrent!
 
+    ## Attributes
     @menuView = menuView
     @desktopView = desktopView
 
@@ -149,7 +166,7 @@ class DashboardView extends gz.GView
 </div>"
 
 /** @private */ DashboardView_template = "
-<div class='#{gz.Css \topbar}'>
+<div id='#{gz.Css \topbar}' class='#{gz.Css \topbar}'>
   <nav class='#{gz.Css \ink-navigation}'>
     <ul class='#{gz.Css \menu} #{gz.Css \horizontal}
              \ #{gz.Css \shadowed} #{gz.Css \black}'>
@@ -164,10 +181,10 @@ class DashboardView extends gz.GView
         </a>
       </li>
       <li class='#{gz.Css \push-right}'>
-        <a href='javascript:void(0);'>
+        <a style='font-size:.8em;margin-top:.3em;'>
           <button id='#{gz.Css \id-helpme}'
-              class='#{gz.Css \ink-button} #{gz.Css \blue}'
-              style='padding:.1em .4em;margin:0;border-radius:1em'>
+              class='#{gz.Css \ink-button}'
+              style='padding:.12em .35em;margin:0;border-radius:1em'>
             <i class='#{gz.Css \icon-question}'></i>
           </button>
         </a>
@@ -177,10 +194,31 @@ class DashboardView extends gz.GView
   <div class='#{gz.Css \border}'></div>
 </div>
 
+
 <div class='#{gz.Css \whatIs}'>
   <h1>&nbsp;</h1>
   <p></p>
 </div>
+
+
+<nav id='#{gz.Css \id-navigation-up}'
+    class='#{gz.Css \ink-navigation} #{gz.Css \hide-all}'
+    style='position:fixed;
+           bottom:0;
+           right:5em;
+           z-index:1'>
+  <ul class='#{gz.Css \pills}
+           \ #{gz.Css \shadowed}
+           \ #{gz.Css \rounded}
+           \ #{gz.Css \black}'>
+    <li style='margin:.1em 0'>
+      <a id='#{gz.Css \id-button-up}'>
+        <span class='#{gz.Css \icon-arrow-up}'></span>
+      </a>
+    </li>
+  </ul>
+</nav>
+
 
 <div class='#{gz.Css \ink-grid}'>
   <div class='#{gz.Css \column-group} #{gz.Css \half-gutters}'></div>

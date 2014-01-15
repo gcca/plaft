@@ -7,61 +7,6 @@ var Backbone = {
 };
 
 /**
- * @typedef {Object}
- */
-Backbone.Events;
-
-/**
- * @param {string} event
- * @param {Function} callback
- * @param {Object=} context
- */
-Backbone.Events.on = function(event, callback, context) {};
-Backbone.Events.bind = Backbone.Events.on;
-
-/**
- * @param {string=} event
- * @param {Function=} callback
- * @param {Object=} context
- */
-Backbone.Events.off = function(event, callback, context) {};
-Backbone.Events.unbind = Backbone.Events.off;
-
-/**
- * @param {string} event
- * @param {...*} args
- */
-Backbone.Events.trigger = function(event, args) {};
-
-/**
- * @param {string} event
- * @param {Function} callback
- * @param {Object=} context
- */
-Backbone.Events.once = function(event, callback, context) {};
-
-/**
- * @param {Object} other
- * @param {string} event
- * @param {Function} callback
- */
-Backbone.Events.listenTo = function(other, event, callback) {};
-
-/**
- * @param {Object} other
- * @param {string} event
- * @param {Function} callback
- */
-Backbone.Events.listenToOnce = function(other, event, callback) {};
-
-/**
- * @param {Object=} other
- * @param {string=} event
- * @param {Function=} callback
- */
-Backbone.Events.stopListening = function(other, event, callback) {};
-
-/**
  * @param {Function} onError
  * @param {Backbone.Model} originalModel
  * @param {Object} options
@@ -86,11 +31,6 @@ Backbone.Model = function(attrs, options) {};
 /** @type {*} */
 Backbone.Model.prototoype.validationError;
 
-Backbone.Model.prototype.on = Backbone.Events.on;
-Backbone.Model.prototype.off = Backbone.Events.off;
-Backbone.Model.prototype.trigger = Backbone.Events.trigger;
-Backbone.Model.prototype.bind = Backbone.Events.on;
-Backbone.Model.prototype.unbind = Backbone.Events.on;
 Backbone.Model.prototype.once = Backbone.Events.once;
 Backbone.Model.prototype.listenTo = Backbone.Events.listenTo;
 Backbone.Model.prototype.listenToOnce = Backbone.Events.listenToOnce;
@@ -108,11 +48,6 @@ Backbone.Model.prototype.omit = _.prototype.omit;
  * @param {Object=} classProperties
  */
 Backbone.Model.prototype.extend = function(properties, classProperties) {};
-
-/**
- * @param {...*} config
- */
-Backbone.Model.prototype.initialize = function(config) {};
 
 /**
  * @param {string} attribute
@@ -175,20 +110,6 @@ Backbone.Model.prototype.defaults;
  * @return {Object}
  */
 Backbone.Model.prototype.toJSON = function(options) {};
-
-/**
- * @param {Object=} options
- * @return {Object} returns jQuery xhr
- */
-Backbone.Model.prototype.fetch = function(options) {};
-
-/**
- * @param {string|Object=} key
- * @param {*=} value
- * @param {Object=} options
- * @return {boolean|Object}
- */
-Backbone.Model.prototype.save = function(key, value, options) {};
 
 /**
  * @param {Object=} options
@@ -275,11 +196,6 @@ Backbone.Collection.prototype.syncArgs;
 Backbone.Collection.prototype.previousModels;
 
 /**
- * @param {...*} args
- */
-Backbone.Collection.prototype.initialize = function(args) {};
-
-/**
  * @param {Object=} options
  */
 Backbone.Collection.prototype.sort = function(options) {};
@@ -329,11 +245,6 @@ Backbone.Collection.prototype.isEmpty = _.prototype.isEmpty;
  */
 Backbone.Collection.prototype.toJSON = function(options) {};
 
-Backbone.Collection.prototype.on = Backbone.Events.on;
-Backbone.Collection.prototype.off = Backbone.Events.off;
-Backbone.Collection.prototype.trigger = Backbone.Events.trigger;
-Backbone.Collection.prototype.bind = Backbone.Events.on;
-Backbone.Collection.prototype.unbind = Backbone.Events.on;
 Backbone.Collection.prototype.once = Backbone.Events.once;
 Backbone.Collection.prototype.listenTo = Backbone.Events.listenTo;
 Backbone.Collection.prototype.listenToOnce = Backbone.Events.listenToOnce;
@@ -345,19 +256,8 @@ Backbone.Collection.prototype.length;
 /** @type {Array} */
 Backbone.Collection.prototype.models;
 
-Backbone.Collection.prototype.on = Backbone.Events.on;
-Backbone.Collection.prototype.off = Backbone.Events.off;
-Backbone.Collection.prototype.bind = Backbone.Events.on;
-Backbone.Collection.prototype.unbind = Backbone.Events.off;
-
 /** @type {Backbone.Model} */
 Backbone.Collection.model;
-
-/**
- * @param {Object=} options
- * @return {Object} returns jQuery xhr
- */
-Backbone.Collection.prototype.fetch = function(options) {};
 
 /**
  * @param {Object|Array.<Object>} models
@@ -488,16 +388,6 @@ Backbone.Router.prototype = {
     "_extractParameters": function () {}
 };
 
-/**
- * @param {...*} args
- */
-Backbone.Router.prototype.initialize = function(args) {};
-
-Backbone.Router.prototype.on = Backbone.Events.on;
-Backbone.Router.prototype.off = Backbone.Events.off;
-Backbone.Router.prototype.trigger = Backbone.Events.trigger;
-Backbone.Router.prototype.bind = Backbone.Events.on;
-Backbone.Router.prototype.unbind = Backbone.Events.on;
 Backbone.Router.prototype.once = Backbone.Events.once;
 Backbone.Router.prototype.listenTo = Backbone.Events.listenTo;
 Backbone.Router.prototype.listenToOnce = Backbone.Events.listenToOnce;
@@ -508,11 +398,6 @@ Backbone.Router.prototype.stopListening = Backbone.Events.stopListening;
  */
 Backbone.History = function() {};
 
-Backbone.History.prototype.on = Backbone.Events.on;
-Backbone.History.prototype.off = Backbone.Events.off;
-Backbone.History.prototype.trigger = Backbone.Events.trigger;
-Backbone.History.prototype.bind = Backbone.Events.on;
-Backbone.History.prototype.unbind = Backbone.Events.on;
 Backbone.History.prototype.once = Backbone.Events.once;
 Backbone.History.prototype.listenTo = Backbone.Events.listenTo;
 Backbone.History.prototype.listenToOnce = Backbone.Events.listenToOnce;
@@ -557,38 +442,6 @@ Backbone.History.prototype.getFragment = function(fragment, forcePushState) {};
  */
 Backbone.View = function(args){};
 
-Backbone.View.prototype.on = Backbone.Events.on;
-Backbone.View.prototype.off = Backbone.Events.off;
-Backbone.View.prototype.trigger = Backbone.Events.trigger;
-Backbone.View.prototype.bind = Backbone.Events.on;
-Backbone.View.prototype.unbind = Backbone.Events.on;
-Backbone.View.prototype.once = Backbone.Events.once;
-Backbone.View.prototype.listenTo = Backbone.Events.listenTo;
-Backbone.View.prototype.listenToOnce = Backbone.Events.listenToOnce;
-Backbone.View.prototype.stopListening = Backbone.Events.stopListening;
-
-/** @type {string} */
-Backbone.View.prototype.tagName;
-/**
- * @param {...*} args
- */
-Backbone.View.prototype.initialize = function(args) {};
-/**
- * @return {Backbone.View}
- */
-Backbone.View.prototype.render = function(){};
-/** @type {Element} */
-Backbone.View.prototype.el;
-/** @type {jQuery} */
-Backbone.View.prototype.$el;
-Backbone.View.prototype.remove = function(){};
-/**
- * @param {string} tagName
- * @param {Object=} attributes
- * @param {string=} content
- */
-Backbone.View.prototype.make = function(tagName, attributes, content){};
-Backbone.View.prototype.remove = function(){};
 /**
  * @param {Object=} events
  */
@@ -603,9 +456,3 @@ Backbone.View.prototype.undelegateEvents = function(events){};
  * @param {boolean=} delegate
  */
 Backbone.View.prototype.setElement = function(element, delegate){};
-
-/**
- * @param {string} selector
- */
-Backbone.View.prototype.$ = function(selector){};
-Backbone.View.prototype.events;

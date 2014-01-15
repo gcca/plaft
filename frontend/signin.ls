@@ -208,8 +208,8 @@ document.body.innerHTML = "
         © Copyright 2013, CavaSoft SAC. <a href='#'>&nbsp;</a>
       </li>
       <li class='#{gz.Css \push-right}' style='font-size:.88em;padding-top:.25em'>
-        Created by &nbsp;
-        <a href='http://gcca.tk' target='_blank'>cristHian Gz. (gcca)</a>
+        <!-- Created by &nbsp;
+        <a href='http://gcca.tk' target='_blank'>cristHian Gz. (gcca)</a> -->
         &nbsp;&nbsp;&nbsp;&nbsp;
         <a href='/static/doc/index.html'>Doc</a>
       </li>

@@ -147,7 +147,7 @@ module.exports = class DesktopView extends gz.GView
     menuView.bind (gz.Css \change-desktop), @changeDesktop, @
 
     # Breadcrumbs
-    @uiBreadcrumbs = new BreadcrumbsView \el : elNav
+    @uiBreadcrumbs = new BreadcrumbsView el : elNav
 
     super!
 

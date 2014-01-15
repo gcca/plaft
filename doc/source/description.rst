@@ -64,6 +64,10 @@ Mapa del proceso
    :alt: Mapa del proceso 3
    :width: 100%
 
+.. figure:: _static/process4.svg
+   :alt: Mapa del proceso 3
+   :width: 100%
+
 
 
 Casos de uso

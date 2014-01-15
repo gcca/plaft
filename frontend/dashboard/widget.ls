@@ -47,8 +47,7 @@ class SearchView extends gz.GView
    * Trigger search event.
    * @public
    */
-  triggerSearch: !->
-    @trigger (gz.Css \on-search), @el.value, @elState
+  triggerSearch: !-> @trigger (gz.Css \on-search), @el.value, @elState
 
   /**
    * Set input placeholder.

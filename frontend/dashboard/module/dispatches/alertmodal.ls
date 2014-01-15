@@ -54,7 +54,7 @@ module.exports = class AlertModal extends widget.GModal
                     style='padding-right:7em;padding-left:2em'>
                 </div>"
             textarea = $ "<textarea name='#{++count}'
-                          placeholder='Comentarios acerca de la alerta #count'>"
+                  placeholder='Comentarios acerca de la alerta #count'>"
                 ..css do
                     \minHeight : '9em'
                     \marginTop : '1em'

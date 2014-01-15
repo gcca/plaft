@@ -74,10 +74,10 @@ module.exports = class MenuView extends gz.GView
   initialize: !->
     @tUl = gz.newel \ul
     @tUl.className = "#{gz.Css \menu}
-                   \ #{gz.Css \vertical}
-                   \ #{gz.Css \grey}
-                   \ #{gz.Css \rounded}
-                   \ #{gz.Css \shadowed}"
+                    \ #{gz.Css \vertical}
+                    \ #{gz.Css \grey}
+                    \ #{gz.Css \rounded}
+                    \ #{gz.Css \shadowed}"
     for module in modules
       tLi = gz.newel \li
       tA  = gz.newel \a
