@@ -12,6 +12,7 @@ theme
 gztest*
 backend/test/ls/lib
 backend/static/doc
+backend/static/help
 base
 Makefile
 backend/static/doc

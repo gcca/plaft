@@ -47,3 +47,4 @@ tests/ls
 *.json
 requirements.txt
 doc
+backend/static/*
