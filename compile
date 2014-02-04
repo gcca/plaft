@@ -6,8 +6,8 @@ thirdparty=$srcdir/3rdparty
 setup=./setup.pyo
 cssc=./cssc.jar
 jsc=./jsc.jar
-ext3=zepto,underscore,ink,backbone,typeahead
-int3=ink
+ext3=zepto,underscore,backbone
+int3=bootstrap
 cd `dirname $0`
 if [ '0' == "$3" ]; then opt=-O; fi
 if [ '@' == "$4" ]; then dep=--depurar; fi
