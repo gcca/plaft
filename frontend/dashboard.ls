@@ -15,6 +15,7 @@ class Dashboard extends App.View
 
   render: ->
     @$el.html @template!
+    history.replaceState '' '' '/dashboard'
 
     menu    = new Menu
     desktop = new Desktop
@@ -94,3 +95,9 @@ class Dashboard extends App.View
     tHeader + tBody + tFooter
 
 (new Dashboard).render!
+## $ ".#{gz.Css \glyphicon-inbox}" ._parent! .click!
+## $ 'input[type=checkbox]' .click!
+## $ 'input' .last! .val '12345678989'
+## $ 'input' .last! .parent! .children! .last! .children! .click!
+
+$ ".#{gz.Css \glyphicon-check}" ._parent! .click!

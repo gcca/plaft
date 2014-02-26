@@ -13,6 +13,9 @@ class Person extends Base
       $controlGroup = $htmlControlGroup field
       $controlGroup.addClass fieldClass
       @$el._append $controlGroup
+
+    @$el._find '[data-toggle=tooltip]' .tooltip!
+
     super!
 
 

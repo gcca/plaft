@@ -1,54 +1,15 @@
-from interface import BaseHandler
+from interface import BaseHandler, RESTful, RESTfulCollection
 from domain import model
 
 
-class RESTfulModel(BaseHandler):
-
-    model = None
-
-    def get(self):
-        dict = self.request_dict
-        if dict:
-            entity = self.model.find(dict)
-            if entity:
-                self.render_json(entity)
-            else:
-                self.status.NOT_FOUND('Not found by: '
-                                      + self.request.query_string)
-        else:
-            self.status.BAD_REQUEST('Need parameters')
-
-    def post(self, id=None):
-        entity = self.model.new(self.request_dict)
-        entity.store()
-        self.write_json('{"id":%s}' % entity.id)
-
-    def put(self, id):
-        entity = self.model.find(int(id))
-        if entity:
-            entity.update(self.request_dict)
-            entity.store()
-        self.write_json('{}')
-
-
-class RESTfulCollection(BaseHandler):
-
-    model = None
-
-    def get(self):
-        self.render_json(self.model.findAll())
-
-
-
-
-class Customer(RESTfulModel):
+class Customer(RESTful):
 
     model = model.Customer
 
+    class Declaration(RESTful.Nested):
 
-    class newDeclaration(RESTfulModel):
-
-        model = model.Declaration
+        model     = model.Declaration
+        reference = 'owner'
 
 
 class Customers(RESTfulCollection):
@@ -56,11 +17,31 @@ class Customers(RESTfulCollection):
     model = model.Customer
 
 
-class User(RESTfulModel):
+class User(RESTful):
 
-    model = model.User
+    model         = model.User
+    require_login = ['put']
 
 
-class Customs(RESTfulModel):
+class Customs(RESTful):
 
-    model = model.Customs
+    model         = model.Customs
+    require_login = RESTful.methods
+
+    class pending_dispatches(RESTful.Nested):
+
+        def get(self):
+            customs = self.user.customs.get()
+            self.render_json(customs.datastore.pending.dispatches)
+
+
+class Declaration(RESTful):
+
+    model         = model.Declaration
+    require_login = ['put']
+
+
+class Dispatch(RESTful):
+
+    model         = model.Dispatch
+    require_login = RESTful.methods

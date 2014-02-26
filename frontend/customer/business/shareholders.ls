@@ -1,22 +1,40 @@
+/** @module customer.business.shareholders */
+
+
+/**
+ * Item for shareholder list.
+ * @class UiShareholder
+ * @extends View
+ */
 class Shareholder extends App.View
 
+  /** @override */
   _tagName: \form
 
+  /** @override */
+  _className: gz.Css \parent-toggle
+
+  /**
+   * Form to JSON.
+   * @return {Object}
+   * @override
+   */
   _toJSON: -> @$el._toJSON!
 
-  @@Pool!
+  /**
+   * (Event) On remove shareholder from list.
+   * @private
+   */
+  buttonOnRemove: !~> @free!
 
-  ## Events
-  buttonOnRemove: !~>
-    @Free!
-    @_remove!
-
-  ## View methods
+  /** @override */
   render: ->
     @$el.html @template!
     $buttonRemove = $ "
       <div class='#{gz.Css \form-group} #{gz.Css \col-md-1}'>
-        <span class='#{gz.Css \glyphicon} #{gz.Css \glyphicon-remove}'
+        <span class='#{gz.Css \glyphicon}
+                   \ #{gz.Css \glyphicon-remove}
+                   \ #{gz.Css \toggle}'
             style='margin-top:8px;cursor:pointer;font-size:18px'></span>
       </div>"
     $buttonRemove.0.onClick @buttonOnRemove
@@ -25,8 +43,13 @@ class Shareholder extends App.View
     @$el._fromJSON @model
     super!
 
+  /**
+   * Shareholder form.
+   * @return {string}
+   * @private
+   */
   template: ->
-    shared = App.shared
+    shared            = App.shared
     optionsFrom       = shared.shortcuts.html.optionsFrom
     documentTypeNames = shared.lists.documentTypes.names
 
@@ -50,24 +73,43 @@ class Shareholder extends App.View
     </div>"
 
 
-module.exports = \
-
+/**
+ * Shareholder list.
+ * @class UiShareholders
+ * @extends View
+ */
 class Shareholders extends App.View
 
+  /** @override */
   _tagName: \div
 
+  /**
+   * Shareholder list to JSON.
+   * @return {Array.<Shareholder-JSON>}
+   * @override
+   */
   _toJSON: -> [.._toJSON! for @shareholders]
 
-  ## Events
+  /**
+   * (Event) On add shareholder to list.
+   * @private
+   */
   buttonOnClick: ~> @addShareholder!
 
-  ## Methods
+  /**
+   * Add shareholder to list.
+   * @param {Object} model Shareholder DTO.
+   * @private
+   */
   addShareholder: (model) !->
     shareholder = Shareholder.New model: model
     @shareholders._push shareholder
     @xContainer._append shareholder.render!.el
 
-  ## View methods
+  /**
+   * @param {Object} options {@code options.shareholders} collection.
+   * @override
+   */
   initialize: (options) !->
     /**
      * Shareholder views.
@@ -86,6 +128,7 @@ class Shareholders extends App.View
     # Style
     App.dom._write ~> @el.css._marginBottom = '1em'
 
+  /** @override */
   render: ->
     # Base form
     [@xContainer, xButton] = App.shared.shortcuts.xhtml.addToContainer!
@@ -115,3 +158,5 @@ class Shareholders extends App.View
       @addShareholder model
 
     super!
+
+module.exports = Shareholders

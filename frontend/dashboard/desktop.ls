@@ -1,19 +1,50 @@
-module.exports = \
+Search = require './desktop/search'
 
+/**
+ * Nothing function.
+ * To no write validation for null module.
+ * @private
+ */
+VOID-MODULE = free: ->
+
+
+/** ----------
+ *  Ui Desktop
+ *  ----------
+ * To manage and show modules. Add interaction with {@code UiSearch}.
+ * @class UiDesktop
+ * @extends View
+ */
 class Desktop extends App.View
 
+  /** @override */
   _tagName: \div
 
+  /** @override */
   _className: gz.Css \row
 
-  changeModule: (module) !~>
-    @$el._children!.last!.remove!
-    @$el._append (@newCustom module).render!.el
+  /**
+   * Set current module. Can be used like an event.
+   * @param {Object} Module Base module class.
+   */
+  changeModule: (Module) !~>
+    @module.free!
+    @$el._append (@newCustomized Module).render!.el
 
-  newCustom: (module) ->
-    new module
+  /**
+   * Add customized properties to constructed module.
+   * @param {Object} Module Class.
+   * @return {Object} Module object.
+   */
+  newCustomized: (Module) ->
+    @module = Module.New!
       ..el.Class = gz.Css \col-md-12
+      @_search.setOnSearch ..onSearch
 
+  /** @override */
+  initialize: !-> @module = VOID-MODULE
+
+  /** @override */
   render: ->
     @$el.html "
       <ol class='#{gz.Css \breadcrumb} #{gz.Css \col-md-8}'>
@@ -26,21 +57,20 @@ class Desktop extends App.View
         <li class='active'>
           Alertas
         </li>
-      </ol>
+      </ol>"
 
-      <form class='#{gz.Css \form-inline} #{gz.Css \col-md-4}' role='form'>
-        <div class='#{gz.Css \input-group}'>
-          <input type='text' class='#{gz.Css \form-control}'>
-          <span class='#{gz.Css \input-group-btn}'>
-            <button class='#{gz.Css \btn}
-                         \ #{gz.Css \btn-default}' type='button'>
-              &nbsp;
-              <i class='#{gz.Css \glyphicon}
-                      \ #{gz.Css \glyphicon-search}'></i>
-            </button>
-          </span>
-        </div>
-      </form>
+    @_search = new Search
+    @$el._append @_search.render!.el
 
-      <div class='#{gz.Css \hidden}'></div>"
+    @$el._append "<div class='#{gz.Css \hidden}'></div>"
     super!
+
+  # Attributes
+
+  /**
+   * Current module.
+   * @private
+   */
+  module: VOID-MODULE
+
+module.exports = Desktop

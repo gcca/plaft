@@ -1,15 +1,31 @@
-module.exports = \
+/** @module customer.base */
 
+
+/**
+ * Base for Busines and Person customer form.
+ * @class UiBase
+ * @extends View
+ */
 class Base extends App.View
 
+  /** @override */
   _tagName: \form
 
+  /** @override */
   _className: gz.Css \row
 
+  /**
+   * Form to JSON.
+   * @return {Object}
+   * @override
+   */
   _toJSON: -> @$el._toJSON!
 
-  # Events
-  onSubmit: (evt) !~>
+  /**
+   * (Event) On save customer data.
+   * @param {Object} evt
+   */
+  onSave: (evt) !~>
     evt.prevent!
 
     # Save customer data
@@ -45,14 +61,38 @@ class Base extends App.View
       _error: ->
         alert 'ERROR: ae1323e8-884c-11e3-96e1-88252caeb7e8'
 
-  # Attributes
+  /** @override */
+  initialize: !->
+    @el.onsubmit = @onSave
+    @el.html "
+      <div class='#{gz.Css \col-md-12}'>
+
+        <div class='#{gz.Css \form-group} #{gz.Css \col-md-4}'>
+          <label class='#{gz.Css \radio-inline}'>
+            <input type='radio' name='category' value='Importador frecuente'>
+            \ Importador Frecuente
+          </label>
+        </div>
+
+        <div class='#{gz.Css \form-group} #{gz.Css \col-md-4}'>
+          <label class='#{gz.Css \radio-inline}'>
+            <input type='radio' name='category' value='Buen contribuyente'>
+            \ Buen Contribuyente
+          </label>
+        </div>
+
+        <div class='#{gz.Css \form-group} #{gz.Css \col-md-4}'>
+          <label class='#{gz.Css \radio-inline}'>
+            <input type='radio' name='category' value='Otros'> Otros
+          </label>
+        </div>
+
+      </div>"
+
+  /** @private */
   customer : null
 
-  # View methods
-  initialize: (options) !->
-    @el.onsubmit = @onSubmit
-    @el.html ''
-
+  /** @override */
   render: ->
     # Add button save section
     @$endSection = $ "
@@ -73,3 +113,5 @@ class Base extends App.View
     @$el._fromJSON @model._attributes
 
     super!
+
+module.exports = Base

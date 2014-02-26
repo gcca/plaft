@@ -1,6 +1,8 @@
 # encoding: utf-8
 
+from uuid import uuid1 as uuid
 from interface import BaseHandler
+from infraestructure.utils import login_required
 from domain import model
 
 
@@ -103,12 +105,13 @@ class SignIn(BaseHandler):
         email    = self.request.get('email')
         password = self.request.get('password')
 
-        if email and password:
-            self.redirect('/dashboard')
-        else:
-            raise Exception('Bad email or password')
+        user = model.User.authenticate(email, password)
 
-        self.write('')
+        if user:
+            self.login(user)
+            self.redirect('/dashboard' + str(uuid())[:8], permanent=True)
+        else:
+            self.write(template('signin', 'e:-1'))
 
 
 class SignOut(BaseHandler):
@@ -120,6 +123,7 @@ class SignOut(BaseHandler):
 
 class Dashboard(BaseHandler):
 
+    @login_required
     def get(self):
         args = 'a1: %s' % model.User.find().json
         self.write(template('dashboard', args))
@@ -167,11 +171,11 @@ class DeclarationPDF(BaseHandler):
     def addressList(self, caption, address):
         if address:
             chunkLength = 52
-            return ([[caption, address[:chunkLength]]]
-                    + [['', address[i:i+chunkLength]]
+            return ([[caption], ['    ' + address[:chunkLength]]]
+                    + [['    ' + address[i:i+chunkLength]]
                        for i in range(chunkLength, len(address), chunkLength)])
         else:
-            return [[caption, '']]
+            return [[caption], ['    -']]
 
     def get(self, id):
         try:
@@ -198,67 +202,123 @@ class DeclarationPDF(BaseHandler):
 
         story=[]
 
-        ptext = '<font size=14><b>DECLARACIÓN JURADA</b></font>'
-        story.append(Paragraph(ptext, styles["Normal"]))
-        story.append(Spacer(1, -8))
 
-        story.append(Paragraph('<para align=right><b>ID: ' + declaration.tracking + '</b></para>', styles["Normal"]))
-        story.append(Spacer(1, 36))
+        story.append(
+            Paragraph('&nbsp;' * 70 + '<font size=12><b>ANEXO N&ordm;5</b></font>',
+                      styles['Normal']))
+        story.append(Spacer(1, 12))
+        story.append(
+            Paragraph('&nbsp;' * 33 + '<font size=12><b>Declaración Jurada de Conocimiento del Cliente</b></font>',
+                      styles['Normal']))
+        story.append(Spacer(1, -10))
+
+
+        # story.append(Paragraph('<para align=right><b>N&ordm; ' + declaration.tracking + '</b></para>', styles["Normal"]))
+        story.append(Paragraph('&nbsp;' * 140 + '<font><b>N&ordm; ' + declaration.tracking + '</b></font>', styles["Normal"]))
+        story.append(Spacer(1, 24))
 
         ptext = '<font size=10>%s</font>' % 'Por el presente documento, declaro bajo juramento, lo siguiente:'
         story.append(Paragraph(ptext, styles["Normal"]))
-        story.append(Spacer(1, 36))
+        story.append(Spacer(1, 10))
 
+        # (-o-) Refactor: use default value
         data = ([
-            ['Nombres y Apellidos' , customer.name],
-            ['Documento'   , customer.document.type],
-            ['Número'     , customer.document.number],
-            ['RUC' , customer.businessNumber if customer.business else '-'],
-            ['Fecha y lugar de nacimiento' , customer.birthday if customer.birthday else ''],
-            ['Nacionalidad'        , customer.nationality]]
-            + self.addressList('Domilicio declarado', customer.address)
-                + self.addressList('Domicilio fiscal', customer.fiscal)
-            + [['', ''],
-            ['Teléfono fijo' , customer.phone],
-            ['Celular'    , customer.mobile],
-            ['Correo electrónico' , customer.email],
-            ['', ''],
-            ['Profesión u ocupación' , customer.activity],
-               ['Estado civil' , customer.status],
-            ['    Nombre del cónyuge' , customer.marital],
-            ['    Conviviente', customer.domesticPartner if customer.domestic else '-'],
-            ['', ''],
-            ['Cargo o función pública', customer.public],
-            ['', ''],
-            ['Origen de los fondos'  , declaration.source],
-            ['', ''],
-            ['¿Es sujeto obligado?', 'Sí' if customer.isobliged else 'No'],
-            ['¿Tiene oficial de cumplimiento?' , 'Sí' if customer.hasofficier else 'No'],
-        ] + ([['', ''],
-            ['Identificación del tercero'   , declaration.third]])) \
+            ['a) Nombres y apellidos:'],
+            ['    ' + customer.name],
+
+            ['\nb) Tipo y número del documento de identidad:'],
+            ['    ' + customer.document.type
+             + '    ' + customer.document.number],
+
+            ['\nc) Registro Único de Contribuyente (RUC):'],
+            [('    ' + customer.business) if customer.business else '    -'],
+
+            ['\nd) Fecha y lugar de nacimiento:'],
+            [('    ' + customer.birthday) if customer.birthday else '    -'],
+
+            ['\ne) Nacionalidad:'],
+            [('    ' + customer.nationality) if customer.nationality else '    -']]
+
+            + self.addressList(
+                '\nf) Domilicio declarado (lugar de residencia):',
+                customer.address)
+                + self.addressList('\ng) Domicilio fiscal:', customer.fiscal)
+            + [
+
+            ['\nh) Número de teléfono (fijo y celular):'],
+            ['    Fijo: ' + (customer.phone if customer.phone else '    -')],
+            ['    Celular: ' + (customer.mobile if customer.mobile else '    -')],
+
+            ['\ni) Correo electrónico:'],
+                [('    ' + customer.email) if customer.email else '    -'],
+
+            ['\nj) Profesión u ocupación:'],
+                [('    ' + customer.activity) if customer.email else '    -'],
+
+
+            ['\nk) Estado civil:'],
+                [('    ' + customer.status) if customer.status else '    -'],
+
+            ['    1. Nombre del cónyuge:'],
+                [('        ' + customer.marital) if customer.marital else '        -'],
+            ['    2. Conviviente:'],
+                [('        ' + customer.domestic) if customer.domestic else '        -'],
+
+            ['\nl) Cargo o función pública que desempeña o que haya desempeñado en los últimos dos\n   (2) años,  en el Perú o en el extranjero,  indicando  el  nombre  del  organismo público\n   u organización internacional:'],
+                [('    ' + customer.public) if customer.public else '    -'],
+
+            ['\nm) El origen de los fondos, bienes u otros activos involucrados en dicha transacción:'],
+                [('    ' + declaration.source) if declaration.source else '    -'],
+
+            ['\nn)   ¿Es sujeto obligado informar a la UIF-Perú?'],
+                ['         -' if customer.isobliged is None else ('    ' + customer.isobliged)],
+
+            ['\n      ¿Tiene oficial de cumplimiento?'],
+                ['         -' if customer.hasofficer is None else ('    ' + customer.hasofficer)],
+
+            ['\no) Identificación del tercero, sea persona natural (nombres y apellidos) o persona jurídica\n    (razón o denominación social) por cuyo intermedio se realiza la operación:',  ''] ,
+                [('    ' + declaration.third) if declaration.third else '    -']]) \
         if customer.document.type == 'DNI' else ([
-            ['Razón Social'        , customer.name],
-            ['RUC'                 , customer.document.number],
-            ['', ''],
-            ['Objeto social'       , customer.social],
-            ['Actividad económica' , customer.activity],
-            ['', ''],
-            ['Accionistas:', '']]
+            ['a) Denominación o razón social:'],
+                ['    ' + customer.name],
+
+            ['\nb) Registro Único de Contribuyente (RUC):'],
+                ['    ' + customer.document.number],
+
+            ['\nc) Objeto social y actividad económica principal (comercial, industrial, construcción,\n    transporte, etc.):'],
+                ['    Objeto social: ' + customer.social if customer.social else '    -'],
+
+                [u'    Actividad económica: ' + customer.activity if customer.activity else '    -'],
+
+            ['\nd) Identificación de los accionistas, socios, asociados, que tengan un porcentaje igual\n   o mayor al 5% de las acciones o participaciones de la persona jurídica:', '']]
+
             + self.shareholdersList(customer.shareholders) + [
-            ['Representate legal'  , customer.legal]]
-            + self.addressList('Domilicio', customer.address)
-            + self.addressList('Domicilio fiscal', customer.fiscal)
-            + [['', ''],
-            ['Teléfono'            , customer.phone],
-            ['Contacto'            , customer.contact],
-            ['', ''],
-            ['Origen de los fondos'  , declaration.source],
-            ['', ''],
-            ['¿Es sujeto obligado?', customer.isobliged],
-            ['¿Tiene oficial de cumplimiento?' , customer.hasofficier]]
-            + ([['', ''],
-                ['Identificación del tercero',
-                 declaration.thirdName if declaration.third else '-']
+
+            ['e) Identificación del representate legal o de quien comparece con facultades\n    de representación y/o disposición de la persona jurídica:'],
+                ['    ' + customer.legal]]
+
+            + self.addressList('\nf) Domilicio:', customer.address)
+
+            + self.addressList('\ng) Domicilio fiscal:', customer.fiscal)
+
+            + [
+            ['\nh) Teléfonos fijos de la oficina  y/o  de  la  persona de contacto  incluyendo el código\n    de la ciudad, sea que se trate del local principal, agencia, sucursal u otros locales\n    donde desarrollan las actividades propias al giro de su negocio:'],
+                [u'        Teléfono: ' + customer.phone],
+                [u'        Contacto: ' + customer.contact],
+
+            ['\ni) El origen de los fondos, bienes y otros activos involucrados en dicha transacción:'],
+                ['    ' + declaration.source],
+
+            ['\nj) ¿Es sujeto obligado informar a la UIF-Perú?'],
+                ['        ' + ('-' if customer.isobliged is None else customer.isobliged)],
+
+            ['    ¿Tiene oficial de cumplimiento?'],
+                ['        ' + ('-' if customer.hasofficer is None else customer.hasofficer)]
+            ]
+
+            + ([
+                ['\nk) Identificación del tercero, sea persona natural (nombres y apellidos) o persona jurídica\n    (razón o denominación social) por cuyo intermedio se realiza la operación:', ''],
+                ['    ' + (declaration.third if declaration.third else '-')]
             ]))
 
         table = Table(data, [2.2*inch, 3*inch]) #, 10*[.35*inch])

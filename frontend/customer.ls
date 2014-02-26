@@ -1,27 +1,37 @@
+/** @module customer */
+
 App = require './app'
 
 Business = require './customer/business'
 Person   = require './customer/person'
 
 
+/**
+ * Customer main view.
+ * @class UiCustomer
+ * @extends View
+ */
 class Customer extends App.View
 
+  /** @override */
   el: $ \body
 
-  ## Events
+  /**
+   * (Event) On search by document number.
+   * @param {Object} evt
+   */
   onSubmitSearch: (evt) !~>
     evt.prevent!
     xForm = evt._target
 
     documentNumber = xForm._elements.0._value
 
-    # Clean disclaimer
-    @$disclaimer.html ''
-
     # Set main form
     @$body.html ''
 
-    if @valid documentNumber
+    if @_valid documentNumber
+      ## App.storage.local.\q = documentNumber
+
       # Load customer
       customer = new App.model.Customer \document : \number : documentNumber
       customer.fetch do
@@ -31,10 +41,18 @@ class Customer extends App.View
     else
       alert 'Número de documento incorrecto: ' + documentNumber
 
-  ## Methods
-  valid: (documentNumber) ->
+  /**
+   * Valid customer type (business or person) by document number.
+   * @param {string} documentNumber
+   * @return {boolean}
+   */
+  _valid: (documentNumber) ->
     documentNumber._length is 11 or documentNumber._length is 8
 
+  /**
+   * Show form by customer type (business or person).
+   * @param {App.model.Customer} customer
+   */
   showForm: (customer) !~>
     # Set "customerClass" by valid "documentNumber"
     customerClass = if customer.isBusiness then Business
@@ -44,26 +62,42 @@ class Customer extends App.View
     uiCustomer = new customerClass model: customer
     @$body._append uiCustomer.render!.el
 
-  ## Attributes
-  $body       : null
-  $disclaimer : null
+  /** @private */ $body       : null
 
-  ## View methods
+  /** @override */
   render: ->
     @$el.html @template!
 
-    $formSearch = @$el._find \form
+    $formSearch = @$ "##{gz.Css \id-search}"
       ..on \submit @onSubmitSearch
 
+    $formChoose = @$ "##{gz.Css \id-choose}"
+    $formChoose._find 'input' .on \click (evt) ~>
+      xinput = evt._target
+      if xinput.value is 'j'
+         @$ "##{gz.Css \id-title}" .html 'Persona Jurídica'
+         $formSearch.0._elements.0._placeholder = 'RUC'
+      else
+         @$ "##{gz.Css \id-title}" .html 'Persona Natural'
+         $formSearch.0._elements.0._placeholder = 'DNI'
+
     # Attributes
-    @$disclaimer = @$el._find "##{gz.Css \id-disclaimer}"
     @$body       = @$el._find "##{gz.Css \id-body}"
 
     # Get focus
     $formSearch.0._elements.0._focus!
 
+    ## query = App.storage.local.\q
+    ## if query?
+    ##   $formSearch.0._elements.0._value = query
+    ##   $formSearch._find \button ._click!
+
     super!
 
+  /**
+   * Base template: header and search form.
+   * @return {string}
+   */
   template: gzc.Jade '''
     //- HEADER
     header.navbar.navbar-inverse.navbar-fixed-top.navbar-top-min(role="banner")
@@ -88,11 +122,23 @@ class Customer extends App.View
     //- BODY
     .container.app-container
       .row
-        .col-md-8#id-disclaimer
-          small.pull-right
-            | Ingresar RUC para Persona Jurídica o DNI para Persona Natural
+        .col-md-12(style="margin-bottom:1em")
+          .col-md-3
+          .col-md-5
+            form#id-choose
+              .col-md-6
+                label.radio-inline Persona Natural
+                  input(type="radio", name="p", value="n")
+              .col-md-6
+                label.radio-inline Persona Jurídica
+                  input(type="radio", name="p", value="j")
+        .col-md-12(style="margin-bottom:1em")
+          .col-md-4
+          .col-md-4
+            h4#id-title &nbsp;
+        .col-md-8
         .col-md-4
-          form.form-inline(role="form")
+          form.form-inline(role="form")#id-search
             .input-group
               input.form-control(type="text")
               span.input-group-btn
@@ -109,5 +155,5 @@ class Customer extends App.View
     '''
 
 (new Customer).render!
-$('input').\val '12345678989'
-$('button').'click'!
+## $('input').\val '12345678989'
+## $('button').'click'!

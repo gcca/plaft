@@ -41,6 +41,22 @@ class Entity(object):
 
 class Repository(Model):
 
+    class MetaRepository(MetaModel):
+
+        def __new__(self, n, b, dict):
+
+            internal = {
+                '_pre_store': '_pre_put_hook',
+                '_post_store': '_post_put_hook' }
+
+            for hook in internal:
+                if hook in dict:
+                    dict[internal[hook]] = dict[hook]
+
+            return super(MetaModel, self).__new__(self, n, b, dict)
+
+    __metaclass__ = MetaRepository
+
     @classmethod
     def findAll(self, dto=None, **filters):
         if dto: filters = dto
@@ -75,9 +91,15 @@ class Model(Entity, Repository):
     created = DateTimeProperty(auto_now_add=True)
     last_modified = DateTimeProperty(auto_now=True)
 
+    exclude = []
+
+    def __init__(self, *a, **k):
+        self.user = None
+        super(Model, self).__init__(*a, **k)
+
     @property
     def dict(self):
-        dict = self.to_dict()
+        dict = self.to_dict(exclude=self.exclude)
         del dict['created']
         del dict['last_modified']
         if self.key: dict['id'] = self.id
@@ -88,10 +110,16 @@ class Model(Entity, Repository):
         return utils.json_dumps(self.dict)
 
     @classmethod
-    def from_dict(self, dict): # parent_key=None):
+    def from_dict(self, dict):  # parent_key=None):
         properties = {}
-        for property in self._properties:
-            if property in dict: properties.update({property: dict[property]})
+        _properties = self._properties
+        for property in _properties:
+            if property in dict:
+                if type(_properties[property]) is KeyProperty:
+                    value = Key(_properties[property]._kind, dict[property])
+                else:
+                    value = dict[property]
+                properties.update({property: value})
         # if 'id' in dict: properties['id'] = dict['id']  # if new entity
         # properties['parent'] = parent_key
         return properties

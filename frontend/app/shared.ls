@@ -6,7 +6,8 @@ FieldType = builtins.Types.Field
 /**
  * Names.
  */
-exports.lists =
+exports.lists = require './lists'
+exports.lists <<<
   documentTypes:
     names:
       'DNI'
@@ -23,30 +24,7 @@ exports.lists =
  * Shortcuts.
  */
 exports.shortcuts =
-  xhtml:
-    /**
-     * @return {Array<HTMLElement, HTMLElement>}
-     *
-     * @example
-     * <div></div>
-     * <button type='button'>
-     *   Agregar
-     *   <i class='#{gz.Css \glyphicon} #{gz.Css \glyphicon-plus}'></i>
-     * </button>
-     */
-    addToContainer: ->
-      xContainer = App.dom.newel \div
-
-      xButton = App.dom.newel \button
-        ..Class = "#{gz.Css \btn} #{gz.Css \btn-default}"
-        .._type = 'button'
-
-        ..html "Agregar
-                \ <i class='#{gz.Css \glyphicon} #{gz.Css \glyphicon-plus}'>
-                  </i>"
-
-      [xContainer, xButton]
-
+  xhtml: require './shared/xhtml'
 
   html:
     optionsFrom: (names, values) ->
@@ -70,7 +48,7 @@ exports.shortcuts =
 
       | fieldType is FieldType.kLineEdit or not fieldType  => $ "
         <div class='#{gz.Css \form-group}'>
-          <label>
+          <label data-toggle='tooltip' title='#fieldTip'>
             <b>#fieldBullet</b>
             &nbsp;
             <span style='font-weight:normal'>#fieldLabel</span>
@@ -82,7 +60,7 @@ exports.shortcuts =
         html = new Array
         html._push "
           <div class='#{gz.Css \form-group}'>
-            <label>
+            <label data-toggle='tooltip' title='#fieldTip'>
               <b>#fieldBullet</b>
               &nbsp;
               <span style='font-weight:normal'>#fieldLabel</span>
@@ -97,7 +75,8 @@ exports.shortcuts =
         html = new Array
         html._push "
           <div class='#{gz.Css \form-group}'>
-            <label style='margin-right:4em;'>
+            <label data-toggle='tooltip' title='#fieldTip'
+                style='margin-right:4em;'>
               <b>#fieldBullet</b>
               &nbsp;
               <span style='font-weight:normal'>#fieldLabel</span>
@@ -117,7 +96,7 @@ exports.shortcuts =
       | fieldType is FieldType.kView =>
         $control = $ "
           <div>
-            <label>
+            <label data-toggle='tooltip' title='#fieldTip'>
               <b>#fieldBullet</b>
               &nbsp;
               <span style='font-weight:normal'>#fieldLabel</span>
@@ -144,3 +123,6 @@ form_saveEvent = (evt) !->
 exports._form =
   patch:
     saveButton: (xbutton) !-> xbutton.addEvent \click form_saveEvent
+
+exports._event =
+  isCtrlV: (evt) -> evt._ctrlKey and evt._keyCode is 86

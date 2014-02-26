@@ -121,7 +121,7 @@ $\fn
   ((s, t, p) -> -> s.apply t, p)(@, [].shift.apply(&), &)) if not (->).bind
 
 # Maintain while HTML5 - RadioNodeList not implemented yet
-NodeList ::=
+NodeList::=
   value:~
     ->
       for node in @
@@ -279,6 +279,7 @@ $\fn
   ..css          = ..\css
   ..hide         = ..\hide
   ..post         = ..\post
+  ..tooltip      = ..\tooltip
   .._show        = ..\show
   .._find        = ..\find
   .._append      = ..\append
@@ -298,3 +299,4 @@ $\fn
   .._trigger     = ..\trigger
   .._remove      = ..\remove
   .._post        = ..\post
+  .._click       = ..\click

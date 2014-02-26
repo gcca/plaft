@@ -1,27 +1,37 @@
 Module = require '../module'
 
+Customs = App.model.Customs
+
 
 module.exports = \
 
 class Dispatches extends Module
 
   render: ->
-    @$el.html "
-      <table class='#{gz.Css \table}
-                  \ #{gz.Css \table-striped}
-                  \ #{gz.Css \table-hover}
-                  \ #{gz.Css \table-responsive}'>
-        <thead>
+    Customs.pending.dispatches (dispatches) !~>
+      @el.html "
+        <table class='#{gz.Css \table}
+                    \ #{gz.Css \table-hover}
+                    \ #{gz.Css \table-responsive}'>
+          <thead>
+            <tr>
+              <th>\#Orden</th>
+              <th>Cliente</th>
+              <th>&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>"
+
+      xtbody = @el.query \tbody
+
+      for dispatch in dispatches
+        xtr = App.dom.newel \tr
+        xtr.html "
           <tr>
-            <th>\#Orden</th>
-            <th>Cliente</th>
-            <th>&nbsp;</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>2014-1256</td>
-            <td>Scharff</td>
+            <td>#{dispatch.'order'}</td>
+            <td>#{dispatch.'customer'.'name'}</td>
             <td>
               <button type='button' class='#{gz.Css \btn}
                                          \ #{gz.Css \btn-default}
@@ -29,31 +39,9 @@ class Dispatches extends Module
                 Opciones
               </button>
             </td>
-          </tr>
-          <tr>
-            <td>2013-456</td>
-            <td>Loro Inc.</td>
-            <td>
-              <button type='button' class='#{gz.Css \btn}
-                                         \ #{gz.Css \btn-default}
-                                         \ #{gz.Css \pull-right}'>
-                Opciones
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <td>2014-566</td>
-            <td>La Mar</td>
-            <td>
-              <button type='button' class='#{gz.Css \btn}
-                                         \ #{gz.Css \btn-default}
-                                         \ #{gz.Css \pull-right}'>
-                Opciones
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>"
+          </tr>"
+        xtbody._append xtr
+
     super!
 
   @@_caption = 'Despachos'

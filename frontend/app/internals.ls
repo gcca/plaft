@@ -19,6 +19,13 @@ exports <<<
       \dataType    : \json)
       ..\fail _error
 
+  _get: (_url, _data, _success, _error) ->
+    ($\ajax do
+      \url         : _url
+      \data        : _data
+      \success     : _success)
+      ..\fail _error
+
   difference: (_attrs, _keys) ->
     _data = new Object
 
@@ -27,7 +34,7 @@ exports <<<
       v = _keys[k]
 
       if v._constructor is Object
-        App.internals.difference a, v
+        _data[k] = App.internals.difference a, v
 
       else
         _data[k] = v if a != v

@@ -14,6 +14,7 @@
 #        `-_        ''" .."   _-'
 #           "'--__      __--'"    cristHian Gz. (gcca)
 #                 ""--""
+error = on if window.'plaft'.\e == -1
 document.body.innerHTML = "
 <div class='#{gz.Css \navbar}
           \ #{gz.Css \navbar-inverse}
@@ -39,17 +40,47 @@ document.body.innerHTML = "
 
       <form class='#{gz.Css \navbar-form}
                  \ #{gz.Css \navbar-right}' role='form' method='post'>
-        <div class='#{gz.Css \form-group}'>
+
+        <div class='#{gz.Css \form-group}
+                    #{if error
+                    then " #{gz.Css \has-error} #{gz.Css \has-feedback}"
+                    else ''}'>
+
           <input type='text' placeholder='Email' name='email'
+              value='gcca@hub.io'
               class='#{gz.Css \form-control}'>
+
+
+          #{if error
+            then "<span class='#{gz.Css \glyphicon}
+                             \ #{gz.Css \glyphicon-remove}
+                             \ #{gz.Css \form-control-feedback}'></span>"
+            else ''}
+
         </div>
-        <div class='#{gz.Css \form-group}'>
+
+
+        <div class='#{gz.Css \form-group}
+                    #{if error
+                    then " #{gz.Css \has-error} #{gz.Css \has-feedback}"
+                    else ''}'>
+
           <input type='password' placeholder='Password' name='password'
+              value='789'
               class='#{gz.Css \form-control}'>
+
+          #{if error
+            then "<span class='#{gz.Css \glyphicon}
+                             \ #{gz.Css \glyphicon-remove}
+                             \ #{gz.Css \form-control-feedback}'></span>"
+            else ''}
+
         </div>
+
         <button type='submit' class='#{gz.Css \btn} #{gz.Css \btn-success}'>
           Ingresar
         </button>
+
       </form>
 
     </div>

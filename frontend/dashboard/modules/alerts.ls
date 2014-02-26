@@ -1,106 +1,132 @@
 Module = require '../module'
 
-ITEMS = require './alerts/items'
-
-selectAlerts = ->
-  "<select class='#{gz.Css \form-control}'>
-    #{["<option>#{..}</option>" for ITEMS].join ''}</select>"
+Picker = require './alerts/picker'
 
 
-class Item extends App.View
-
-  _tagName: \form
-
-  _className: gz.Css \row
-
-  ## Events
-  onChangeSource: (evt) ~>
-    xSelect = evt.currentTarget
-    if xSelect.selectedIndex is (xSelect.length - 1)
-      @$controlOther._show!
-    else
-      @$controlOther._hide!
-
-  ## View methods
-  render: ->
-    @$el.html "
-      <div class='#{gz.Css \form-group} #{gz.Css \col-md-10}'>
-        <label>Alerta</label>
-        #{selectAlerts!}
-      </div>
-
-      <div class='#{gz.Css \form-group} #{gz.Css \col-md-2}'>
-        <label>Código</label>
-        <input type='text' class='#{gz.Css \form-control}'>
-      </div>"
-
-    $controlSource = $ "
-      <div class='#{gz.Css \form-group} #{gz.Css \col-md-4}'>
-        <label>Fuente de la señal de alerta</label>
-      </div>"
-
-    $selectSource = $ "
-      <select class='#{gz.Css \form-control}'>
-        <option>(1) Sistema de Monitoreo</option>
-        <option>(2) Area Comercial</option>
-        <option>(3) Análisis del SO</option>
-        <option>(4) Medio Periodístico</option>
-        <option>(5) Otras fuentes</option>
-      </select>"
-    $controlSource._append $selectSource
-    $selectSource.on \change @onChangeSource
-
-    @$controlOther = $ "
-      <div class='#{gz.Css \form-group} #{gz.Css \col-md-8}'>
-        <label>En caso en el item 46 se haya consignado
-               \ la opción 5 describir la fuente</label>
-        <input type='text' class='#{gz.Css \form-control}'>
-      </div>"
-    @$controlOther.hide!
-
-    @$el._append $controlSource
-    @$el._append @$controlOther
-
-    @$el._append "
-      <div class='#{gz.Css \form-group} #{gz.Css \col-md-12}'>
-        <hr style='margin: -5px 0 -10px;'>
-      </div>"
-    super!
-
-  ## Attributes
-  $controlOther: null
-
-
-module.exports = \
-
+/** ------
+ *  Alerts
+ *  ------
+ * @class UiAlerts
+ * @extends Module
+ */
 class Alerts extends Module
 
-  ## Events
-  onClickButton: ~>
-    @addItem!
+  /**
+   * (Event) Valid form data from declaration.
+   * @param {Object} evt
+   */
+  onValidData: (evt) !~>
+    evt.prevent!
+    console.log \lalala
 
-  ## Methods
-  addItem: !->
-    @xContainer._append (new Item).render!.el
+  /**
+   * Show form from order number.
+   * @param {number} order
+   */
+  fromOrder: (order) !->
+    dispatch = new App.model.Dispatch \order : order
+    dispatch.fetch do
+      _success: !->
+        @el.html "
+          <form role='form'>
+            <div class='#{gz.Css \form-group}'>
+              <label>1. Número Uno</label>
+              <input type='text' class='#{gz.Css \form-control}'>
+            </div>
+          </form>
+        "
+        console.log &
 
-  ## View methods
+  /** @override */
   render: ->
-    @xContainer = App.dom.newel \div
+    @el.html @templateHeader!
+    @el.query \form .onSubmit @onValidData
+    @el._append (new Picker).render!.el
+    ## dispatch = new App.model.Dispatch \id : 5348024557502464
+    ## dispatch.fetch do
+    ##   _success: !->
+    ##     console.log &
 
-    xButton = App.dom.newel \button
-      ..Class = "#{gz.Css \btn} #{gz.Css \btn-default}"
-
-      ..html "Agregar
-              \ <i class='#{gz.Css \glyphicon} #{gz.Css \glyphicon-plus}'></i>"
-
-      ..onClick @onClickButton
-
-    @el._append @xContainer
-    @el._append xButton
     super!
-
-  ## Attributes
-  xContainer: null
 
   @@_caption = 'Alertas'
   @@_icon    = gz.Css \glyphicon-check
+
+  /**
+   * Basic template for header anex 1.
+   */
+  templateHeader: -> "
+    <div class='#{gz.Css \col-md-12}'>
+      Verifcar:<br>
+      <a>http://www.sunat.gob.pe/cl-ti-itmrconsruc/jcrS00Alias</a><br>
+      <a>http://www.reniec.gob.pe/portal/intro.htm</a><br><br>
+    </div>
+
+    <form class='#{gz.Css \row}'>
+
+      <div class='#{gz.Css \form-group} #{gz.Css \col-md-6}'>
+        <label>N&ordm; Orden Despacho</label>
+        <input type='text' class='#{gz.Css \form-control}'>
+      </div>
+
+      <div class='#{gz.Css \form-group} #{gz.Css \col-md-6}'>
+        <label>Fecha</label>
+        <input type='text' class='#{gz.Css \form-control}' name=''>
+      </div>
+
+      <div class='#{gz.Css \form-group} #{gz.Css \col-md-6}'>
+        <label>Tipo de Operación (SBS)</label>
+        <input type='text' class='#{gz.Css \form-control}' name=''>
+      </div>
+
+      <div class='#{gz.Css \form-group} #{gz.Css \col-md-6}'>
+        <label>Aduana Despacho</label>
+        <input type='text' class='#{gz.Css \form-control}' name=''>
+      </div>
+
+      <div class='#{gz.Css \form-group} #{gz.Css \col-md-6}'>
+        <label>Razón Social/Nombre</label>
+        <input type='text' class='#{gz.Css \form-control}' name=''>
+      </div>
+
+      <div class='#{gz.Css \form-group} #{gz.Css \col-md-6}'>
+        <label>RUC/DNI</label>
+        <input type='text' class='#{gz.Css \form-control}' name=''>
+      </div>
+
+      <div class='#{gz.Css \form-group} #{gz.Css \col-md-6}'>
+        <label>Tipo Empresa</label>
+        <input type='text' class='#{gz.Css \form-control}' name=''>
+      </div>
+
+      <div class='#{gz.Css \form-group} #{gz.Css \col-md-6}'>
+        <label>Tipo Contribuyente</label>
+        <input type='text' class='#{gz.Css \form-control}' name=''>
+      </div>
+
+      <div class='#{gz.Css \form-group} #{gz.Css \col-md-6}'>
+        <label>Identificación del Tercero</label>
+        <input type='text' class='#{gz.Css \form-control}' name=''>
+      </div>
+
+      <div class='#{gz.Css \form-group} #{gz.Css \col-md-6}'>
+        <label>Anexo 5</label>
+        <input type='text' class='#{gz.Css \form-control}' name=''>
+      </div>
+
+      <div class='#{gz.Css \form-group} #{gz.Css \col-md-6}'>
+        <label>Doc. Despacho</label>
+        <input type='text' class='#{gz.Css \form-control}' name=''>
+      </div>
+
+      <div class='#{gz.Css \col-md-12}'>
+        <button class='#{gz.Css \btn}
+                     \ #{gz.Css \btn-primary}
+                     \ #{gz.Css \pull-right}'>
+          Verificar
+        </button>
+      </div>
+
+    </form>"
+
+module.exports = Alerts

@@ -30,3 +30,21 @@ exports.Customs = \
 class Customs extends App.Model
 
   urlRoot: 'customs'
+
+  @@pending =
+    dispatches: (callback) !->
+      App.internals._get "#{@@API}customs/pending/dispatches", null, callback
+
+
+exports.Declaration = \
+
+class Declaration extends App.Model
+
+  urlRoot: 'declaration'
+
+
+exports.Dispatch = \
+
+class Dispatch extends App.Model
+
+  urlRoot: 'dispatch'

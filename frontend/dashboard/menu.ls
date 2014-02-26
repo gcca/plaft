@@ -8,11 +8,10 @@ MODULES =
   Anex2      = require './modules/anex2'
   Anex6      = require './modules/anex6'
 
-
 SETTINGS =
   Customs = require './settings/customs'
   User    = require './settings/user'
-
+window\kkk = MODULES
 
 class Settings extends App.View
 
@@ -32,7 +31,7 @@ class Settings extends App.View
       ..css._width = elWidth
 
   render: ->
-    elWidth = "#{98 / SETTINGS.length}%"
+    elWidth = "#{98 / SETTINGS._length}%"
     for module in SETTINGS
       @$el._append @addItem module, elWidth
     super!

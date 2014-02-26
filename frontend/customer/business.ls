@@ -1,3 +1,5 @@
+/** @module customer.business */
+
 Base         = require './base'
 Shareholders = require './business/shareholders'
 
@@ -5,14 +7,19 @@ FieldType         = App.builtins.Types.Field
 $htmlControlGroup = App.shared.shortcuts.$html.controlGroup
 
 
-module.exports = \
-
+/**
+ * Business customer form.
+ * @class UiBusiness
+ * @extends UiBase
+ */
 class Business extends Base
 
+  /** @override */
   _toJSON: ->
     super!
       ..\shareholders = @shareholders._toJSON!
 
+  /** @override */
   render: ->
     for field in FIELDS
       if field.4 is FieldType.kView
@@ -29,8 +36,11 @@ class Business extends Base
     # Hidden fields
     @$el._append "<input type='hidden' name='document[type]' value='RUC'>"
 
+    @$el._find '[data-toggle=tooltip]' .tooltip!
+
     super!
 
+module.exports = Business
 
 /**
  * [
@@ -50,7 +60,7 @@ FIELDS =
   * 'document[number]'
     'b)'
     'RUC'
-    'Registro Único de Contribuyentes (RUC), de ser el caso.'
+    'Registro Único de Contribuyentes (RUC).'
 
   * 'social'
     'c)'

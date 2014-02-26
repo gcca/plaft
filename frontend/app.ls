@@ -13,7 +13,11 @@ Object.defineProperties $'Event'::, do
   _target: get: -> @currentTarget
 
 Object.defineProperties Event::, do
-  _target: get: -> @currentTarget
+  _target   : get : -> @currentTarget
+  _key      : get : -> @key
+  _keyCode  : get : -> @keyCode
+  _shiftKey : get : -> @shiftKey
+  _ctrlKey  : get : -> @ctrlKey
 
 
 ## Global HTML-Element
@@ -22,46 +26,84 @@ Object.defineProperties Object::, do
   toStr        : get : -> @toString!
 
 document
-  ..newel = ..createElement
+  ..newel    = ..createElement
+  ..query    = ..querySelector
+  ..queryAll = ..querySelectorAll
 
 HTMLElement::
   HTMLElement::=
     _append  : ..appendChild
+    appendTo : (a)  -> a.appendChild @
     html     : (a) !-> @innerHTML = a
     _focus   : ..focus
-    onClick  : (e) !-> @onclick = e
+    query    : ..querySelector
+    queryAll : ..querySelectorAll
+    onClick  : (e) !-> @onclick  = e
     onSubmit : (e) !-> @onsubmit = e
+    onChange : (e) !-> @onchange = e
+    onKeyUp  : (e) !-> @onkeyup  = e
     addEvent :     !-> @addEventListener ...
 
 Object.defineProperties HTMLElement::, do
-  css: get: -> @style
+  css: get : -> @style
 
-  Class:
-   get: -> @classList
-   set: (a) !-> @className = a
+  Class: get : (-> @classList), set : (a) !-> @className = a
 
   _type: set: (a) !-> @type = a
+
+  _first  : get : -> @firstElementChild
+  _last   : get : -> @lastElementChild
+  _parent : get : -> @parentElement
+
+  _disabled : get : (-> @disabled), set : (x) -> @disabled = x
 
 Object.defineProperties HTMLFormElement::, do
   _elements: get: -> @elements
 
-Object.defineProperties HTMLInputElement::, do
-  _value: get: -> @value
+fieldsProto =
+  _value : get : (-> @value), set : (a) !-> @value = a
+  _name  : get : (-> @name ), set : (a) !-> @name  = a
+
+Object.defineProperties HTMLInputElement::, fieldsProto
+Object.defineProperties HTMLSelectElement::, fieldsProto
+
+## Object.defineProperties HTMLInputElement::, do
+##   _checked : get : (-> @checked), set : (a) !-> @checked = a
+HTMLInputElement::=
+  _checked:~
+    (a) -> @checked = a
+    -> @checked
+  _placeholder:~
+    (a) -> @placeholder = a
+    -> @placeholder
+
+
+Object.defineProperties HTMLSelectElement::, do
+  _selected : get : -> @selectedIndex
+  _length   : get : -> @length
+
+HTMLInputElement::=
+  withName  : (a) -> @name  = a ; @
+  withValue : (a) -> @value = a ; @
 
 Object.defineProperties HTMLCollection::, do
   _length: get: -> @length
 
 Array::
   Array::=
-    _push : ..push
-    _pop  : ..pop
-    _join : ..join
+    _push  : ..push
+    _pop   : ..pop
+    _join  : ..join
+    _index : ..indexOf
 
 Object.defineProperties Array::, do
   _length: get: -> @length
 
 Object.defineProperties String::, do
-  _length: get: -> @length
+  _length : get : -> @length
+
+String::
+  .._match = ..match
 
 DOMTokenList::
   DOMTokenList::=
@@ -69,21 +111,32 @@ DOMTokenList::
     _remove : ..remove
     _toggle : ..toggle
 
+CSSProperties = CSS2Properties if CSS2Properties?
+CSSProperties = CSSStyleDeclaration if CSSStyleDeclaration?
 gsetter = (n) -> get: (-> @[n]), set: (a) !-> @[n] = a
-Object.defineProperties CSS2Properties::, do
-  _marginBottom: gsetter \marginBottom
-  _width: gsetter \width
+Object.defineProperties CSSProperties::, do
+  _margin-bottom  : gsetter \marginBottom
+  _width          : gsetter \width
+  _height         : gsetter \height
+  _padding        : gsetter \padding
+  _overflow       : gsetter \overflow
+  _overflowX      : gsetter \overflowX
+  _overflowY      : gsetter \overflowY
+  _border         : gsetter \border
+  _border-radius  : gsetter \borderRadius
 
 
 ## Global Backbone
 Backbone = window\Backbone
 
 NewPoolMixIn =
-  New: (o) -> @pool.allocate o
-  Pool: !-> @pool = new builtins.ObjectPool @
+  New  : (o) -> @Pool! if not @pool?; @New = @_New; @pool.allocate o
+  _New : (o) -> @pool.allocate o
+  Pool :    !-> @pool = new builtins.ObjectPool @
+  pool : null
 
 FreePoolMixIn =
-  Free: !-> @_constructor.pool.free @
+  free: !-> @_remove!; @_constructor.pool.free @
 
 
 viewOpts =
@@ -117,7 +170,7 @@ class View extends Backbone\View implements FreePoolMixIn
     @initialize.apply @, &
     @'delegateEvents'!
 
-  initialize: !->
+  initialize: !-> @el.html null
 
   # Const
   ::render  = ::\render
@@ -162,24 +215,20 @@ class Model extends BaseModel
     if @_parent? then "#{@_parent._url!}/#{super!}" else "/api/v1/#{super!}"
 
   _sync: (t, m, o) ->
-    if t is \read
+    if t is \read and not m._attributes.\id
       o.\url = m._url! + '?' + [..join '=' for @flatten m._attributes].join '&'
-    ## else if t is \create or t is \update
-    ##   a = m.'toJSON'!
-    ##   a <<<< {[k,a[k]'id'] for k of awhen a[k] instanceof Model and a[k]'id'?}
-    ##   o.\attrs = a
+    #else if t is \create or t is \update
+    #  a = m.'toJSON'!
+    #  a <<<< {[k,a[k]'id'] for k of awhen a[k] instanceof Model and a[k]'id'?}
+    #  o.\attrs = a
     super ...
 
   _parent: null
 
-  fetch: (opts = {}) ->
-    super \success : opts._success, \error : opts._error
+  fetch: (opts = {}) -> super \success : opts._success, \error : opts._error
 
   _save: (keys, opts = {}) ->
-    _keys  = keys
-    _attrs = @_attributes
-    _data  = App.internals.difference _attrs, _keys
-    super null, \success : opts._success, \error : opts._error, \attrs : _data
+    super keys, \success : opts._success, \error : opts._error
 
 
 ## Global App
@@ -189,10 +238,13 @@ App <<<
   ui        : new Object
   dom       : document
   win       : window
-  _global   : new Object
+  _global   : require './app/global'
   builtins  : builtins
   shared    : require './app/shared'
   internals : require './app/internals'
+  storage   :
+    local   : localStorage
+    session : sessionStorage
 
 App.model = require './app/model'
 

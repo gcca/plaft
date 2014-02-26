@@ -3,19 +3,24 @@
 from __future__ import unicode_literals
 
 from domain.model import Document, Customer, Shareholder, User, Customs, \
-                         Officer
+                         Officer, Declaration
 from interface import BaseHandler
 from domain.c_gz import db
 
 
 def create():
+    customs = Customs(name    = 'Cyberdine',
+                      code    = '888',
+                      officer = Officer(name='Mail', code='1255'))
+    customs.store()
+
     customs = Customs(name    = 'SCharff',
                       code    = '789',
                       officer = Officer(name='John Connor', code='1212'))
     customs.store()
 
     u1 = User(email    = 'gcca@hub.io',
-              password = '123',
+              password = '789',
               customs  = customs.key)
     u1.store()
 
@@ -55,6 +60,6 @@ class Debug(BaseHandler):
         self.write('Don\'t worry... Be happy.')
 
     def post(self):
-        db.delete_multi(v for m in [Customer, User, Customs]
+        db.delete_multi(v for m in [Customer, User, Customs, Declaration]
                         for v in m.query().fetch(keys_only=True))
         self.write('The End.')

@@ -33,7 +33,7 @@ def valid_pw(name, password, h):
 
 
 CHRS = digits + '!"#$%&\\(;.:)=?+-*/' + letters
-def make_salt(length = 9):
+def make_salt(length=9):
     return ''.join(random.choice(CHRS) for _ in xrange(length))
 
 
@@ -50,13 +50,22 @@ def check_secure(secure_val):
     else: return val if secure_val == make_secure(val, salt) else None
 
 
+def login_required(m):
+    return lambda s, *a, **k: (
+        m(s, *a, **k)
+        if s.user
+        else (s.status.FORBIDDEN('Forbidden')
+              if 'XMLHttpRequest' == s.request.headers.get('X-Requested-With')
+              else s.redirect('/')))
+
+
 class JSONEncoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, db.Model): return o.dict
         if isinstance(o, date): return '%i-%i-%i' % (o.year,o.month,o.day)
         if isinstance(o, datetime):
-            return '%i-%i-%i %s:%s:%s' % (o.year, o.month, o.day,
-                                          o.hour,o.minute,o.second)
+            return '%i-%i-%i %s:%s:%s' % (o.year, o.month,  o.day,
+                                          o.hour, o.minute, o.second)
         if isinstance(o, db.Query): return o.fetch(666)
         if isinstance(o, db.Key): return o.get()
         # if isinstance(o, Dto): return o.__dict__
