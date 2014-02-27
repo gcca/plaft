@@ -1,3 +1,5 @@
+/** @modules dashboard.modules */
+
 Module = require '../module'
 Subform = require './reception/subform'
 
@@ -23,10 +25,18 @@ xCheckBox   = formHalf.checkBox
 xSave       = App.shared.shortcuts.xhtml._form.saveButton
 
 
-module.exports = \
-
+/**
+ * Module reception for dispatch documents.
+ * @class UiReception
+ * @extends Module
+ */
 class Reception extends Module
 
+  /**
+   * (Event) On save new dispatch.
+   * @param {Object} evt
+   * @private
+   */
   onSave: (evt) !~>
     evt.prevent!
 
@@ -49,7 +59,13 @@ class Reception extends Module
         _error   : !->
           alert 'ERROR: 92c0861a-934d-11e3-947e-88252caeb7e8'
 
-
+  /**
+   * (Event) On change form for declaration - customer.
+   * @param {Object} evt
+   * @see #showWithDeclaration
+   * @see #showWithoutDeclaration
+   * @private
+   */
   onChangeDeclaration: (evt) !~>
     evt.prevent!
 
@@ -58,14 +74,40 @@ class Reception extends Module
     if evt._target._checked
       then @showWithDeclaration! else @showWithoutDeclaration!
 
+  /**
+   * Show declaration form.
+   * @see #onChangeDeclaration
+   * @private
+   */
   showWithDeclaration: !-> @vdeclaration.formWith!
 
+  /**
+   * Show customer form.
+   * @see #onChangeDeclaration
+   * @private
+   */
   showWithoutDeclaration: !-> @vdeclaration.formWithout!
 
+  /** @override */
   initiliaze: !->
+    /**
+     * Declaration - customer form.
+     * @type {Subform}
+     * @private
+     */
     @vdeclaration = null
+
+    /**
+     * DOM group div for save button.
+     * @type {View}
+     * @private
+     */
     @xgroupSave   = null
 
+  /** @private */ vdeclaration : null
+  /** @private */ xgroupSave   : null
+
+  /** @override */
   render: ->
     xform = App.dom.newel \form
     xform.Class = gz.Css \row
@@ -137,5 +179,4 @@ class Reception extends Module
   @@_caption = 'Recepción'
   @@_icon    = gz.Css \glyphicon-inbox
 
-  vdeclaration : null
-  xgroupSave   : null
+module.exports = Reception

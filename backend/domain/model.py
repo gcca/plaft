@@ -7,6 +7,14 @@ from c_gz import *
 
 
 class Document(ValueObject):
+    """Identification document.
+
+    Use value object for entities with identification document.
+
+    Attributes:
+        type: A string document type (RUC, DNI, etc).
+        number: A string document number.
+    """
 
     type_choices = ['DNI', 'RUC', 'Pasaporte', 'Carné de Extranjería']
 
@@ -15,6 +23,12 @@ class Document(ValueObject):
 
 
 class Shareholder(ValueObject):
+    """Customer shareholder.
+
+    Attributes:
+        document: A Document value object.
+        name: A string shareholder name.
+    """
 
     document = StructuredProperty (Document)
     name     = TextProperty       ()
@@ -55,6 +69,15 @@ class Customer(Model):
 
 
 class Declaration(Model):
+    """Customer affidavit.
+
+    Attribtues:
+        tracking: A string identification code.
+        source: Origen de los fondos.
+        third: Identificación del tercero.
+        customer: Datos histórcios del cliente.
+        owner: Customer key.
+    """
 
     tracking = StringProperty     ()
     source   = TextProperty       ()
@@ -67,17 +90,32 @@ class Declaration(Model):
 
 
 class Officer(ValueObject):
+    """Oficial de Cumplimiento.
+
+    Attributes:
+        name: Nombre del oficial de cumplimiento.
+        code: Código otorgado por la UIF.
+    """
 
     name = TextProperty ()
     code = TextProperty ()
 
 
 class Customs(Model):
+    """Agencia de Aduanas.
+
+    Attributes:
+        name: Nombre de la agencia.
+        code: Código otorgado por aduanas.
+        officier: A Officier value object.
+        datastore: A Datastore value object.
+    """
 
     class Datastore(ValueObject):
 
         class _Dispatches(ValueObject):
-            dispatches = KeyProperty (kind='Dispatch', repeated=True)
+            dispatches   = KeyProperty (kind='Dispatch'   , repeated=True)
+            declarations = KeyProperty (kind='Declaration', repeated=True)
 
         pending = StructuredProperty (_Dispatches, default=_Dispatches())
 
@@ -90,17 +128,40 @@ class Customs(Model):
 
 
 class User(User):
+    """Usuario.
+
+    Attributes:
+        email: A string e-mail.
+        password: A string password.
+        customs: A key Customs.
+
+    TODO(...): Implement hierarchy.
+    """
 
     customs = KeyProperty (kind=Customs)
 
 
 class CodeName(ValueObject):
+    """Para 'value objects' con esquema código - nombre."""
 
     code = TextProperty ()
     name = TextProperty ()
 
 
 class Dispatch(Model):
+    """Despacho.
+
+    Attributes:
+        order: Número de orden.
+        date: Fecha de registro.
+        operation: Tipo de operación.
+        regime: Régimen aduanero.
+        jurisdiction: Jurisdicción de aduana.
+        third: Identificación del tercero.
+        declaration: A Declaration Key.
+        customer: A Customer Key.
+        customs: A Customs Key.
+    """
 
     order        = StringProperty     ()
     date         = DateStrProperty    ()
@@ -112,6 +173,15 @@ class Dispatch(Model):
     customer     = KeyProperty        (kind=Customer)
     customs      = KeyProperty        (kind=Customs)
 
+    def _pre_store(self):
+        from logging import warning
+        warning('----------------')
+        warning(self.customer.get())
+        # declaration = self.declaration.get()
+        # declaration.taked = True
+        # declaration.store()
+        self.declarations.get()
+
     def _post_store(self, future):
         customs = self.user.customs.get()
         customs.datastore.pending.dispatches.append(future.get_result())
@@ -119,6 +189,12 @@ class Dispatch(Model):
 
 
 class Operation(Model):
+    """Operación (Registro de operaciones).
+
+    Attributes:
+        dispatches: A Dispatch Key list.
+        customs: A Customs Key.
+    """
 
     dispatches = KeyProperty (kind=Dispatch, repeated=True)
     customs    = KeyProperty (kind=Customs)

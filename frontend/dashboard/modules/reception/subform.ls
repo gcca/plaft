@@ -137,13 +137,15 @@ class Subform extends App.View
                 </span>
               </div>
 
-              <div class='#{gz.Css \col-md-12}'>
-                <label class='#{gz.Css \col-md-6}'>
-                  ¿Es buen contribuyente o importador frecuente?
+              <div class='#{gz.Css \col-md-6}'>
+                <label class='#{gz.Css \col-md-12}'>
+                  Tipo Contribuyente
                 </label>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <span class='#{gz.Css \col-md-3}'>
-                  #{customer.\isgood}
+              </div>
+
+              <div class='#{gz.Css \col-md-6}'>
+                <span class='#{gz.Css \col-md-12}'>
+                  #{customer.\category}
                 </span>
               </div>
 
@@ -181,13 +183,18 @@ class Subform extends App.View
               <div class='#{gz.Css \form-group} #{gz.Css \col-md-7}'>
                 <label>Tipo Contribuyente</label>
                 <div>
-                  ¿Es importador frecuente o buen contribuyente?
-                  &nbsp;&nbsp;&nbsp;&nbsp;
-                  <label class='#{gz.Css \radio-inline}'>
-                    <input type='radio' name='isgood' value='Sí'> Sí
+                  <label class='#{gz.Css \radio-inline}'
+                      style='margin-left:10px'>
+                    <input type='radio' name='category'
+                        value='Importador frecuente'> Importador Frecuente
                   </label>
                   <label class='#{gz.Css \radio-inline}'>
-                    <input type='radio' name='isgood' value='No'> No
+                    <input type='radio' name='category'
+                        value='Buen contribuyente'> Buen Contribuyente
+                  </label>
+                  <label class='#{gz.Css \radio-inline}'>
+                    <input type='radio' name='category'
+                        value='Otros'> Otros
                   </label>
                 </div>
               </div>

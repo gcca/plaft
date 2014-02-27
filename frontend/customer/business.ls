@@ -72,6 +72,8 @@ FIELDS =
     'Actividad económica principal'
     'Actividad económica principal (comercial, industrial, construcción,
      \ transporte, etc.).'
+    FieldType.kComboBox
+    App.shared.lists.ACTIVITY
 
   * null
     'd)'

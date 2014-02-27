@@ -92,11 +92,15 @@ FIELDS =
     'j)'
     'Profesión u ocupación'
     'Profesión u ocupación.'
+    FieldType.kComboBox
+    App.shared.lists.ACTIVITY
 
   * 'status'
     'k)'
     'Estado civil'
     'Estado civil.'
+    FieldType.kComboBox
+    App.shared.lists.CIVIL_STATE
 
   * 'marital'
     '1)'
