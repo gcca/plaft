@@ -173,15 +173,6 @@ class Dispatch(Model):
     customer     = KeyProperty        (kind=Customer)
     customs      = KeyProperty        (kind=Customs)
 
-    def _pre_store(self):
-        from logging import warning
-        warning('----------------')
-        warning(self.customer.get())
-        # declaration = self.declaration.get()
-        # declaration.taked = True
-        # declaration.store()
-        self.declarations.get()
-
     def _post_store(self, future):
         customs = self.user.customs.get()
         customs.datastore.pending.dispatches.append(future.get_result())

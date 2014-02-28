@@ -52,6 +52,3 @@ exports <<<
       App.internals._flattened o, .., ''
 
   _flattened: flatten-loop (k, b, v) !-> k[b] = v
-
-
-window\kkk = exports

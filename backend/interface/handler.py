@@ -41,6 +41,11 @@ class Declaration(RESTful):
     require_login = ['put']
 
 
+class Declarations(RESTfulCollection):
+
+    model         = model.Declaration
+
+
 class Dispatch(RESTful):
 
     model         = model.Dispatch

@@ -1,24 +1,51 @@
 /** @module dashboard.menu */
 
+/**
+ * TODO(...): Base class for {@code Settings} and {@code Modules}.
+ * @author cristHian Gz. (gcca)
+ */
 
+/**
+ * Main module list.
+ * To register new main modules.
+ */
 MODULES =
-  Reception  = require './modules/reception'
-  Dispatches = require './modules/dispatches'
-  Alerts     = require './modules/alerts'
-  Anex2      = require './modules/anex2'
-  Anex6      = require './modules/anex6'
+  Reception    = require './modules/reception'
+  Dispatches   = require './modules/dispatches'
+  Alerts       = require './modules/alerts'
+  Anex2        = require './modules/anex2'
+  Anex6        = require './modules/anex6'
+  Declarations = require './modules/debug/declarations'
 
+/**
+ * Setting module list.
+ * To register new setting modules.
+ */
 SETTINGS =
   Customs = require './settings/customs'
   User    = require './settings/user'
-window\kkk = MODULES
 
+
+/**
+ * Menu for setting modules.
+ * @class UiSettings
+ * @extends View
+ */
 class Settings extends App.View
 
+  /** @override */
   _tagName: \ul
 
+  /** @override */
   _className: "#{gz.Css \nav} #{gz.Css \nav-pills}"
 
+  /**
+   * Add new item module.
+   * @param {Module} module
+   * @param {string} elWidth
+   * @return {HTMLElement} <LI> element for module.
+   * @private
+   */
   addItem: (module, elWidth) ->
     a = App.dom.newel \a
       ..module = module
@@ -30,6 +57,7 @@ class Settings extends App.View
       ..Class = gz.Css \text-center
       ..css._width = elWidth
 
+  /** @override */
   render: ->
     elWidth = "#{98 / SETTINGS._length}%"
     for module in SETTINGS
@@ -37,12 +65,25 @@ class Settings extends App.View
     super!
 
 
+/**
+ * Menu for main modules.
+ * @class UiModules
+ * @extends View
+ */
 class Modules extends App.View
 
+  /** @override */
   _tagName: \ul
 
+  /** @override */
   _className: "#{gz.Css \nav} #{gz.Css \nav-pills} #{gz.Css \nav-stacked}"
 
+  /**
+   * Add new item module.
+   * @param {Module} module
+   * @return {HTMLElement} <LI> element for module.
+   * @private
+   */
   addItem: (module) ->
     a = App.dom.newel \a
       ..module = module
@@ -53,32 +94,56 @@ class Modules extends App.View
     li = App.dom.newel \li
       .._append a
 
+  /** @override */
   render: ->
     for module in MODULES
       @$el._append @addItem module
     super!
 
 
+/**
+ * Menu for setting and main modules.
+ * @class UiMenu
+ * @extends View
+ */
 class Menu extends App.View
 
+  /** @override */
   _tagName: \div
 
+  /** @override */
   _className: "#{gz.Css \hidden-print} #{gz.Css \affix-top}"
 
+  /**
+   * Events.
+   * @type {Object}
+   */
   events:
-    "click a": (evt) ->
+    /**
+     * (Event) On click for module.
+     * @param {Object} evt
+     * @private
+     */
+    'click a': (evt) ->
       elm = evt.currentTarget
       @$prevItem._parent!.removeClass (gz.Css \active)
       @$prevItem = $ elm
       @$prevItem._parent!.addClass (gz.Css \active)
       @trigger (gz.Css \select), elm.module
 
+  /** @override */
   initialize: !->
     @$el.attr 'role' 'complementary'
+
+    /**
+     * Default value to previous item module.
+     * @type {Function}
+     */
     @$prevItem = _parent: -> removeClass: !->
 
-  $prevItem: null
+  /** @private */ $prevItem: null
 
+  /** @override */
   render: ->
     settings = new Settings
     modules  = new Modules
@@ -89,6 +154,5 @@ class Menu extends App.View
     @$el._append modules.render!.el
 
     super!
-
 
 module.exports = Menu

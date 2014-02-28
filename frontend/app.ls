@@ -27,6 +27,7 @@ Object.defineProperties Object::, do
 
 document
   ..newel    = ..createElement
+  .._new     = ..createElement
   ..query    = ..querySelector
   ..queryAll = ..querySelectorAll
 
@@ -198,6 +199,10 @@ class BaseModel extends Backbone\Model
   ::_set    = ::set
   ::_sync   = ::\sync
   ::_toJSON = ::\toJSON
+  ::on      = ::\on
+  ::off     = ::\off
+  ::trigger = ::\trigger
+  ::_remove = ::\remove
 
   flatten: -> App.internals.flatten @_attributes
 
@@ -231,18 +236,59 @@ class Model extends BaseModel
     super keys, \success : opts._success, \error : opts._error
 
 
+class BaseCollection extends Backbone\Collection
+
+  (_, o = new Object) ->
+    @_parent? = o._parent
+    super ...
+    @url = @_url
+    @_attributes = @attributes
+
+  ::fetch   = ::\fetch
+  ::_fetch  = ::\fetch
+  ::_save   = ::save
+  ::_url    = ::url
+  ::_get    = ::get
+  ::_set    = ::set
+  ::_sync   = ::\sync
+  ::_toJSON = ::\toJSON
+  ::on      = ::\on
+  ::off     = ::\off
+  ::trigger = ::\trigger
+  ::_remove = ::\remove
+
+  _parent: null
+  urlRoot: null
+  _id:~ -> @id
+
+  _url  : -> @urlRoot  # @_url ...
+  \sync : -> @_sync ...
+
+class Collection extends BaseCollection
+
+  @@API = '/api/v1/'
+
+  _url: -> "/api/v1/#{super!}"
+
+  fetch: (opts = {}) -> super \success : opts._success, \error : opts._error
+
+  _save: (keys, opts = {}) ->
+    super keys, \success : opts._success, \error : opts._error
+
+
 ## Global App
 App <<<
-  View      : View
-  Model     : Model
-  ui        : new Object
-  dom       : document
-  win       : window
-  _global   : require './app/global'
-  builtins  : builtins
-  shared    : require './app/shared'
-  internals : require './app/internals'
-  storage   :
+  View       : View
+  Model      : Model
+  Collection : Collection
+  ui         : new Object
+  dom        : document
+  win        : window
+  _global    : require './app/global'
+  builtins   : builtins
+  shared     : require './app/shared'
+  internals  : require './app/internals'
+  storage    :
     local   : localStorage
     session : sessionStorage
 
