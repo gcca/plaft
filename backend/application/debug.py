@@ -31,6 +31,7 @@ def create():
         activity = 'Xploit the world',
         legal    = 'Nina Sharp',
         address  = 'Fringe',
+        category = 'Importador frecuente',
         shareholders = [
             Shareholder(
                 document = Document(type='DNI',

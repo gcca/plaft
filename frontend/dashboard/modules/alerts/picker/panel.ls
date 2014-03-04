@@ -14,11 +14,21 @@ class Control extends App.View
    * (Event) Remove panel control.
    */
   onRemove: ~>
+    @_alert._showItem!
     @free!
     @_remove!
 
+  onToggleCorrect: (evt) ~>
+    _isChecked = evt._target._checked
+    if _isChecked
+      @xcorrect.Class._remove gz.Css \hidden
+    else
+      @xcorrect.Class._add gz.Css \hidden
+
   /** @override */
   initialize: (@_alert) !->
+
+  /** @private */ xcorrect: null
 
   /** @override */
   render: ->
@@ -33,8 +43,11 @@ class Control extends App.View
           #{@_alert._text}
         </div>
 
-        <div class='#{gz.Css \form-group} #{gz.Css \col-md-1}'>
-          <button type='button' class='#{gz.Css \btn} #{gz.Css \btn-default}'>
+        <div class='#{gz.Css \form-group} #{gz.Css \col-md-1}'
+            style='padding:0'>
+          <button type='button' class='#{gz.Css \close}'
+              style='font-size:38px;
+                     margin:-10px 0;'>
             &times;
           </button>
         </div>
@@ -63,8 +76,23 @@ class Control extends App.View
       </div>
 
       <div class='#{gz.Css \form-group} #{gz.Css \col-md-12}'>
+        <label class='#{gz.Css \checkbox}'>
+          ¿Subsanado?
+          &nbsp;
+          <input id='#{gz.Css \id-1}' type='checkbox' name='iscorrect'>
+        </label>
+
+        <textarea id='#{gz.Css \id-2}'
+            class='#{gz.Css \form-control} #{gz.Css \hidden}'
+            name='correct'
+            placeholder='Comentario'></textarea>
+      </div>
+
+      <div class='#{gz.Css \form-group} #{gz.Css \col-md-12}'>
         <hr style='margin:10px 0 -5px'>
       </div>"
+    @xcorrect = @el.query "##{gz.Css \id-2}"
+    @el.query "##{gz.Css \id-1}" .onChange @onToggleCorrect
     @el.query \button .onClick @onRemove
     super!
 

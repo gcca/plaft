@@ -35,6 +35,13 @@ class Shareholder(ValueObject):
 
 
 class Customer(Model):
+    """Cliente (de la agencia de aduanas).
+
+    Attributes:
+        name: Nombre y apellido o razón social.
+        document: .
+
+    """
 
     # Customer
     name         = StringProperty     ()
@@ -69,9 +76,9 @@ class Customer(Model):
 
 
 class Declaration(Model):
-    """Customer affidavit.
+    """Declaración Jurada.
 
-    Attribtues:
+    Attributes:
         tracking: A string identification code.
         source: Origen de los fondos.
         third: Identificación del tercero.
@@ -154,7 +161,7 @@ class Dispatch(Model):
     Attributes:
         order: Número de orden.
         date: Fecha de registro.
-        operation: Tipo de operación.
+        type: Tipo de operación.
         regime: Régimen aduanero.
         jurisdiction: Jurisdicción de aduana.
         third: Identificación del tercero.
@@ -165,13 +172,17 @@ class Dispatch(Model):
 
     order        = StringProperty     ()
     date         = DateStrProperty    ()
-    operation    = StructuredProperty (CodeName)
+    type         = StructuredProperty (CodeName)
     regime       = StructuredProperty (CodeName)
     jurisdiction = StructuredProperty (CodeName)
     third        = TextProperty       ()
     declaration  = KeyProperty        (kind=Declaration)
     customer     = KeyProperty        (kind=Customer)
     customs      = KeyProperty        (kind=Customs)
+    operation    = KeyProperty        (kind='Operation')
+
+    def _pre_store(self):
+        self.customs = self.user.customs
 
     def _post_store(self, future):
         customs = self.user.customs.get()

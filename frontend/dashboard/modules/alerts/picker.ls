@@ -25,18 +25,9 @@ class Picker extends App.View
 
     _list.on (gz.Css \add), _panel.addControl
 
-    @el._append _panel.render!.el
-    @el._append _list.render!.el
-
-    $button = $ "<button class='#{gz.Css \btn}
-                              \ #{gz.Css \btn-default}
-                              \ #{gz.Css \pull-right}' style='margin-top:1em'>
-                   Guardar
-                 </button>"
-    $button.on \click ->
-      console.log \rwee
-
-    @$el._append $button
+    @$el._append _panel.render!.el
+    @$el._append "<div class='#{gz.Css \col-md-12}'>&nbsp;</div>"
+    @$el._append _list.render!.el
 
     super!
 

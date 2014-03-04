@@ -125,6 +125,7 @@ Object.defineProperties CSSProperties::, do
   _overflowY      : gsetter \overflowY
   _border         : gsetter \border
   _border-radius  : gsetter \borderRadius
+  _font-size      : gsetter \fontSize
 
 
 ## Global Backbone

@@ -22,7 +22,6 @@ class UiDeclarations extends Module
               </tr>"
 
     xtbody = App.dom._new \tbody
-      ..html ""
 
     declarations = new Declarations
     declarations.fetch do

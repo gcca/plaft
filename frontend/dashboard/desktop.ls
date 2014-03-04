@@ -1,8 +1,27 @@
+/**
+ * @module dashboard.desktop
+ *
+ *  - - - - - - - - - -
+ * |_ _ _ _ _ _ _ _ _ _|
+ * |      |            |
+ * | Menu |  Desktop   |
+ * |      |            |
+ * |      |            |
+ * |      |            |
+ *  - - - - - - - - - -
+ *
+ * This module manages the desktop zone.
+ * Connect events between views: menu, desktop, search, breadcrumbs.
+ *
+ * TODO(...): Breadcrumb for module on desktop.
+ */
+
+
 Search = require './desktop/search'
 
 /**
  * Nothing function.
- * To no write validation for null module.
+ * To doesn't write validation for null module.
  * @private
  */
 VOID-MODULE = free: ->
@@ -39,10 +58,17 @@ class Desktop extends App.View
   newCustomized: (Module) ->
     @module = Module.New!
       ..el.Class = gz.Css \col-md-12
+      ..ui.desktop._search = @_search
       @_search.setOnSearch ..onSearch
 
   /** @override */
   initialize: !-> @module = VOID-MODULE
+
+  /**
+   * Current module.
+   * @private
+   */
+  module: VOID-MODULE
 
   /** @override */
   render: ->
@@ -64,13 +90,5 @@ class Desktop extends App.View
 
     @$el._append "<div class='#{gz.Css \hidden}'></div>"
     super!
-
-  # Attributes
-
-  /**
-   * Current module.
-   * @private
-   */
-  module: VOID-MODULE
 
 module.exports = Desktop

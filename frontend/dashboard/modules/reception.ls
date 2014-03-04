@@ -127,8 +127,8 @@ class Reception extends Module
       ..appendTo xform
 
     # Operation type
-    xPairSelect('operation[code]',
-                'operation[name]',
+    xPairSelect('type[code]',
+                'type[name]',
                 OPERATION_CODE,
                 OPERATION_TYPE,
                 'Tipo de operación (SBS)')

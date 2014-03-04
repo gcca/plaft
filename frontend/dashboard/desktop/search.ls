@@ -1,3 +1,5 @@
+/** @module dashboard.desktop */
+
 /**
  * Void function.
  * @see UiSearch#internalOnSearch
@@ -5,10 +7,10 @@
 VOID-FN = ->
 
 
-/** ------
- *  Search
- *  ------
- * Control search events.
+/**
+ * Global search widget for current module on desktop.
+ * Manage search events: find by query string and get focus.
+ *
  * @class UiSearch
  * @extends View
  */
@@ -42,11 +44,18 @@ class Search extends App.View
   setOnSearch: (callOnSearch) !->
     @internalOnSearch = if callOnSearch? then callOnSearch else VOID-FN
 
+  /**
+   * Get focus for xinput search.
+   */
+  _focus: !-> @_xinput._focus!
+
   /** @override */
   initialize: !->
     @$el.attr 'role' 'form'
     @el.onSubmit @onSearch
     @internalOnSearch = VOID-FN
+
+  /** @private */ _xinput: null
 
   /** @override */
   render: ->
@@ -61,6 +70,7 @@ class Search extends App.View
           </button>
         </span>
       </div>"
+    @_xinput = @el.query \input
     super!
 
 module.exports = Search

@@ -20,13 +20,16 @@ class Item extends App.View
   /**
    * (Event) Button Add: on click.
    */
-  onAdd: !~> @trigger (gz.Css \add), @_alert
+  onAdd: !~>
+    @el.Class._add (gz.Css \hidden)
+    @trigger (gz.Css \add), @_alert
 
   /**
    * @param {Object} _alert {@code {_code, _text, _tip}}.
    * @override
    */
   initialize: (@_alert) !->
+    @_alert._showItem = ~> @el.Class._remove (gz.Css \hidden)
 
   /** @override */
   render: ->
@@ -87,7 +90,7 @@ class List extends App.View
         .._border-radius = '9px'
 
     for [_code, _text, _tip] in captions.i.captions
-      _item = new Item _code: _code, _text: _text, _tip: _tip
+      _item = new Item _code: _code, _text: _text, _tip: _tip, _showItem: null
       _item.on (gz.Css \add), (_alert) ~> @trigger (gz.Css \add), _alert
       @el._append _item.render!.el
 

@@ -1,6 +1,12 @@
+/**
+ * @module dashboard.
+ * Main view for user dashboard.
+ */
+
+
 App = require './app'
 
-# Set global
+# Set global (user and customs data)
 App._global.user = new App.model.User App.win.'plaft'.'a1'
 App._global.user.customs = \
   new App.model.Customs App._global.user._attributes.\customs
@@ -9,10 +15,17 @@ Menu    = require './dashboard/menu'
 Desktop = require './dashboard/desktop'
 
 
+/**
+ * User dashboard view.
+ * @class UiDashboard
+ * @extends View
+ */
 class Dashboard extends App.View
 
+  /** @override */
   el: $ \body
 
+  /** @override */
   render: ->
     @$el.html @template!
     history.replaceState '' '' '/dashboard'
@@ -20,16 +33,20 @@ class Dashboard extends App.View
     menu    = new Menu
     desktop = new Desktop
 
-    @$el._find "##{gz.Css \id-dashboard-menu}"
+    @$ "##{gz.Css \id-dashboard-menu}"
       .._append menu.render!.el
 
-    @$el._find "##{gz.Css \id-dashboard-desktop}"
+    @$ "##{gz.Css \id-dashboard-desktop}"
       .._append desktop.render!.el
 
     menu.on (gz.Css \select), desktop.changeModule
 
     super!
 
+  /**
+   * Base dashboard template.
+   * @return {string}
+   */
   template: ->
     # HEADER
     tHeader = "
@@ -100,4 +117,6 @@ class Dashboard extends App.View
 ## $ 'input' .last! .val '12345678989'
 ## $ 'input' .last! .parent! .children! .last! .children! .click!
 
-## $ ".#{gz.Css \glyphicon-check}" ._parent! .click!
+$ ".#{gz.Css \glyphicon-check}" ._parent! .click!
+$ 'input' .val '2014-02'
+$ 'button' .click!

@@ -1,3 +1,13 @@
+/**
+ * @module app.model
+ *
+ * _success : function(Model|Collection, Object, XMLHttpRequest)
+ *   Model|Collection class
+ *   Object Data Object or Array
+ *   XMLHttpRequest xhr Object
+ */
+
+
 exports.Customer = \
 
 class Customer extends App.Model

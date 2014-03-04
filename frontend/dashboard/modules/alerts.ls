@@ -12,119 +12,149 @@ Picker = require './alerts/picker'
 class Alerts extends Module
 
   /**
-   * (Event) Valid form data from declaration.
-   * @param {Object} evt
+   * (Event) On search by disptach order-number.
+   * @param {string} _query
    */
-  onValidData: (evt) !~>
-    evt.prevent!
-    console.log \lalala
+  onSearch: (_query) ~>
+    dispatch = new App.model.Dispatch \order : _query
+    dispatch.fetch do
+      _success: (_, dispatch) ~>
+        @showForm dispatch
+
+        @el._append (new Picker).render!.el
+
+        $div = $ "<div class='#{gz.Css \col-md-12}'></div>"
+
+        $check = $ "<label class='#{gz.Css \checkboox}'>
+                      ¿Verificado?
+                      &nbsp;&nbsp;
+                      <input type='checkbox'>
+                    </label>"
+
+        $button = $ "<button class='#{gz.Css \btn}
+                                  \ #{gz.Css \btn-default}
+                                  \ #{gz.Css \pull-right}'
+                         style='margin-top:1em'>
+                       Guardar
+                     </button>"
+
+        $button.on \click ->
+          console.log \rwee
+
+        $div._append $check
+        $div._append $button
+        @$el._append $div
+
+
 
   /**
-   * Show form from order number.
-   * @param {number} order
+   * Show form with disptach data (declartion, customer and dispatch).
+   * @param {Object} dispatch DTO disptach data.
+   * @private
    */
-  fromOrder: (order) !->
-    dispatch = new App.model.Dispatch \order : order
-    dispatch.fetch do
-      _success: !->
-        @el.html "
-          <form role='form'>
-            <div class='#{gz.Css \form-group}'>
-              <label>1. Número Uno</label>
-              <input type='text' class='#{gz.Css \form-control}'>
-            </div>
-          </form>
-        "
-        console.log &
+  showForm: (dispatch) ->
+    @el.html @templateDispatch dispatch
 
   /** @override */
   render: ->
-    @el.html @templateHeader!
-    @el.query \form .onSubmit @onValidData
-    @el._append (new Picker).render!.el
-    ## dispatch = new App.model.Dispatch \id : 5348024557502464
-    ## dispatch.fetch do
-    ##   _success: !->
-    ##     console.log &
-
+    @ui.desktop._search._focus!
     super!
 
   @@_caption = 'Alertas'
   @@_icon    = gz.Css \glyphicon-check
 
   /**
-   * Basic template for header anex 1.
+   * Template for dispatch data.
+   * @param {Object} dispatch DTO dispatch data.
+   * @return {string}
+   * @private
    */
-  templateHeader: -> "
+  templateDispatch: (dispatch) -> "
     <div class='#{gz.Css \col-md-12}'>
       Verifcar:<br>
-      <a>http://www.sunat.gob.pe/cl-ti-itmrconsruc/jcrS00Alias</a><br>
-      <a>http://www.reniec.gob.pe/portal/intro.htm</a><br><br>
+      <a href='http://www.sunat.gob.pe/cl-ti-itmrconsruc/jcrS00Alias'
+          target='_blank'>
+        http://www.sunat.gob.pe/cl-ti-itmrconsruc/jcrS00Alias
+      </a><br>
+      <a href='http://www.reniec.gob.pe/portal/intro.htm'
+          target='_blank'>
+        http://www.reniec.gob.pe/portal/intro.htm
+      </a><br><br>
     </div>
 
     <form class='#{gz.Css \row}'>
 
       <div class='#{gz.Css \form-group} #{gz.Css \col-md-6}'>
         <label>N&ordm; Orden Despacho</label>
-        <input type='text' class='#{gz.Css \form-control}'>
+        <div>#{dispatch\order}</div>
       </div>
 
       <div class='#{gz.Css \form-group} #{gz.Css \col-md-6}'>
         <label>Fecha</label>
-        <input type='text' class='#{gz.Css \form-control}' name=''>
+        <div>#{dispatch\date}</div>
       </div>
 
       <div class='#{gz.Css \form-group} #{gz.Css \col-md-6}'>
         <label>Tipo de Operación (SBS)</label>
-        <input type='text' class='#{gz.Css \form-control}' name=''>
+        <div>
+          #{dispatch.'type'.'name'}
+          &nbsp;
+          (#{dispatch.'type'.'code'})
+        </div>
       </div>
 
       <div class='#{gz.Css \form-group} #{gz.Css \col-md-6}'>
         <label>Aduana Despacho</label>
-        <input type='text' class='#{gz.Css \form-control}' name=''>
+        <div>
+          #{dispatch.'jurisdiction'.'name'}
+          &nbsp;
+          (#{dispatch.'jurisdiction'.'code'})
+        </div>
       </div>
 
       <div class='#{gz.Css \form-group} #{gz.Css \col-md-6}'>
         <label>Razón Social/Nombre</label>
-        <input type='text' class='#{gz.Css \form-control}' name=''>
+        <div>#{dispatch.'customer'.\name}</div>
       </div>
 
       <div class='#{gz.Css \form-group} #{gz.Css \col-md-6}'>
         <label>RUC/DNI</label>
-        <input type='text' class='#{gz.Css \form-control}' name=''>
+        <div>#{dispatch.'customer'.'document'.\number}</div>
       </div>
 
       <div class='#{gz.Css \form-group} #{gz.Css \col-md-6}'>
         <label>Tipo Empresa</label>
-        <input type='text' class='#{gz.Css \form-control}' name=''>
+        <div>#{dispatch.'customer'.'document'.\type}</div>
       </div>
 
       <div class='#{gz.Css \form-group} #{gz.Css \col-md-6}'>
         <label>Tipo Contribuyente</label>
-        <input type='text' class='#{gz.Css \form-control}' name=''>
+        <div>#{dispatch.'customer'.\category}</div>
       </div>
 
-      <div class='#{gz.Css \form-group} #{gz.Css \col-md-6}'>
+      <div class='#{gz.Css \col-md-12}'>
         <label>Identificación del Tercero</label>
-        <input type='text' class='#{gz.Css \form-control}' name=''>
       </div>
 
       <div class='#{gz.Css \form-group} #{gz.Css \col-md-6}'>
         <label>Anexo 5</label>
-        <input type='text' class='#{gz.Css \form-control}' name=''>
+        <div>
+          #{if dispatch.'declaration'
+            then dispatch.'declaration'.'third'
+            else 'No existe declaración jurada'}
+        </div>
       </div>
 
       <div class='#{gz.Css \form-group} #{gz.Css \col-md-6}'>
         <label>Doc. Despacho</label>
-        <input type='text' class='#{gz.Css \form-control}' name=''>
+        <div>#{dispatch.'third'}</div>
       </div>
 
-      <div class='#{gz.Css \col-md-12}'>
-        <button class='#{gz.Css \btn}
-                     \ #{gz.Css \btn-primary}
-                     \ #{gz.Css \pull-right}'>
-          Verificar
-        </button>
+      <div class='#{gz.Css \form-group} #{gz.Css \col-md-12}'>
+        <label class='#{gz.Css \checkbox}'>
+          ¿Verificado?
+          <input type='checkbox'>
+        </label>
       </div>
 
     </form>"
