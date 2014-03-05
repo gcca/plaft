@@ -1,5 +1,6 @@
-Module = require '../module'
+/** @module dashboard.modules.alerts */
 
+Module = require '../module'
 Picker = require './alerts/picker'
 
 
@@ -22,6 +23,17 @@ class Alerts extends Module
       _error: -> alert 'Error: ddf09c04-a3f8-11e3-9499-88252caeb7e8'
 
   /**
+   * (Event) Save verfied fields.
+   */
+  onVerifies: ~>
+    @_verifies[0] = @el.query "##{gz.Css \id-verifies-0}" ._checked
+    @_verifies[1] = @el.query "##{gz.Css \id-verifies-1}" ._checked
+
+    @dispatch.store \verifies : @_verifies, do
+      _success: ->
+      _error: -> alert 'ERROR: be7a45e8-a48c-11e3-9b9f-88252caeb7e8'
+
+  /**
    * (Event) On search by disptach order-number.
    * @param {string} _query
    * @private
@@ -42,6 +54,9 @@ class Alerts extends Module
    */
   showForm: (dispatch) ->
     @el.html @templateDispatch dispatch
+    @el.query \input
+      .._checked = dispatch.'verifies'.0
+      ..onChange @onVerifies
 
     @picker = new Picker dispatch\alerts
     @el._append @picker.render!.el
@@ -51,8 +66,11 @@ class Alerts extends Module
     $check = $ "<label class='#{gz.Css \checkboox}'>
                   ¿Verificado?
                   &nbsp;&nbsp;
-                  <input type='checkbox'>
+                  <input type='checkbox' id='#{gz.Css \id-verifies-1}'>
                 </label>"
+    $check._find \input .0
+      .._checked = dispatch.'verifies'.1
+      ..onChange @onVerifies
 
     $button = $ "<button class='#{gz.Css \btn}
                               \ #{gz.Css \btn-default}
@@ -67,8 +85,17 @@ class Alerts extends Module
     $div._append $button
     @$el._append $div
 
-  /** @private */ picker   : null
-  /** @private */ dispatch : null
+  /** @override */
+  initiliaze: !->
+    /**
+     * Stack verifies fields.
+     * @type {Array.<Boolean>}
+     */
+    @_verifies = new Array 2
+
+  /** @private */ picker    : null
+  /** @private */ dispatch  : null
+  /** @private */ _verifies : null
 
   /** @override */
   render: ->
@@ -168,7 +195,7 @@ class Alerts extends Module
       <div class='#{gz.Css \form-group} #{gz.Css \col-md-12}'>
         <label class='#{gz.Css \checkbox}'>
           ¿Verificado?
-          <input type='checkbox'>
+          <input type='checkbox' id='#{gz.Css \id-verifies-0}'>
         </label>
       </div>
 

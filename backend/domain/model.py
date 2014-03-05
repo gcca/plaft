@@ -192,14 +192,16 @@ class Dispatch(Model):
     customer     = KeyProperty        (kind=Customer)
     customs      = KeyProperty        (kind=Customs)
     operation    = KeyProperty        (kind='Operation')
+    verifies     = BooleanProperty    (repeated=True)
 
-    # def _pre_store(self):
-    #     self.customs = self.user.customs
+    def _pre_store(self):
+        if self.isNew: self.customs = self.user.customs
 
-    # def _post_store(self, future):
-    #     customs = self.user.customs.get()
-    #     customs.datastore.pending.dispatches.append(future.get_result())
-    #     customs.store()
+    def _post_store(self, future):
+        if self.isNew:
+            customs = self.user.customs.get()
+            customs.datastore.pending.dispatches.append(future.get_result())
+            customs.store()
 
 
 class Operation(Model):

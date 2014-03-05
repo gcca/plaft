@@ -53,14 +53,16 @@ class formToObject
 
   addChild: (result, domNode, keys, value) ->
     if keys.length is 1
+      if domNode.nodeName is \INPUT && domNode.type is \checkbox
+        return result[keys] = domNode.checked
       if domNode.checked then return result[keys] = value \
         else return if domNode.nodeName is \INPUT && domNode.type is \radio
-      if domNode.nodeName is \INPUT && domNode.type is \checkbox
-        if domNode.checked
-          result[keys] = [] if not result[keys]
-          return result[keys].push value
-        else
-          return
+      ## if domNode.nodeName is \INPUT && domNode.type is \checkbox
+        ## if domNode.checked
+        ##   result[keys] = [] if not result[keys]
+        ##   return result[keys].push value
+        ## else
+        ##   return
       if domNode.nodeName is \SELECT && domNode.type is \select-multiple
         result[keys] = []
         DOMchilds = domNode.querySelectorAll 'option[selected]'
@@ -103,7 +105,11 @@ $\fn
         i = i.replace /\./g, ']['
         i += \]
       e = es[i]
-      e.value = v if e?
+      if e?
+        if e.type is \checkbox
+          e.checked = v
+        else
+          e.value = v
     ## for e in es
     ##   as = e.name.replace /]/g, '' .split \[
     ##   v = d
@@ -264,6 +270,7 @@ _
   ..uniqueId = ..\uniqueId
   .._zip     = ..\zip
   .._extend  = ..extend
+  .._all     = ..all
 
 $\fn
   ..html         = ..\html

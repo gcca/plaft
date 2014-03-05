@@ -180,6 +180,7 @@ class View extends Backbone\View implements FreePoolMixIn
   ::off     = ::\off
   ::trigger = ::\trigger
   ::_remove = ::\remove
+  ::$       = ::\$
 
   _._extend @@, NewPoolMixIn
 
@@ -242,6 +243,10 @@ class Model extends BaseModel
 
   _save: (keys, opts = {}) ->
     super keys, \success : opts._success, \error : opts._error
+
+  store: (_data, opts = App._void._Object) ->
+     App.internals._put "#{@@API}#{@urlRoot}/#{@id}", _data,
+                         opts._success, opts._error
 
 
 class BaseCollection extends Backbone\Collection

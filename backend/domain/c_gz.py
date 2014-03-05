@@ -38,6 +38,9 @@ class Entity(object):
     @property
     def id(self): return self.key.id()
 
+    @property
+    def isNew(self): return not self.key
+
 
 class Repository(Model):
 

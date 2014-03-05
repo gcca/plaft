@@ -108,8 +108,8 @@ class Control extends App.View
     @xcorrect = @el.query "##{gz.Css \id-2}"
     @el.query "##{gz.Css \id-1}" .onChange @onToggleCorrect
     @el.query \button .onClick @onRemove
-    console.log @_alert
     @$el._fromJSON @_alert
+    @xcorrect.Class._remove (gz.Css \hidden) if @_alert\iscorrect
     super!
 
 

@@ -9,6 +9,13 @@ flatten-loop = (cb, o, k, b) !-->
 
 # Public
 exports <<<
+  _get: (_url, _data, _success, _error) ->
+    ($\ajax do
+      \url         : _url
+      \data        : _data
+      \success     : _success)
+      ..\fail _error
+
   _post: (_url, _data, _success, _error) ->
     ($\ajax do
       \type        : \POST
@@ -19,11 +26,14 @@ exports <<<
       \dataType    : \json)
       ..\fail _error
 
-  _get: (_url, _data, _success, _error) ->
+  _put: (_url, _data, _success, _error) ->
     ($\ajax do
+      \type        : \PUT
       \url         : _url
-      \data        : _data
-      \success     : _success)
+      \data        : JSON.stringify _data
+      \success     : _success
+      \contentType : 'application/json'
+      \dataType    : \json)
       ..\fail _error
 
   difference: (_attrs, _keys) ->
