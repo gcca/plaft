@@ -1,3 +1,6 @@
+/** @module dashboard.modules.alerts.picker */
+
+
 /**
  * @class UiControl
  * @extends View
@@ -12,12 +15,18 @@ class Control extends App.View
 
   /**
    * (Event) Remove panel control.
+   * @private
    */
   onRemove: ~>
     @_alert._showItem!
     @free!
     @_remove!
 
+  /**
+   * (Event) Show/Hide textarea for comment for correct alert.
+   * @param {Object} evt
+   * @private
+   */
   onToggleCorrect: (evt) ~>
     _isChecked = evt._target._checked
     if _isChecked
@@ -28,19 +37,21 @@ class Control extends App.View
   /** @override */
   initialize: (@_alert) !->
 
-  /** @private */ xcorrect: null
+  /** @private */ xcorrect : null
+  /** @private */ _alert   : null
 
   /** @override */
   render: ->
     @el.html "
       <div class='#{gz.Css \form-group} #{gz.Css \col-md-12}'>
-        <div class='#{gz.Css \form-group} #{gz.Css \col-md-11}'>
+        <div class='#{gz.Css \form-group} #{gz.Css \col-md-11}'
+            style='text-align:justify'>
           <span class='#{gz.Css \pull-left}'
               style='font-size:24px;margin-right:.5em'>
-            #{@_alert._code}
+            #{@_alert\code}
           </span>
 
-          #{@_alert._text}
+          #{@_alert\text}
         </div>
 
         <div class='#{gz.Css \form-group} #{gz.Css \col-md-1}'
@@ -90,10 +101,15 @@ class Control extends App.View
 
       <div class='#{gz.Css \form-group} #{gz.Css \col-md-12}'>
         <hr style='margin:10px 0 -5px'>
-      </div>"
+      </div>
+
+      <input type='hidden' name='code'>
+      <input type='hidden' name='text'>"
     @xcorrect = @el.query "##{gz.Css \id-2}"
     @el.query "##{gz.Css \id-1}" .onChange @onToggleCorrect
     @el.query \button .onClick @onRemove
+    console.log @_alert
+    @$el._fromJSON @_alert
     super!
 
 
@@ -110,12 +126,22 @@ class Panel extends App.View
   _className: gz.Css \col-md-12
 
   /** @override */
-  _toJSON: -> [$ .. ._toJSON! for @el.query \form]
+  _toJSON: -> [$ .. ._toJSON! for (@el.queryAll \form) || App._void._Array]
 
   /**
    * Add new control.
    * @param {Object} _alert {@code {_code, _text, _tip}}.
    */
   addControl: (_alert) ~> @el._append (Control.New _alert).render!.el
+
+  /** @override */
+  initialize: (@_alerts = App._void._Array) ->
+
+  /** @private */ _alerts: null
+
+  /** @override */
+  render: ->
+    for _alert in @_alerts then @addControl _alert
+    super!
 
 module.exports = Panel

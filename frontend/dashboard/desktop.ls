@@ -7,8 +7,7 @@
  * | Menu |  Desktop   |
  * |      |            |
  * |      |            |
- * |      |            |
- *  - - - - - - - - - -
+ * |______|____________|
  *
  * This module manages the desktop zone.
  * Connect events between views: menu, desktop, search, breadcrumbs.

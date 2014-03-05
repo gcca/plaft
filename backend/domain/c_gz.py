@@ -115,8 +115,11 @@ class Model(Entity, Repository):
         _properties = self._properties
         for property in _properties:
             if property in dict:
-                if type(_properties[property]) is KeyProperty:
-                    value = Key(_properties[property]._kind, dict[property])
+                prop_type = _properties[property]
+                if type(prop_type) is KeyProperty:
+                    value = dict[property]
+                    if value is None: continue
+                    value = Key(prop_type._kind, value)
                 else:
                     value = dict[property]
                 properties.update({property: value})

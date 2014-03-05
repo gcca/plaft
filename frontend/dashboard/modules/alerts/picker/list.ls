@@ -21,8 +21,13 @@ class Item extends App.View
    * (Event) Button Add: on click.
    */
   onAdd: !~>
-    @el.Class._add (gz.Css \hidden)
+    @hide!
     @trigger (gz.Css \add), @_alert
+
+  /**
+   * Hide alert item.
+   */
+  hide: -> @el.Class._add (gz.Css \hidden)
 
   /**
    * @param {Object} _alert {@code {_code, _text, _tip}}.
@@ -37,10 +42,10 @@ class Item extends App.View
       <span class='#{gz.Css \col-md-10}' style='text-align:justify'>
         <span class='#{gz.Css \pull-left}'
             style='font-size:18px;margin-right:.5em'>
-          #{@_alert._code}
+          #{@_alert\code}
         </span>
 
-        #{@_alert._text}
+        #{@_alert\text}
 
         <div style='padding-left:3.5em;
                     padding-top:.7em'>
@@ -81,6 +86,11 @@ class List extends App.View
   _className: gz.Css \col-md-12
 
   /** @override */
+  initialize: (@_alerts = App._void._Array) ->
+
+  /** @private */ _alerts: null
+
+  /** @override */
   render: ->
     App.dom._write ~>
       @el.css
@@ -89,8 +99,20 @@ class List extends App.View
         .._border        = '1px solid #eee'
         .._border-radius = '9px'
 
+    _cache = {[..\code, ..] for @_alerts}
+
     for [_code, _text, _tip] in captions.i.captions
-      _item = new Item _code: _code, _text: _text, _tip: _tip, _showItem: null
+
+      iscached = _cache[_code]?
+      _alert = if iscached
+               then _cache[_code]
+               else \code : _code, \text : _text
+      _alert <<< _tip: _tip, _showItem: null
+
+      _item = new Item _alert
+
+      _item.hide! if iscached
+
       _item.on (gz.Css \add), (_alert) ~> @trigger (gz.Css \add), _alert
       @el._append _item.render!.el
 

@@ -170,24 +170,36 @@ class Dispatch(Model):
         customs: A Customs Key.
     """
 
+    class Alert(ValueObject):
+
+        code      = TextProperty    ()
+        text      = TextProperty    ()
+        source    = TextProperty    ()
+        other     = TextProperty    ()
+        third     = TextProperty    ()
+        comment   = TextProperty    ()
+        iscorrect = BooleanProperty ()
+        correct   = TextProperty    ()
+
     order        = StringProperty     ()
     date         = DateStrProperty    ()
     type         = StructuredProperty (CodeName)
     regime       = StructuredProperty (CodeName)
     jurisdiction = StructuredProperty (CodeName)
     third        = TextProperty       ()
+    alerts       = StructuredProperty (Alert, repeated=True)
     declaration  = KeyProperty        (kind=Declaration)
     customer     = KeyProperty        (kind=Customer)
     customs      = KeyProperty        (kind=Customs)
     operation    = KeyProperty        (kind='Operation')
 
-    def _pre_store(self):
-        self.customs = self.user.customs
+    # def _pre_store(self):
+    #     self.customs = self.user.customs
 
-    def _post_store(self, future):
-        customs = self.user.customs.get()
-        customs.datastore.pending.dispatches.append(future.get_result())
-        customs.store()
+    # def _post_store(self, future):
+    #     customs = self.user.customs.get()
+    #     customs.datastore.pending.dispatches.append(future.get_result())
+    #     customs.store()
 
 
 class Operation(Model):

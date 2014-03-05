@@ -6,54 +6,69 @@ Picker = require './alerts/picker'
 /** ------
  *  Alerts
  *  ------
+ * Warning: Be careful for global alert list for UiPanel and UiList.
  * @class UiAlerts
  * @extends Module
  */
 class Alerts extends Module
 
   /**
-   * (Event) On search by disptach order-number.
-   * @param {string} _query
+   * (Event) On save dispatch alert signals.
+   * @private
    */
-  onSearch: (_query) ~>
-    dispatch = new App.model.Dispatch \order : _query
-    dispatch.fetch do
-      _success: (_, dispatch) ~>
-        @showForm dispatch
-
-        @el._append (new Picker).render!.el
-
-        $div = $ "<div class='#{gz.Css \col-md-12}'></div>"
-
-        $check = $ "<label class='#{gz.Css \checkboox}'>
-                      ¿Verificado?
-                      &nbsp;&nbsp;
-                      <input type='checkbox'>
-                    </label>"
-
-        $button = $ "<button class='#{gz.Css \btn}
-                                  \ #{gz.Css \btn-default}
-                                  \ #{gz.Css \pull-right}'
-                         style='margin-top:1em'>
-                       Guardar
-                     </button>"
-
-        $button.on \click ->
-          console.log \rwee
-
-        $div._append $check
-        $div._append $button
-        @$el._append $div
-
-
+  onSave: ~>
+    @dispatch._save \alerts : @picker._toJSON!, do
+      _success: -> alert 'Guardado'
+      _error: -> alert 'Error: ddf09c04-a3f8-11e3-9499-88252caeb7e8'
 
   /**
-   * Show form with disptach data (declartion, customer and dispatch).
+   * (Event) On search by disptach order-number.
+   * @param {string} _query
+   * @private
+   */
+  onSearch: (_query) ~>
+    @dispatch = new App.model.Dispatch \order : _query
+    @dispatch.fetch do
+      _success: (_, dispatch) ~>
+        @showForm dispatch
+      _error: ->
+        alert 'Número de orden no hallado: ' + _query
+
+  /**
+   * Show form with disptach data (declartion, customer and dispatch)
+   * and alert picker.
    * @param {Object} dispatch DTO disptach data.
    * @private
    */
   showForm: (dispatch) ->
     @el.html @templateDispatch dispatch
+
+    @picker = new Picker dispatch\alerts
+    @el._append @picker.render!.el
+
+    $div = $ "<div class='#{gz.Css \col-md-12}'></div>"
+
+    $check = $ "<label class='#{gz.Css \checkboox}'>
+                  ¿Verificado?
+                  &nbsp;&nbsp;
+                  <input type='checkbox'>
+                </label>"
+
+    $button = $ "<button class='#{gz.Css \btn}
+                              \ #{gz.Css \btn-default}
+                              \ #{gz.Css \pull-right}'
+                     style='margin-top:1em'>
+                   Guardar
+                 </button>"
+
+    $button.0.onClick @onSave
+
+    $div._append $check
+    $div._append $button
+    @$el._append $div
+
+  /** @private */ picker   : null
+  /** @private */ dispatch : null
 
   /** @override */
   render: ->

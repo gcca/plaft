@@ -207,6 +207,11 @@ class BaseModel extends Backbone\Model
 
   flatten: -> App.internals.flatten @_attributes
 
+  _clean: (o) ->
+    for k of o
+      if o[k]? and o[k]._constructor is Object and o[k].'id'
+        delete! o[k]
+
   _id:~ -> @id
 
   \url  : -> @_url ...
@@ -223,10 +228,12 @@ class Model extends BaseModel
   _sync: (t, m, o) ->
     if t is \read and not m._attributes.\id
       o.\url = m._url! + '?' + [..join '=' for @flatten m._attributes].join '&'
-    #else if t is \create or t is \update
-    #  a = m.'toJSON'!
-    #  a <<<< {[k,a[k]'id'] for k of awhen a[k] instanceof Model and a[k]'id'?}
-    #  o.\attrs = a
+    else if t in <[ create update ]>
+      a = m._toJSON!
+      @_clean a
+      o\attrs = a
+    #a <<<< {[k,a[k]'id'] for k of a when a[k] instanceof Model and a[k]'id'?}
+    #o.\attrs = a
     super ...
 
   _parent: null
@@ -292,6 +299,10 @@ App <<<
   storage    :
     local   : localStorage
     session : sessionStorage
+  _void       :
+    _Array    : new Array
+    _Object   : new Object
+    _Function : new Function
 
 App.model = require './app/model'
 
