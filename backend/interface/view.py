@@ -125,6 +125,8 @@ class Dashboard(BaseHandler):
 
     @login_required
     def get(self):
+        from domain.model import Datastore
+        d = Datastore()
         args = 'a1: %s' % model.User.find().json
         self.write(template('dashboard', args))
 

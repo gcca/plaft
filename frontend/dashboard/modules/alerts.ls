@@ -39,6 +39,7 @@ class Alerts extends Module
    * @private
    */
   onSearch: (_query) ~>
+    @el.html ''
     @dispatch = new App.model.Dispatch \order : _query
     @dispatch.fetch do
       _success: (_, dispatch) ~>
@@ -58,7 +59,7 @@ class Alerts extends Module
       .._checked = dispatch.'verifies'.0
       ..onChange @onVerifies
 
-    @picker = new Picker dispatch\alerts
+    @picker = new Picker dispatch\alerts, dispatch\type
     @el._append @picker.render!.el
 
     $div = $ "<div class='#{gz.Css \col-md-12}'></div>"

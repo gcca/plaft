@@ -2,8 +2,8 @@
 
 from __future__ import unicode_literals
 
-from domain.model import Document, Customer, Shareholder, User, Customs, \
-                         Officer, Declaration
+from domain.model import Customer, User, Customs, Officer, Declaration, \
+                         Document, Dispatch
 from interface import BaseHandler
 from domain.c_gz import db
 
@@ -33,13 +33,13 @@ def create():
         address  = 'Fringe',
         category = 'Importador frecuente',
         shareholders = [
-            Shareholder(
+            Customer.Shareholder(
                 document = Document(type='DNI',
-                                    number='12345678'),
+                                             number='12345678'),
                 name     = 'William Bell'),
-            Shareholder(
+            Customer.Shareholder(
                 document = Document(type='Carné de Extranjería',
-                                    number='123456'),
+                                             number='123456'),
                 name     = 'Walter Bishop')])
     c1.store()
 
@@ -61,6 +61,7 @@ class Debug(BaseHandler):
         self.write('Don\'t worry... Be happy.')
 
     def post(self):
-        db.delete_multi(v for m in [Customer, User, Customs, Declaration]
+        db.delete_multi(v for m in [Customer, User, Customs, Declaration,
+                                    Dispatch]
                         for v in m.query().fetch(keys_only=True))
         self.write('The End.')

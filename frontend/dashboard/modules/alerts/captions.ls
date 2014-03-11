@@ -119,6 +119,7 @@ exports.i.captions =
 exports.iii = new Object
 
 Type3 =
+  kNone    : 0
   kImport  : 1
   kExport  : 2
   kDeposit : 4

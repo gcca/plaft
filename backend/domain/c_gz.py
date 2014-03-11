@@ -25,11 +25,13 @@ class DateStrProperty(DateProperty):
 
     def _to_base_type(self, value):
         if isinstance(value, basestring):
-             value = datetime(*map(int, reversed(value.split('-'))))
+            value = (datetime(*map(int, reversed(value.split('-'))))
+                     if value
+                     else datetime.now())
         return value
 
     def _from_base_type(self, value):
-        return value.strftime('%d-%m-%Y')
+        return value.strftime('%d-%m-%Y') if value else None
 
 
 # Domain Layer
@@ -37,9 +39,6 @@ class Entity(object):
 
     @property
     def id(self): return self.key.id()
-
-    @property
-    def isNew(self): return not self.key
 
 
 class Repository(Model):
@@ -77,6 +76,9 @@ class Repository(Model):
         # except TransactionFailedError as ex:
         #     raise SystemError()
         return key
+
+    def delete(self):
+        self.key.delete()
 
     @classmethod
     def by(self, id): return self.get_by_id(id)
@@ -159,3 +161,15 @@ class User(Model):
     def authenticate(self, email, password):
         user = User.find(email=email)
         if user and utils.valid_pw(email, password, user.password): return user
+
+
+class Singleton(Repository.MetaRepository):
+
+    def __init__(self, *a):
+        self._instance = None
+        super(MetaModel, self).__init__(*a)
+
+    def __call__(self, *a, **k):
+        if self._instance is None:
+            self._instance = super(MetaModel, self).__call__(*a, **k)
+        return self._instance

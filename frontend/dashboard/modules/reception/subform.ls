@@ -79,7 +79,7 @@ class Subform extends App.View
                 </label>
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <span class='#{gz.Css \col-md-3}'>
-                  #{customer.\isgood}
+                  #{customer.\category}
                 </span>
               </div>
 

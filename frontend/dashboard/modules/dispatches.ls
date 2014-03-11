@@ -1,12 +1,53 @@
+/** @module dashboard.modules.dispatches */
+
 Module = require '../module'
 
 Customs = App.model.Customs
 
 
-module.exports = \
-
+/**
+ * @class UiDispatches
+ * @extends Module
+ */
 class Dispatches extends Module
 
+  /**
+   * @return {string}
+   */
+  numeration: (dispatch) ->
+    if dispatch\numeration
+      "<span class='#{gz.Css \label} #{gz.Css \label}-
+        #{if dispatch.'numeration'.'type' is \Verde
+            gz.Css \success
+          else if dispatch.'numeration'.'type' is \Naranja
+            gz.Css \warning
+          else if dispatch.'numeration'.'type' is \Rojo
+            gz.Css \danger
+         }'>
+        #{dispatch.'numeration'.'type'}
+      </span>"
+    else
+      "&\#8212;"
+
+  /**
+   * @return {string}
+   */
+  dropdown: ->
+    "<button type='button' class='#{gz.Css \btn}
+                               \ #{gz.Css \btn-default}
+                               \ #{gz.Css \pull-right}'>
+      <i class='#{gz.Css \glyphicon}
+              \ #{gz.Css \glyphicon-circle-arrow-down}'></i>
+    </button>"
+
+  /**
+   * @return {string}
+   */
+  verified: (dispatch) ->
+    verifies = dispatch\verifies
+    if verifies._length and _._all verifies then 'Sí' else 'No'
+
+  /** @override */
   render: ->
     Customs.pending.dispatches (dispatches) !~>
       @el.html "
@@ -17,14 +58,18 @@ class Dispatches extends Module
             <tr>
               <th colspan='3' style='border-bottom:none'>&nbsp;</th>
               <th colspan='2' style='border-bottom:none'>Señales Alerta</th>
+              <th colspan='1' style='border-bottom:none'>Numeración DAM</th>
             </tr>
 
             <tr style='border:none'>
               <th style='border-top:none'>\#Orden Despacho</th>
               <th style='border-top:none'>Nombre/Razón Social</th>
               <th style='border-top:none'>RUC/DNI</th>
+
               <th style='border-top:none'>Anexo 1</th>
               <th style='border-top:none'>Revisado</th>
+
+              <th style='border-top:none'>Aforo</th>
             </tr>
           </thead>
           <tbody>
@@ -40,19 +85,17 @@ class Dispatches extends Module
           <td>#{dispatch.'order'}</td>
           <td>#{dispatch.'customer'.'name'}</td>
           <td>#{dispatch.'customer'.'document'.'number'}</td>
-          <td>#{[..\code for dispatch.'alerts'].join ', '}</td>
-          <td>#{if _._all dispatch.'verifies' then 'Sí' else 'No'}</td>
-          <td class='#{gz.Css \toggle}'>
-            <button type='button' class='#{gz.Css \btn}
-                                       \ #{gz.Css \btn-default}
-                                       \ #{gz.Css \pull-right}'>
-              <i class='#{gz.Css \glyphicon}
-                      \ #{gz.Css \glyphicon-circle-arrow-down}'></i>
-            </button>
-          </td>"
-        xtbody._append xtr
 
+          <td>#{[..\code for dispatch.'alerts'].join ', '}</td>
+          <td>#{@verified dispatch}</td>
+
+          <td>#{@numeration dispatch}</td>
+
+          <td class='#{gz.Css \toggle}'>#{@dropdown!}</td>"
+        xtbody._append xtr
     super!
 
   @@_caption = 'Despachos'
   @@_icon    = gz.Css \glyphicon-list
+
+module.exports = Dispatches

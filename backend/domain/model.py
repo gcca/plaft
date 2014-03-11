@@ -22,18 +22,6 @@ class Document(ValueObject):
     number = StringProperty ()
 
 
-class Shareholder(ValueObject):
-    """Customer shareholder.
-
-    Attributes:
-        document: A Document value object.
-        name: A string shareholder name.
-    """
-
-    document = StructuredProperty (Document)
-    name     = TextProperty       ()
-
-
 class Customer(Model):
     """Cliente (de la agencia de aduanas).
 
@@ -42,6 +30,17 @@ class Customer(Model):
         document: .
 
     """
+
+    class Shareholder(ValueObject):
+        """Customer shareholder.
+
+        Attributes:
+            document: A Document value object.
+            name: A string shareholder name.
+        """
+
+        name     = TextProperty       ()
+        document = StructuredProperty (Document)
 
     # Customer
     name         = StringProperty     ()
@@ -148,13 +147,6 @@ class User(User):
     customs = KeyProperty (kind=Customs)
 
 
-class CodeName(ValueObject):
-    """Para 'value objects' con esquema código - nombre."""
-
-    code = TextProperty ()
-    name = TextProperty ()
-
-
 class Dispatch(Model):
     """Despacho.
 
@@ -170,6 +162,12 @@ class Dispatch(Model):
         customs: A Customs Key.
     """
 
+    class CodeName(ValueObject):
+        """Para 'value objects' con esquema código - nombre."""
+
+        code = TextProperty ()
+        name = TextProperty ()
+
     class Alert(ValueObject):
 
         code      = TextProperty    ()
@@ -181,6 +179,14 @@ class Dispatch(Model):
         iscorrect = BooleanProperty ()
         correct   = TextProperty    ()
 
+    class Numeration(ValueObject):
+
+        number   = StringProperty  ()
+        date     = DateStrProperty ()
+        type     = TextProperty    ()
+        amount   = TextProperty    ()
+        exchange = TextProperty    ()
+
     order        = StringProperty     ()
     date         = DateStrProperty    ()
     type         = StructuredProperty (CodeName)
@@ -188,20 +194,12 @@ class Dispatch(Model):
     jurisdiction = StructuredProperty (CodeName)
     third        = TextProperty       ()
     alerts       = StructuredProperty (Alert, repeated=True)
+    numeration   = StructuredProperty (Numeration)
     declaration  = KeyProperty        (kind=Declaration)
     customer     = KeyProperty        (kind=Customer)
     customs      = KeyProperty        (kind=Customs)
     operation    = KeyProperty        (kind='Operation')
     verifies     = BooleanProperty    (repeated=True)
-
-    def _pre_store(self):
-        if self.isNew: self.customs = self.user.customs
-
-    def _post_store(self, future):
-        if self.isNew:
-            customs = self.user.customs.get()
-            customs.datastore.pending.dispatches.append(future.get_result())
-            customs.store()
 
 
 class Operation(Model):
@@ -214,3 +212,24 @@ class Operation(Model):
 
     dispatches = KeyProperty (kind=Dispatch, repeated=True)
     customs    = KeyProperty (kind=Customs)
+
+
+class Datastore(Model):
+
+    class DSingleton(Singleton):
+
+        def __call__(self, *a, **k):
+            if self._instance is None:
+                self._instance = self.query().get()
+                if self._instance is None:
+                    self._instance = super(Singleton, self).__call__(*a, **k)
+                    self._instance.store()
+            return self._instance
+
+    __metaclass__ = DSingleton
+
+    class _Meta(ValueObject):
+
+        declarations = KeyProperty(kind=Declaration, repeated=True)
+
+    pending = StructuredProperty (_Meta, default=_Meta())

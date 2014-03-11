@@ -22,9 +22,10 @@ class Picker extends App.View
   _toJSON: -> @_panel._toJSON!
 
   /** @override */
-  initialize: (@_alerts = App._void._Array) ->
+  initialize: (@_alerts = App._void._Array, @_type) ->
 
   /** @private */ _alerts : null
+  /** @private */ _type   : null
   /** @private */ _panel  : null
   /** @private */ _list   : null
 
@@ -33,7 +34,7 @@ class Picker extends App.View
     @$el._append "<h4><em>Alertas</em></h4>"
 
     @_panel = new Panel @_alerts
-    @_list  = new List  @_alerts
+    @_list  = new List  @_alerts, @_type
 
     @_list.on (gz.Css \add), @_panel.addControl
 

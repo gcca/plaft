@@ -14,6 +14,7 @@ class BaseHandler(RequestHandler):
 
     def __init__(self, q, p):
         self.user = None
+        self.entity = None
         self.status = st_factory(self.write_status, self.write_error)
         super(BaseHandler, self).__init__(q, p)
 
@@ -96,7 +97,13 @@ class MetaNested(type):
 class MetaRESTful(MetaSecurity, MetaNested): pass
 
 
-class RESTfulNested(BaseHandler):
+# (-o-) Exceptions
+class _HooksMixin(object):
+    def _post_pre_store(self): pass
+    def _post_post_store(self): pass
+
+
+class RESTfulNested(BaseHandler, _HooksMixin):
 
     __metaclass__ = MetaRESTful
 
@@ -105,16 +112,18 @@ class RESTfulNested(BaseHandler):
     isnested  = True
 
     def post(self, id=None):
-        reference = self.parent.model.find(int(id))
-        entity    = self.model.new(self.request_dict)
-        entity.user = self.user
-        setattr(entity, self.reference, reference.key)
-        entity.store()
+        parent = self.parent.model.find(int(id))
+        self.entity = self.model.new(self.request_dict)
+        self.entity.user = self.user
+        setattr(self.entity, self.reference, parent.key)
+        self._post_pre_store()
+        self.entity.store()
+        self._post_post_store()
         self.write_json('{"id":%s,"%s":%s}'
-                        % (entity.id, self.reference, reference.json))
+                        % (self.entity.id, self.reference, parent.json))
 
 
-class RESTful(BaseHandler):
+class RESTful(BaseHandler, _HooksMixin):
 
     __metaclass__  = MetaRESTful
 
@@ -136,10 +145,12 @@ class RESTful(BaseHandler):
             self.status.BAD_REQUEST('Need parameters')
 
     def post(self, id=None):
-        entity = self.model.new(self.request_dict)
-        entity.user = self.user
-        entity.store()
-        self.write_json('{"id":%s}' % entity.id)
+        self.entity = self.model.new(self.request_dict)
+        self.entity.user = self.user
+        self._post_pre_store()
+        self.entity.store()
+        self._post_post_store()
+        self.write_json('{"id":%s}' % self.entity.id)
 
     def put(self, id):
         entity = self.model.find(int(id))

@@ -85,10 +85,22 @@ class List extends App.View
   /** @override */
   _className: gz.Css \col-md-12
 
-  /** @override */
-  initialize: (@_alerts = App._void._Array) ->
+  /**
+   * Cast to Type for III captions.
+   * @param {Object} _type {@code CodeName: {code, name}}.
+   * @return {captions.iii.Type}
+   */
+  toType: (_type) ->
+    | _type\name is 'IMPORTACIÓN DEFINITIVA' => captions.iii.Type.kImport
+    | _type\name is 'EXPORTACIÓN DEFINITIVA' => captions.iii.Type.kExport
+    | _type\name is 'DEPÓSITO ADUANERO'      => captions.iii.Type.kDeposit
+    | otherwise                              => captions.iii.Type.kNone
 
-  /** @private */ _alerts: null
+  /** @override */
+  initialize: (@_alerts = App._void._Array, @_type) ->
+
+  /** @private */ _alerts : null
+  /** @private */ _type   : null
 
   /** @override */
   render: ->
@@ -101,7 +113,12 @@ class List extends App.View
 
     _cache = {[..\code, ..] for @_alerts}
 
-    for [_code, _text, _tip] in captions.i.captions
+    _type = @toType @_type
+
+    c = captions
+    _captions = c.i.captions ++ [.. for c.iii.captions when ..3 .&. _type]
+
+    for [_code, _text, _tip] in _captions
 
       iscached = _cache[_code]?
       _alert = if iscached

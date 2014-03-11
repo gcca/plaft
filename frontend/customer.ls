@@ -30,7 +30,7 @@ class Customer extends App.View
     @$body.html ''
 
     if @_valid documentNumber
-      ## App.storage.local.\q = documentNumber
+      App.storage.local.\q = documentNumber
 
       # Load customer
       customer = new App.model.Customer \document : \number : documentNumber
@@ -71,26 +71,17 @@ class Customer extends App.View
     $formSearch = @$ "##{gz.Css \id-search}"
       ..on \submit @onSubmitSearch
 
-    $formChoose = @$ "##{gz.Css \id-choose}"
-    $formChoose._find 'input' .on \click (evt) ~>
-      xinput = evt._target
-      if xinput.value is 'j'
-         @$ "##{gz.Css \id-title}" .html 'Persona Jurídica'
-         $formSearch.0._elements.0._placeholder = 'RUC'
-      else
-         @$ "##{gz.Css \id-title}" .html 'Persona Natural'
-         $formSearch.0._elements.0._placeholder = 'DNI'
-
     # Attributes
     @$body       = @$el._find "##{gz.Css \id-body}"
 
     # Get focus
     $formSearch.0._elements.0._focus!
+    $ ($formSearch._find \input) .tooltip!
 
-    ## query = App.storage.local.\q
-    ## if query?
-    ##   $formSearch.0._elements.0._value = query
-    ##   $formSearch._find \button ._click!
+    query = App.storage.local.\q
+    if query?
+      $formSearch.0._elements.0._value = query
+      $formSearch._find \button ._click!
 
     super!
 
@@ -122,25 +113,12 @@ class Customer extends App.View
     //- BODY
     .container.app-container
       .row
-        .col-md-12(style="margin-bottom:1em")
-          .col-md-3
-          .col-md-5
-            form#id-choose
-              .col-md-6
-                label.radio-inline Persona Natural
-                  input(type="radio", name="p", value="n")
-              .col-md-6
-                label.radio-inline Persona Jurídica
-                  input(type="radio", name="p", value="j")
-        .col-md-12(style="margin-bottom:1em")
-          .col-md-4
-          .col-md-4
-            h4#id-title &nbsp;
         .col-md-8
         .col-md-4
           form.form-inline(role="form")#id-search
             .input-group
-              input.form-control(type="text")
+              input.form-control(type="text", placeholder="RUC o DNI",
+                                 title="Para buscar Personas Jurídicas, ingresar RUC. Para Personas Naturales, el DNI.")
               span.input-group-btn
                 button.btn.btn-default
                   i.glyphicon.glyphicon-search

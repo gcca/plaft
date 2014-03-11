@@ -117,6 +117,6 @@ class Dashboard extends App.View
 ## $ 'input' .last! .val '12345678989'
 ## $ 'input' .last! .parent! .children! .last! .children! .click!
 
-$ ".#{gz.Css \glyphicon-check}" ._parent! .click!
-$ 'input' .val '2014-02'
-$ 'button' .click!
+## $ ".#{gz.Css \glyphicon-check}" ._parent! .click!
+## $ 'input' .val '2014-02'
+## $ 'button' .click!

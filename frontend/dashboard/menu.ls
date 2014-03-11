@@ -12,6 +12,7 @@
 MODULES =
   Reception    = require './modules/reception'
   Dispatches   = require './modules/dispatches'
+  Numeration   = require './modules/numeration'
   Alerts       = require './modules/alerts'
   Anex2        = require './modules/anex2'
   Anex6        = require './modules/anex6'
