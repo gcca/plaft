@@ -3,25 +3,25 @@
 from __future__ import unicode_literals
 
 from domain.model import Customer, User, Customs, Officer, Declaration, \
-                         Document, Dispatch
+                         Document, Dispatch, Datastore
 from interface import BaseHandler
 from domain.c_gz import db
 
 
 def create():
-    customs = Customs(name    = 'Cyberdine',
-                      code    = '888',
-                      officer = Officer(name='Mail', code='1255'))
-    customs.store()
+    cs1 = Customs(name    = 'Cyberdine',
+                  code    = '888',
+                  officer = Officer(name='Mail', code='1255'))
+    cs1.store()
 
-    customs = Customs(name    = 'SCharff',
-                      code    = '789',
-                      officer = Officer(name='John Connor', code='1212'))
-    customs.store()
+    cs2 = Customs(name    = 'SCharff',
+                  code    = '789',
+                  officer = Officer(name='John Connor', code='1212'))
+    cs2.store()
 
     u1 = User(email    = 'gcca@hub.io',
               password = '789',
-              customs  = customs.key)
+              customs  = cs1.key)
     u1.store()
 
     c1 = Customer(
@@ -52,6 +52,17 @@ def create():
         nationality = 'Peruana'
     )
     c2.store()
+
+    ds = Datastore()
+
+    d1 = Dispatch(
+        order = '2014-02',
+        customer = c1.key,
+        customs = cs1.key
+    )
+    d1.store()
+    cs1.datastore.pending.dispatches.append(d1.key)
+    cs1.store()
 
 
 class Debug(BaseHandler):

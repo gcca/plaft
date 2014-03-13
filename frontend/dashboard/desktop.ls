@@ -52,7 +52,7 @@ class Desktop extends App.View
   /**
    * Add customized properties to constructed module.
    * @param {Object} Module Class.
-   * @return {Object} Module object.
+   * @return {Object} Module Object.
    */
   newCustomized: (Module) ->
     @module = Module.New!
