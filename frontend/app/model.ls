@@ -8,8 +8,6 @@
  */
 
 
-exports.Customer = \
-
 class Customer extends App.Model
 
   urlRoot: 'customer'
@@ -28,14 +26,10 @@ class Customer extends App.Model
                         callback
 
 
-exports.User = \
-
 class User extends App.Model
 
   urlRoot: 'user'
 
-
-exports.Customs = \
 
 class Customs extends App.Model
 
@@ -46,15 +40,25 @@ class Customs extends App.Model
       App.internals._get "#{@@API}customs/pending/dispatches", null, callback
 
 
-exports.Declaration = \
-
 class Declaration extends App.Model
 
   urlRoot: 'declaration'
 
 
-exports.Dispatch = \
-
 class Dispatch extends App.Model
 
   urlRoot: 'dispatch'
+
+
+class Stakeholder extends App.Model
+
+  urlRoot: 'stakeholder'
+
+
+exports <<<
+  Customer    : Customer
+  User        : User
+  Customs     : Customs
+  Declaration : Declaration
+  Dispatch    : Dispatch
+  Stakeholder : Stakeholder

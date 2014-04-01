@@ -28,7 +28,7 @@ class Dashboard extends App.View
   /** @override */
   render: ->
     @$el.html @template!
-    history.replaceState '' '' '/dashboard'
+    App._history._replaceState '' '' '/dashboard'
 
     menu    = new Menu
     desktop = new Desktop
@@ -54,7 +54,7 @@ class Dashboard extends App.View
                    \ #{gz.Css \navbar-inverse}
                    \ #{gz.Css \navbar-fixed-top}
                    \ #{gz.Css \navbar-top-min}'
-          role='banner'>
+            role='banner'>
         <div class='#{gz.Css \container}'>
           <div class='#{gz.Css \navbar-header}'>
             <button class='#{gz.Css \navbar-toggle}' type='button'
@@ -120,3 +120,7 @@ class Dashboard extends App.View
 ## $ ".#{gz.Css \glyphicon-check}" ._parent! .click!
 ## $ 'input' .val '2014-02'
 ## $ 'button' .click!
+
+## $ ".#{gz.Css \glyphicon-file}" ._first! ._parent! .click!
+## $ \input ._last! .val '13'
+## $ \form ._last! ._find \button .click!

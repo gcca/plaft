@@ -1,4 +1,4 @@
-/** @modules dashboard.modules */
+/** @modules dashboard.modules.reception */
 
 Module = require '../module'
 Subform = require './reception/subform'

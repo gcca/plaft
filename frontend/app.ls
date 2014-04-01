@@ -55,6 +55,7 @@ Object.defineProperties HTMLElement::, do
   _first  : get : -> @firstElementChild
   _last   : get : -> @lastElementChild
   _parent : get : -> @parentElement
+  _next   : get : -> @nextElementSibling
 
   _disabled : get : (-> @disabled), set : (x) -> @disabled = x
 
@@ -112,6 +113,9 @@ DOMTokenList::
     _remove : ..remove
     _toggle : ..toggle
 
+history
+  .._replace-state = ..replaceState
+
 CSSProperties = CSS2Properties if CSS2Properties?
 CSSProperties = CSSStyleDeclaration if CSSStyleDeclaration?
 gsetter = (n) -> get: (-> @[n]), set: (a) !-> @[n] = a
@@ -132,7 +136,7 @@ Object.defineProperties CSSProperties::, do
 Backbone = window\Backbone
 
 NewPoolMixIn =
-  New  : (o) -> @Pool! if not @pool?; @New = @_New; @pool.allocate o
+  New : (o) -> @Pool! if not @pool?; @New = @_New; @pool.allocate o
   _New : (o) -> @pool.allocate o
   Pool :    !-> @pool = new builtins.ObjectPool @
   pool : null
@@ -308,6 +312,7 @@ App <<<
     _Array    : new Array
     _Object   : new Object
     _Function : new Function
+  _history   : history
 
 App.model = require './app/model'
 

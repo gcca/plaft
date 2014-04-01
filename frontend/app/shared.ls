@@ -31,6 +31,7 @@ exports.shortcuts =
       if not values
         ["<option>#oName</option>" for oName in names]
 
+    _form: require './shared/htmlform'
 
   $html:
     controlGroup: ([fieldName,

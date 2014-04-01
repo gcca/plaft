@@ -72,7 +72,7 @@ class Customer extends App.View
       ..on \submit @onSubmitSearch
 
     # Attributes
-    @$body       = @$el._find "##{gz.Css \id-body}"
+    @$body       = @$ "##{gz.Css \id-body}"
 
     # Get focus
     $formSearch.0._elements.0._focus!

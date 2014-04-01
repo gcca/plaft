@@ -60,22 +60,6 @@ class Numeration extends Module
 
     hstack._push "
       <div class='#{gz.Css \col-md-12}'>
-        <h3>Persona Jurídica</h3>
-      </div>"
-
-    for [_name, _label, _placeholder] in FIELDS-BUSINESS
-      hstack._push new-group _name, _label, _placeholder
-
-    hstack._push "
-      <div class='#{gz.Css \col-md-12}'>
-        <h3>Persona Natural</h3>
-      </div>"
-
-    for [_name, _label, _placeholder] in FIELDS-PERSON
-      hstack._push new-group _name, _label, _placeholder
-
-    hstack._push "
-      <div class='#{gz.Css \col-md-12}'>
         <h3>Detalle</h3>
       </div>"
 
@@ -114,28 +98,28 @@ module.exports = Numeration
 FIELDS-HEADER =
   * 'number'
     'N&ordm; DAM'
-    'A Casillero 2'
+    'A _ 2'
     'XXX-AAAA-RR-NNNNNN'
 
   * 'date'
     'Fecha numeración (dd-mm-aaaa)'
-    'A Casillero 2'
+    'A _ 2'
     'dd/mm/aaaa'
 
   * 'type'
     'Tipo Aforo'
-    'A Casillero 2'
+    'A _ 2'
     '1=verde, 2=naranja, 3=Rojo'
 
   * ''
     'Identificación Imp/Exp'
-    'A Casillero 1.1'
+    'A _ 1.1'
     'Destinación=10, Operación=001\n
      Destinación=41, Operación=003'
 
   * ''
     'Dirección Imp/Exp'
-    'A Casillero 1.3'
+    'A _ 1.3'
     'Destinación=10, Operación=001'
 
   ## * ''
@@ -145,100 +129,43 @@ FIELDS-HEADER =
 
   * 'amount'
     'Monto operación (FOB)'
-    'A Casillero 6.1'
+    'A _ 6.1'
     'xx\'xxx,xxx.xxxx'
 
   * 'exchange'
     'Tipo cambio Venta'
-    'Fecha numeración Casillero 2'
+    'Fecha numeración _ 2'
     'T/C publicado SBS xxx.xxxx'
 
   * ''
     'Total Series'
-    'A Casillero 7.1'
+    'A _ 7.1'
     'Crea archivo detalle'
 
   * ''
-    'Drawback Acogiemiento'
-    'A Casillero 7.28'
+    'Drawback Acogimiento'
+    'A _ 7.28'
     'Código=13, Operación=003'
-
-FIELDS-BUSINESS =
-  * ''
-    'Proveedor Extranjero'
-    'Automático'
-    'Código=1 Proveedor'
-
-  * ''
-    'Razón Social'
-    'B Casillero 3.1'
-    'Proveedor Extranjero'
-
-  * ''
-    'Dirección fiscal'
-    'B Casillero 3.3'
-    'Proveedor Extranjero'
-
-  * ''
-    'Ciudad'
-    'B Casillero 3.4'
-    'Proveedor Extranjero'
-
-  * ''
-    'País Origen'
-    'B Casillero 3.5'
-    'Proveedor Extranjero'
-
-  * ''
-    'Teléfono'
-    'B Casillero 3.6'
-    'Proveedor Extranjero'
-
-FIELDS-PERSON =
-  * ''
-    'Proveedor Extranjero'
-    'Automático'
-    'Código 1=Proveedor'
-
-  * ''
-    'Apellido paterno'
-    'B Casillero 3.1'
-    ''
-
-  * ''
-    'Apellido materno'
-    'B Casillero 3.1'
-    '??'
-
-  * ''
-    'Nombres'
-    'B Casillero 3.1'
-    '??'
-
-  * ''
-    'Nacionalidad'
-    'B Casillero 3.5'
-    ''
 
 FIELDS-DETAILS =
   * ''
     'Subpartida Nacional (1)'
-    'A Casillero 7.19'
+    'A _ 7.19'
     'xxxxxxxxxx'
 
   * ''
     'Subpartida Nacional (2)'
-    'A1 Casillero 7.19'
+    'A1 _ 7.19'
     'xxxxxxxxxx'
 
   * ''
     'Subpartida Nacional (3)'
-    'A1 Casillero 7.19'
+    'A1 _ 7.19'
     'xxxxxxxxxx'
 
   * ''
     'Subpartida Nacional (n)'
-    'A1 Casillero 7.19'
+    'A1 _ 7.19'
     'xxxxxxxxxx'
 
   * ''

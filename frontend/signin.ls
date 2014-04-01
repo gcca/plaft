@@ -119,30 +119,59 @@ document.body.innerHTML = "
   <div class='#{gz.Css \container}'>
 
     <div class='#{gz.Css \row} #{gz.Css \publicity}'>
-
       <div class='#{gz.Css \col-md-4}'>
-        <h2>Heading</h2>
-        <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-        <p><a class='#{gz.Css \btn} #{gz.Css \btn-default}' href='#' role='button'>View details &raquo;</a></p>
+        <h4>¿Qué es el lavado de activos?</h4>
+        <p style='text-align:justify'>
+          Es el conjunto de operaciones realizadas por una o más personas
+          \ naturales o jurídicas, tendientes a ocultar o disfrazar el origen
+          \ ilícito de bienes o recursos...</p>
+        <p>
+          <a class='#{gz.Css \btn} #{gz.Css \btn-default}'
+              href='#' role='button'>
+            Ver más &raquo;
+          </a>
+        </p>
       </div>
 
+
       <div class='#{gz.Css \col-md-4}'>
-        <h2>Heading</h2>
-        <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-        <p><a class='#{gz.Css \btn} #{gz.Css \btn-default}' href='#' role='button'>View details &raquo;</a></p>
+        <h4>Sistema de prevención nacional</h4>
+        <p style='text-align:justify'>
+          De acuerdo al Decreto supremo N° 0018-2006 \"REGLAMENTO DE LA LEY
+          \ QUE CREA LA UNIDAD DE INTELIGENCIA FINANCIERA DEL PERÚ\"...
+        </p>
+        <p>
+          <a class='#{gz.Css \btn} #{gz.Css \btn-default}'
+              href='#' role='button'>
+            Ver más &raquo;
+          </a>
+        </p>
+      </div>
+
+
+      <div class='#{gz.Css \col-md-4}'>
+        <h4>Transparencia operativa</h4>
+        <p style='text-align:justify'>
+          En esta sección podrá encontrar Estadística Operativa de la Unidad
+          \ de Inteligencia Financiera del Perú (UIF-Perú).
+          <br> &nbsp;
+        </p>
+        <p>
+          <a class='#{gz.Css \btn} #{gz.Css \btn-default}'
+              href='#' role='button'>
+            Ver más &raquo;
+          </a>
+        </p>
      </div>
 
-      <div class='#{gz.Css \col-md-4}'>
-        <h2>Heading</h2>
-        <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-        <p><a class='#{gz.Css \btn} #{gz.Css \btn-default}' href='#' role='button'>View details &raquo;</a></p>
-      </div>
     </div>
 
     <hr>
 
     <footer>
       <p>&copy; CavaSoft 2014</p>
+      <!-- cristHian Gz. (gcca) - http://gcca.tk -->
+      <!-- Cristhian Alberto Gonzales Castillo -->
     </footer>
 </div>
 "

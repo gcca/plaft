@@ -265,12 +265,14 @@ NodeList::=
 
 ## Global Z-U
 _
-  ..zip      = ..\zip
-  ..pick     = ..\pick
-  ..uniqueId = ..\uniqueId
-  .._zip     = ..\zip
-  .._extend  = ..extend
-  .._all     = ..all
+  ..zip       = ..\zip
+  ..pick      = ..\pick
+  ..uniqueId  = ..\uniqueId
+  .._pick     = ..\pick
+  .._uniqueId = ..\uniqueId
+  .._zip      = ..\zip
+  .._extend   = ..extend
+  .._all      = ..all
 
 $\fn
   ..html         = ..\html

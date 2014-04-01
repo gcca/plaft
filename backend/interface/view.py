@@ -79,7 +79,13 @@ def template(name, args=''):
                 '<link rel="stylesheet" href="/static/%(name)s.css">'
                 '<meta name="viewport" content="width=device-width,'
                   ' initial-scale=1.0, maximum-scale=1.0, user-scalable=no">'
-                '<title>PLAFT-sw</title>'
+                  '<meta name="description"'
+                    ' content="prevencion de lavado de activos'
+                              ' y financiamiento del terrorismo">'
+                  '<meta name="author"'
+                    'content="Cristhian Alberto Gonzales Castillo">'
+                  '<meta charset="UTF-8">'
+                  '<title>PLAFT-sw</title>'
               '</head>'
               '<body>'
                 '<script>window.plaft={%(args)s}</script>'
@@ -109,7 +115,8 @@ class SignIn(BaseHandler):
 
         if user:
             self.login(user)
-            self.redirect('/dashboard' + str(uuid())[:8], permanent=True)
+            # self.redirect('/dashboard' + str(uuid())[:8], permanent=True)
+            Dashboard.goto(self)
         else:
             self.write(template('signin', 'e:-1'))
 
@@ -123,13 +130,15 @@ class SignOut(BaseHandler):
 
 class Dashboard(BaseHandler):
 
-    @login_required
-    def get(self):
-        from domain.model import Datastore
-        d = Datastore()
+    @staticmethod
+    def goto(self):
+        d = model.Datastore()
         args = 'a1: %s' % model.User.find().json
         self.write(template('dashboard', args))
 
+    @login_required
+    def get(self):
+        self.goto(self)
 
 class Customer(BaseHandler):
 

@@ -147,6 +147,22 @@ class User(User):
     customs = KeyProperty (kind=Customs)
 
 
+class Stakeholder(ValueObject):
+
+    # Business
+    name    = TextProperty ()
+    address = TextProperty ()
+    city    = TextProperty ()
+    country = TextProperty ()
+    phone   = TextProperty ()
+
+    # Person
+    surname1    = TextProperty ()
+    surname2    = TextProperty ()
+    name        = TextProperty ()
+    nationality = TextProperty ()
+
+
 class Dispatch(Model):
     """Despacho.
 
@@ -187,6 +203,31 @@ class Dispatch(Model):
         amount   = TextProperty    ()
         exchange = TextProperty    ()
 
+    class Anex6(ValueObject):
+
+        f1  = TextProperty()
+        f2  = TextProperty()
+        f3  = TextProperty()
+        f4  = TextProperty()
+        f5  = TextProperty()
+        f29 = TextProperty()
+        f30 = TextProperty()
+        f31 = TextProperty()
+        f32 = TextProperty()
+        f33 = TextProperty()
+        f34 = TextProperty()
+        f35 = TextProperty()
+        f36 = TextProperty()
+        f37 = TextProperty()
+        f38 = TextProperty()
+        f39 = TextProperty()
+        f40 = TextProperty()
+        f41 = TextProperty()
+        f42 = TextProperty()
+        f43 = TextProperty()
+
+        stakeholders = StructuredProperty (Stakeholder, repeated=True)
+
     order        = StringProperty     ()
     date         = DateStrProperty    ()
     type         = StructuredProperty (CodeName)
@@ -200,6 +241,7 @@ class Dispatch(Model):
     customs      = KeyProperty        (kind=Customs)
     operation    = KeyProperty        (kind='Operation')
     verifies     = BooleanProperty    (repeated=True)
+    anex6        = StructuredProperty (Anex6)
 
 
 class Operation(Model):

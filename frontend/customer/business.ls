@@ -36,7 +36,7 @@ class Business extends Base
     # Hidden fields
     @$el._append "<input type='hidden' name='document[type]' value='RUC'>"
 
-    @$el._find '[data-toggle=tooltip]' .tooltip!
+    @$ '[data-toggle=tooltip]' .tooltip!
 
     super!
 
