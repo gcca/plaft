@@ -140,6 +140,11 @@ class Dashboard(BaseHandler):
     def get(self):
         self.goto(self)
 
+    @login_required
+    def post(self):
+        self.goto(self)
+
+
 class Customer(BaseHandler):
 
     def get(self):

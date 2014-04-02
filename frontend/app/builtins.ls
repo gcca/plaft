@@ -16,6 +16,28 @@ exports <<<
       kRadioGroup : null
       kView       : null
 
+    /**
+     * @typedef {{
+     *   _type: FieldType,
+     *   _name: string,
+     *   _label: string,
+     *   _placeholder: string,
+     *   _tip: string,
+     *   _options: (Object|Array),
+     *   _class: string,
+     *   _head: string
+     * }}
+     */
+    Options:
+      _type        : null
+      _name        : null
+      _label       : null
+      _placeholder : null
+      _tip         : null
+      _options     : null
+      _class       : null
+      _head        : null
+
   Pool : class Pool
     (objects) ->
       @queue = new Array
@@ -50,7 +72,7 @@ exports <<<
       else
         obj = @_objpool._pop!
         @metrics.totalfree--
-        obj.initialize.apply obj, &
+      obj.initialize.apply obj, &
       obj
 
     free: (obj) !->

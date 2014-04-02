@@ -23,6 +23,14 @@ exports.lists <<<
 /**
  * Shortcuts.
  */
+_fieldoptions = (_options) ->
+  if _options._constructor is Array
+  then ["<option>#{..}</option>" for _options].join ''
+  else if _options._constructor is Object
+  then ["<option value='#{_value}'>#{_option}</option>" \
+        for _value, _option of _options].join ''
+  else 'Error options'
+
 exports.shortcuts =
   xhtml: require './shared/xhtml'
 
@@ -124,6 +132,7 @@ form_saveEvent = (evt) !->
 exports._form =
   patch:
     saveButton: (xbutton) !-> xbutton.addEvent \click form_saveEvent
+
 
 exports._event =
   isCtrlV: (evt) -> evt._ctrlKey and evt._keyCode is 86

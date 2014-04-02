@@ -63,10 +63,12 @@ exports <<<
 
 
   _form:
+
+    Builder : require './xhtmlform'
+
     _group: form_group
 
     one: '666' # Pending
-
 
     half:
       lineEdit: (_name, _label) ->

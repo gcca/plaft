@@ -99,7 +99,7 @@ Array::
     _index : ..indexOf
 
 Object.defineProperties Array::, do
-  _length: get: -> @length
+  _length : get : (-> @length), set : (a) !-> @length = a
 
 Object.defineProperties String::, do
   _length : get : -> @length
@@ -136,7 +136,7 @@ Object.defineProperties CSSProperties::, do
 Backbone = window\Backbone
 
 NewPoolMixIn =
-  New : (o) -> @Pool! if not @pool?; @New = @_New; @pool.allocate o
+  New  : (o) -> @Pool! if not @pool?; @New = @_New; @pool.allocate o
   _New : (o) -> @pool.allocate o
   Pool :    !-> @pool = new builtins.ObjectPool @
   pool : null
@@ -144,6 +144,9 @@ NewPoolMixIn =
 FreePoolMixIn =
   free: !-> @_remove!; @_constructor.pool.free @
 
+PoolMixIn =
+  free: !-> @_constructor.pool.free @
+implementsPool = (_self) -> _._extend _self, NewPoolMixIn
 
 viewOpts =
   model      : null
