@@ -136,8 +136,8 @@ Object.defineProperties CSSProperties::, do
 Backbone = window\Backbone
 
 NewPoolMixIn =
-  New  : (o) -> @Pool! if not @pool?; @New = @_New; @pool.allocate o
-  _New : (o) -> @pool.allocate o
+  New  : -> @Pool! if not @pool?; @New = @_New; @pool.allocate.apply @pool, &
+  _New : -> @pool.allocate.apply @pool, &
   Pool :    !-> @pool = new builtins.ObjectPool @
   pool : null
 

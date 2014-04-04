@@ -7,28 +7,515 @@ FieldType = App.builtins.Types.Field
 
 class Stakeholder extends App.View
 
+  /** @override */
   _tagName: \form
+
+  /** @override */
+  _className: gz.Css \parent-toggle
+
+  /**
+   * (Event) On remove stakeholder.
+   */
+  onRemove: ~> @free!
+
+  /** @override */
+  initialize: (@_fields, @_counter) !->
+
+  /** @private */ _fields: null
+
+  /** @override */
+  render: ->
+    @el.html "
+      <div class='#{gz.Css \col-md-12}'>
+        <div class='#{gz.Css \col-md-11}'>
+          <span style='position: absolute;
+                       left:0;
+                       top:6px;
+                       font-size:20px;'>
+            #{@_counter}
+          </span>
+          <hr>
+        </div>
+        <div class='#{gz.Css \col-md-1}'>
+          <button type='button'
+              style='font-size:16pt'
+              class='#{gz.Css \btn}
+                   \ #{gz.Css \btn-link}
+                   \ #{gz.Css \pull-right}
+                   \ #{gz.Css \toggle}'>
+            <i class='#{gz.Css \glyphicon}
+                    \ #{gz.Css \glyphicon-remove}'></i>
+          </button>
+        </div>
+      </div>"
+
+    @$ \button .0 .onClick @onRemove
+
+    fbuilder = App.shared.shortcuts.xhtml._form.Builder.New @el
+    for _field in @_fields then fbuilder.field _field
+    fbuilder.render!
+    fbuilder.free!
+
+    super!
 
 
 class Stakeholders extends App.View
 
+  /** @override */
   _tagName: \div
 
+  /** @override */
   _className: gz.Css \col-md-12
 
-  addStakeholder: ~> (Stakeholder.New @_fields).render!.el
+  /** @override */
+  _toJSON: -> [.._toJSON! for @$ \form]
 
-  initialize: (@_fields) ->
+  /**
+   * Add new stakeholder.
+   */
+  addStakeholder: !~>
+    @_container._append (Stakeholder.New @_fields, (++@_counter)).render!.el
 
-  _fields: null
+  /** @override */
+  initialize: (@_fields) !->
+    /**
+     * Container for stakeholder stacking.
+     * @type {HTMLElement}
+     * @private
+     */
+    @_container = null
 
+    /**
+     * Counter for stakeholder label.
+     * @type {number}
+     * @private
+     */
+    @_counter = 0
+
+  /** @private */ _fields    : null
+  /** @private */ _container : null
+  /** @private */ _counter   : null
+
+  /** @override */
   render: ->
     @el.html "
+      <div class='#{gz.Css \col-md-12}'></div>
       <button type='button' class='#{gz.Css \btn} #{gz.Css \btn-default}'>
         Agregar
       </button>"
-    @el._first.onClick = @addStakeholder
+    @_container = @el._first
+    @el._last.onClick @addStakeholder
     super!
+
+
+_Declarante =
+  * _name    : 'f9'
+    _label   : 'Representado'
+    _tip     : 'La persona que solicita o físicamente realiza la operación
+               \ actúa en representación del: (1) Ordenante
+               \ o (2) Beneficiario.'
+    _type    : FieldType.kComboBox
+    _options :
+      'Ordenante'
+      'Beneficiario'
+
+  * _name    : 'f10'
+    _label   : 'Condición de residencia'
+    _tip     : 'Condición de residencia de la persona que solicita o
+               \ físicamente realiza la operación: (1) Residente
+               \ o (2) No residente.'
+    _type    : FieldType.kComboBox
+    _options :
+      'Residente'
+      'No residente'
+
+  * _name    : 'f11'
+    _label   : 'Tipo de documento'
+    _tip     : 'Tipo de documento la persona que solicita o físicamente realiza la operación (Consignar el código de acuerdo a la Tabla Nº 1)'
+    _type    : FieldType.kComboBox
+    _options : App.shared.lists.IDENTIFICATION
+
+  * _name    : 'f12'
+    _label   : 'Número de documento'
+    _tip     : 'Número de documento de la persona que solicita o físicamente realiza la operación.'
+
+  * _name    : 'f13'
+    _label   : 'País de emisión'
+    _tip     : 'País de emisión del documento de la persona que solicita o físicamente realiza la operación, en caso sea un documento emitido en el extranjero.'
+
+  * _name    : 'f14'
+    _label   : 'Apellido paterno'
+    _tip     : 'Apellido paterno de la persona que solicita o físicamente realiza la operación.'
+
+  * _name    : 'f15'
+    _label   : 'Apellido materno'
+    _tip     : 'Apellido materno de la persona que solicita o físicamente realiza la operación.'
+
+  * _name    : 'f16'
+    _label   : 'Nombres'
+    _tip     : 'Nombres de la persona que solicita o físicamente realiza la operación.'
+
+  * _name    : 'f17'
+    _label   : 'Nacionalidad'
+    _tip     : 'Nacionalidad de la persona que solicita o físicamente realiza la operación.'
+
+  * _name    : 'f18'
+    _label   : 'Ocupación, oficio o profesión'
+    _tip     : 'Ocupación, oficio o profesión de la persona que solicita o físicamente realiza la operación: Consignar los códigos de acuerdo a la Tabla Nº 2'
+
+  * _name    : 'f19'
+    _label   : 'Descripción de la ocupación'
+    _tip     : 'Descripción de la ocupación, oficio o profesión de la persona que solicita o físicamente realiza la operación en caso en el ítem anterior se haya consignado la opción otros.'
+
+  * _name    : 'f20'
+    _label   : 'Código CIIU'
+    _tip     : 'Código CIIU de la ocupación de la persona que solicita o físicamente realiza la operación.'
+
+  * _name    : 'f21'
+    _label   : 'Cargo'
+    _tip     : 'Cargo de la persona que solicita o físicamente realiza la operación (si aplica): Consignar los códigos de acuerdo a la Tabla Nº 3'
+
+  * _name    : 'f22'
+    _label   : 'Dirección'
+    _tip     : 'Nombre y número de la vía de la dirección de la persona que solicita o físicamente realiza la operación.'
+
+  * _name    : 'f23'
+    _label   : 'UBIGEO'
+    _tip     : 'Código UBIGEO del Departamento, provincia y distrito de la dirección de la persona que solicita o físicamente realiza la operación: de acuerdo a la codificación vigente y publicada por el INEI'
+
+  * _name    : 'f24'
+    _label   : 'Teléfono'
+    _tip     : 'Teléfono de la persona que solicita o físicamente realiza la operación.'
+
+
+_Ordenante =
+
+  * _name    : 'f25'
+    _label   : 'Ordenante'
+    _tip     : 'La persona en cuyo nombre se realiza la operación es: (1)
+               \ proveedor del extranjero (ingreso de mercancía),  (2)
+               \ Exportador (salida de mercancía). Si es proveedor del
+               \ extranjero sólo consignar nombres y apellidos completos
+               \ (persona natural), razón social (personas jurídicas) y
+               \ dirección. Si es el exportador, consignar todos los datos
+               \ detallados en esta sección.'
+    _type    : FieldType.kComboBox
+    _options :
+      'Proveedor del extranjero'
+      'Exportador'
+
+  * _name    : 'f26'
+    _label   : 'Representador por'
+    _tip     : 'La persona en cuyo nombre se realiza la operación ha sido
+               \ representado por: (1) Representante legal  (2) Apoderado
+               \ (3) Mandatario (4) Él mismo.'
+    _type    : FieldType.kComboBox
+    _options :
+      'Representante legal'
+      'Apoderado'
+      'Mandatario'
+      'Él mismo'
+
+  * _name    : 'f27'
+    _label   : 'Condición de residencia'
+    _tip     : 'Condición de residencia de la persona en cuyo nombre se
+               \ realiza la operación: (1) Residente, (2) No residente.'
+    _type    : FieldType.kComboBox
+    _options :
+      'Residente'
+      'No residente'
+
+  * _name    : 'f28'
+    _label   : ''
+    _tip     : 'Tipo de persona en cuyo nombre se realiza la operación: (1)
+               \ Persona Natural, (2) Persona Jurídica. Si consignó la
+               \ opción (2) no llenar los items 29 al 31  ni los items 34
+               \ al  38'
+    _type    : FieldType.kComboBox
+    _options :
+      'Persona Natural'
+      'Persona Jurídica'
+
+  * _name    : 'f29'
+    _label   : ''
+    _tip     : 'Tipo de documento de la persona en cuyo nombre se realiza la
+               \ operación. Consignar el código de acuerdo a la Tabla Nº 1.'
+    _type    : FieldType.kComboBox
+    _options : App.shared.lists.IDENTIFICATION
+
+  * _name    : 'f30'
+    _label   : 'Número de documento'
+    _tip     : 'Número de documento de la persona en cuyo nombre se realiza
+               \ la operación.'
+
+  * _name    : 'f31'
+    _label   : 'País de emisión del documento'
+    _tip     : 'País de emisión del documento de la persona en cuyo nombre
+               \ se realiza la operación, en caso sea un documento emitido
+               \ en el extranjero.'
+
+  * _name    : 'f32'
+    _label   : 'RUC'
+    _tip     : 'Número de RUC de la persona en cuyo nombre se realiza la
+               \ operación.'
+
+  * _name    : 'f33'
+    _label   : 'Apellido paterno o razón social'
+    _tip     : 'Apellido paterno o razón social (persona jurídica) de la
+               \ persona en cuyo nombre se realiza la operación.'
+
+  * _name    : 'f34'
+    _label   : 'Apellido materno'
+    _tip     : 'Apellido materno de la persona en cuyo nombre se realiza la
+               \ operación.'
+
+  * _name    : 'f35'
+    _label   : 'Nombres'
+    _tip     : 'Nombres de la persona en cuyo nombre se realiza la
+               \ operación.'
+
+  * _name    : 'f36'
+    _label   : 'Nacionalidad'
+    _tip     : 'Nacionalidad de la persona en cuyo nombre se realiza la
+               \ operación.'
+
+  * _name    : 'f37'
+    _label   : 'Ocupación, oficio o profesión'
+    _tip     : 'Ocupación, oficio o profesión de la persona en cuyo nombre se
+               \ realiza la operación (persona natural): Consignar los
+               \ códigos de acuerdo a la Tabla Nº 2.'
+    _type    : FieldType.kComboBox
+    _options : App.shared.lists.ACTIVITY
+
+  * _name    : 'f38'
+    _label   : 'Descripción de la ocupación'
+    _tip     : 'Descripción de la ocupación, oficio o profesión de la persona
+                \ en cuyo nombre se realiza la operación en caso en el ítem
+                \ anterior se haya consignado la opción otros.'
+
+  * _name    : 'f39'
+    _label   : 'Actividad económica'
+    _tip     : 'Actividad económica de la persona en cuyo nombre se realiza
+               \ la operación (persona jurídica u otras formas de
+               \ organización o asociación que la Ley establece): Consignar
+               \ la actividad principal'
+
+  * _name    : 'f40'
+    _label   : 'Código CIIU'
+    _tip     : 'Código CIIU de la ocupación de la persona en cuyo nombre se
+               \ realiza la operación.'
+
+  * _name    : 'f41'
+    _label   : 'Cargo de la persona'
+    _tip     : 'Cargo de la persona en cuyo nombre se realiza la operación
+               \ (si aplica): consignar los códigos de acuerdo a la
+               \ Tabla Nº 3.'
+    _type    : FieldType.kComboBox
+    _options : App.shared.lists.JOB_TITLE
+
+  * _name    : 'f42'
+    _label   : 'Dirección'
+    _tip     : 'Nombre y número de la vía de la dirección de la persona en
+               \ cuyo nombre se realiza la operación.'
+
+  * _name    : 'f43'
+    _label   : 'UBIGEO'
+    _tip     : 'Código UBIGEO del Departamento, provincia y distrito de la
+               \ dirección de la persona en cuyo nombre se realiza la
+               \ operación: de acuerdo a la codificación vigente y publicada
+               \ por el INEI.'
+
+  * _name    : 'f44'
+    _label   : 'Teléfono'
+    _tip     : 'Teléfono de la persona en cuyo nombre se realiza la
+               \ operación.'
+
+
+
+_Destinatario =
+  * _name    : 'f45'
+    _label   : 'Destinatario'
+    _tip     : 'La persona a favor de quien se realiza la operación es: (1)
+               \ Importador (ingreso de mercancía) ó  (2) Destinatario del
+               \ embarque (salida de mercancía). Si es el destinatario del
+               \ embarque sólo consignar nombres y apellidos completos
+               \ (persona natural), razón social (personas jurídicas) y
+               \ dirección. Si es el importador, consignar todos los datos
+               \ detallados en esta sección.'
+    _type    : FieldType.kComboBox
+    _options :
+      'Importador'
+      'Destinatario del embarque'
+
+  * _name    : 'f46'
+    _label   : 'Condición de residencia'
+    _tip     : 'Condición de residencia de la persona a favor de quien se
+               \ realiza la operación: (1) Residente ó (2) No residente.'
+    _type    : FieldType.kComboBox
+    _options :
+      'Reisdente'
+      'No residente'
+
+  * _name    : 'f47'
+    _label   : 'Tipo de persona'
+    _tip     : 'Tipo de persona a favor de quien se realiza la operación:
+               \ (1) Persona Natural ó (2) Persona Jurídica. Si consignó la
+               \ opción (2) no llenar los items 48 al 50  ni los items 53 al
+               \ 57.'
+    _type    : FieldType.kComboBox
+    _options :
+      'Persona Natural'
+      'Persona Jurídica'
+
+  * _name    : 'f48'
+    _label   : 'Tipo de documento'
+    _tip     : 'Tipo de documento la persona a favor de quien se realiza la
+               \ operación: Consignar el código de acuerdo a la Tabla Nº 1.'
+    _type    : FieldType.kComboBox
+    _options : App.shared.lists.IDENTIFICATION
+
+  * _name    : 'f49'
+    _label   : 'Número de documento'
+    _tip     : 'Número de documento de la persona a favor de quien se realiza
+               \ la operación.'
+
+  * _name    : 'f50'
+    _label   : 'País de emision del documento'
+    _tip     : 'País de emisión del documento de la persona a favor de quien
+               \ se realiza la operación, en caso sea un documento emitido
+               \ en el extranjero.'
+
+  * _name    : 'f51'
+    _label   : 'RUC'
+    _tip     : 'Número de RUC de la persona a favor de quien se realiza la
+               \ operación.'
+
+  * _name    : 'f52'
+    _label   : 'Apellido paterno o razón social'
+    _tip     : 'Apellido paterno o razón social (persona jurídica) de la
+               \ persona a favor de quien se realiza la operación.'
+
+  * _name    : 'f53'
+    _label   : 'Apellido materno'
+    _tip     : 'Apellido materno de la persona a favor de quien se realiza
+               \ la operación.'
+
+  * _name    : 'f54'
+    _label   : 'Nombres'
+    _tip     : 'Nombres de la persona a favor de quien se realiza la
+               \ operación.'
+
+  * _name    : 'f55'
+    _label   : 'Nacionalidad'
+    _tip     : 'Nacionalidad de la persona a favor de quien se realiza
+               \ la operación.'
+
+  * _name    : 'f56'
+    _label   : 'Ocupación, oficio o profesión'
+    _tip     : 'Ocupación, oficio o profesión de la persona a favor de quien
+               \ se realiza la operación (persona natural): consignar los
+               \ códigos de acuerdo a la Tabla Nº 2.'
+    _type    : FieldType.kComboBox
+    _options : App.shared.lists.ACTIVITY
+
+
+  * _name    : 'f57'
+    _label   : 'Descripción de la ocupación'
+    _tip     : 'Descripción de la ocupación, oficio o profesión de la
+               \ persona a favor de quien se realiza la operación en caso
+               \ en el ítem anterior se haya consignado la opción otros.'
+
+  * _name    : 'f58'
+    _label   : 'Actividad económica'
+    _tip     : 'Actividad económica de la persona a favor de quien se realiza
+               \ la operación (persona jurídica u otras formas de organización
+               \ o asociación que la Ley establece): Consignar la actividad
+               \ principal'
+
+  * _name    : 'f59'
+    _label   : 'Código CIIU'
+    _tip     : 'Código CIIU de la ocupación de la persona a favor de quien se
+               \ realiza la operación'
+
+  * _name    : 'f60'
+    _label   : 'Cargo'
+    _tip     : 'Cargo de la persona a favor de quien se realiza la operación
+               \ (si aplica): consignar el código que corresponda de acuerdo
+               \ a la Tabla Nº 3.'
+    _type    : FieldType.kComboBox
+    _options : App.shared.lists.JOB_TITLE
+
+  * _name    : 'f61'
+    _label   : 'Dirección'
+    _tip     : 'Nombre y número de la vía de la dirección de la persona a
+               \ favor de quien se realiza la operación.'
+
+  * _name    : 'f62'
+    _label   : 'UBIGEO'
+    _tip     : 'Código UBIGEO del departamento, provincia y distrito de la
+                \ dirección de la persona a favor de quien se realiza la
+                \ operación: de acuerdo a la codificación vigente y publicada
+                \ por el INEI.'
+
+  * _name    : 'f63'
+    _label   : 'Teléfono'
+    _tip     : 'Teléfono de la persona a favor de quien se realiza la
+               \ operación.'
+
+
+
+
+_Tercero =
+  * _name    : 'f64'
+    _label   : 'Tipo de persona'
+    _tip     : 'Tipo de persona en cuya cuenta se realiza la operación:
+               \ (1) Persona Natural ó (2) Persona Jurídica. Si consignó
+               \ la opción (2) no llenar los items 65 al 66  ni los items
+               \ 68 al  69'
+    _type    : FieldType.kComboBox
+    _options :
+      'Persona Natural'
+      'Persona Jurídica'
+
+  * _name    : 'f65'
+    _label   : 'Tipo de documento'
+    _tip     : 'Tipo de documento de la persona en cuya cuenta se realiza la
+               \ operación: Consignar el código de acuerdo a la Tabla Nº 1.'
+    _type    : FieldType.kComboBox
+    _options : App.shared.lists.IDENTIFICATION
+
+  * _name    : 'f66'
+    _label   : 'Número de documento'
+    _tip     : 'Número de documento de la persona en cuya cuenta se realiza
+               \ la operación.'
+
+  * _name    : 'f67'
+    _label   : 'Apellido paterno o razón social'
+    _tip     : 'Apellido paterno o razón social (persona jurídica) de la
+               \ persona en cuya cuenta se realiza la operación.'
+
+  * _name    : 'f68'
+    _label   : 'Apellido materno'
+    _tip     : 'Apellido materno de la persona en cuya cuenta se realiza
+               \ la operación.'
+
+  * _name    : 'f69'
+    _label   : 'Nombres'
+    _tip     : 'Nombres de la persona en cuya cuenta se realiza la operación.'
+
+  * _name    : 'f70'
+    _label   : 'Tercero'
+    _tip     : 'La persona a favor de quien se realiza la operación es:
+               \ (1) Importador (ingreso de mercancía); (2) Destinatario
+               \ del embarque (salida de mercancía); (3) proveedor del
+               \ extranjero (ingreso de mercancía); (4) Exportador (salida
+               \ de mercancía).'
+    _type    : FieldType.kComboBox
+    _options :
+      'Importador'
+      'Destinatario'
+      'Proveedor del extranjero'
+      'Exportador'
 
 
 /**
@@ -47,20 +534,32 @@ class Anex2 extends Module
                       \ no respecto de cada operación'
 
     _groups =
-      * 'Uno'
-        Stakeholders.New!
-      * 'Dos'
-        Stakeholders.New!
-      * 'Tres'
-        Stakeholders.New!
-      * 'Cuatro'
-        Stakeholders.New!
+      * 'Declarantes'
+        Stakeholders.New _Declarante
+        'DATOS DE IDENTIFICACIÓN DE LAS PERSONAS QUE SOLICITA O FISICAMENTE
+        \ REALIZA LA OPERACIÓN EN REPRESENTACIÓN DEL CLIENTE DEL SUJETO
+        \ OBLIGADO (DECLARANTE).'
+      * 'Ordenantes'
+        Stakeholders.New _Ordenante
+        'DATOS DE IDENTIFICACIÓN DE LAS PERSONAS EN CUYOS NOMBRES SE REALIZA
+        \ LA OPERACIÓN:   ORDENANTES/PROVEEDOR EXTRANJERO (INGRESO DE
+        \ MERCANCÍA) / EXPORTADOR (SALIDA DE MERCANCÍA).'
+      * 'Destinatario'
+        Stakeholders.New _Destinatario
+        'DATOS DE IDENTIFICACIÓN DE LAS PERSONAS A FAVOR DE QUIENES SE
+        \ REALIZA LA OPERACIÓN IMPORTADOR (INGRESO DE MERCANCÍA) /
+        \ DESTINATARIO DEL EMBARQUE (SALIDA DE MERCANCÍA).'
+      * 'Terceros'
+        Stakeholders.New _Tercero
+        'DATOS DE IDENTIFICACIÓN DEL TERCERO POR CUYO INTERMEDIO SE REALIZA
+        \ LA OPERACIÓN, DE SER EL CASO.'
 
     fieldsStakeholders = [{
       _label   : ..0
       _type    : FieldType.kView
       _options : ..1
       _class   : gz.Css \col-md-12
+      _tip     : ..2
       _head    : 'h4'
     } for _groups]
 
@@ -73,12 +572,10 @@ class Anex2 extends Module
     fbuilder.fieldset 'Datos relacionados a la descripción de la operación',
                       @fieldsDetails
 
+    fbuilder._save!
+
     fbuilder.render!
     fbuilder.free!
-
-    $group = @$ "##{gz.Css \id-stakeholders-group}"
-    $group._append "<h4>Declarantes</h4>"
-    $group._append Stakeholders.New!.render!.el
 
     @$ '[title]' .tooltip!
     super!

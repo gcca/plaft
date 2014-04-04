@@ -65,9 +65,9 @@ exports <<<
       @_clearMetrics!
       @_objpool = new Array
 
-    allocate: (a) ->
+    allocate: ->
       if 0 == @_objpool._length
-        obj = new @cls a
+        obj = new @cls ...
         @metrics.totalalloc++
       else
         obj = @_objpool._pop!

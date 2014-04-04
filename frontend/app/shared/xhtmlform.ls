@@ -23,7 +23,7 @@ _fieldby = ({_type = FieldType.kLineEdit, _name, _placeholder = '', \
     App.dom._new \select
       ..Class = gz.Css \form-control
       .._name = _name
-      ..html  = _options
+      ..html _options
   | _type is FieldType.kTextEdit =>
     App.dom._new \textarea
       ..Class        = gz.Css \form-control
@@ -32,13 +32,13 @@ _fieldby = ({_type = FieldType.kLineEdit, _name, _placeholder = '', \
   | _type is FieldType.kCheckBox =>
     App.dom._new \label
       ..Class = gz.Css \checkbox
-      ..html  = "<span title='#_tip'>#_label</span>
-                 &nbsp;
-                 <input type='checkbox' class='#{gz.Css \form-control}'
-                     name='#_name' placeholder='#_placeholder'>"
+      ..html "<span title='#_tip'>#_label</span>
+              &nbsp;
+              <input type='checkbox' class='#{gz.Css \form-control}'
+                  name='#_name' placeholder='#_placeholder'>"
   | _type is FieldType.kRadioGroup =>
     App.dom._new \div
-      ..html = "Not implemented"
+      ..html "Not implemented"
   | _type is FieldType.kView =>
       _options.render!.el
   | otherwise => "Bad type"
@@ -93,6 +93,16 @@ class Builder extends Array implements PoolMixIn
    * @return {string}
    */
   fieldset: (_legend, _fields, _tip) -> @_push _fieldset _legend, _fields, _tip
+
+  _save: ->
+    App.dom._new \div
+      ..Class = gz.Css \col-md-12
+      ..html "<button class='#{gz.Css \btn}
+                           \ #{gz.Css \btn-primary}
+                           \ #{gz.Css \pull-right}'>
+                Guardar
+              </button>"
+      @_push ..
 
   /** @override */
   render: ->
