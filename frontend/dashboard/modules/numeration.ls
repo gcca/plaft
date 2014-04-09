@@ -85,7 +85,6 @@ class Numeration extends Module
 
   /** @override */
   render: ->
-    @showForm!
     @ui.desktop._search._focus!
     super!
 

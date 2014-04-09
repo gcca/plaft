@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 from domain.model import Customer, User, Customs, Officer, Declaration, \
-                         Document, Dispatch, Datastore
+                         Document, Dispatch, Datastore, Stakeholder
 from interface import BaseHandler
 from domain.c_gz import db
 
@@ -56,13 +56,32 @@ def create():
     ds = Datastore()
 
     d1 = Dispatch(
-        order = '2014-02',
-        customer = c1.key,
-        customs = cs1.key
+        order        = '2014-02',
+        customer     = c1.key,
+        customs      = cs1.key,
+        type         = Dispatch.CodeName(code = '001',
+                                         name = 'IMPORTACIÓN DEFINITIVA'),
+        jurisdiction = Dispatch.CodeName(code = '163',
+                                         name = 'ILO'),
+        regime       = Dispatch.CodeName(code = '10',
+                                         name = 'IMPORTACIÓN PARA EL CONSUMO')
     )
     d1.store()
     cs1.datastore.pending.dispatches.append(d1.key)
     cs1.store()
+
+    sh1 = Stakeholder(
+        slug = '98765432156',
+        f12  = '98764532156',
+        f13  = 'Francia',
+        f14  = 'Galois',
+        f15  = '_',
+        f16  = 'Évariste',
+        f17  = 'Francesa',
+        f18  = 'Researcher',
+        f19  = 'Groups, Ring, Fields.'
+    )
+    sh1.put()
 
 
 class Debug(BaseHandler):
@@ -73,6 +92,6 @@ class Debug(BaseHandler):
 
     def post(self):
         db.delete_multi(v for m in [Customer, User, Customs, Declaration,
-                                    Dispatch]
+                                    Dispatch, Stakeholder]
                         for v in m.query().fetch(keys_only=True))
         self.write('The End.')

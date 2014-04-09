@@ -65,6 +65,7 @@ class Dashboard extends App.View
               <span class='#{gz.Css \icon-bar}'></span>
               <span class='#{gz.Css \icon-bar}'></span>
             </button>
+
             <a href='/' class='#{gz.Css \navbar-brand}'>PLAFTsw</a>
           </div>
           <nav class='#{gz.Css \collapse}
@@ -124,3 +125,5 @@ class Dashboard extends App.View
 ## $ ".#{gz.Css \glyphicon-file}" ._first! ._parent! .click!
 ## $ \input ._last! .val '13'
 ## $ \form ._last! ._find \button .click!
+
+## $ ".#{gz.Css \glyphicon-file}" ._last! ._parent! .click!

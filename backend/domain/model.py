@@ -257,6 +257,7 @@ class Operation(Model):
 
 
 class Datastore(Model):
+    """Datos globales de la aplicación."""
 
     class DSingleton(Singleton):
 
@@ -275,3 +276,7 @@ class Datastore(Model):
         declarations = KeyProperty(kind=Declaration, repeated=True)
 
     pending = StructuredProperty (_Meta, default=_Meta())
+
+
+class Stakeholder(Expando):
+    pass

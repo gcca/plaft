@@ -71,7 +71,6 @@ class Anex6 extends Module
     @el._last.onClick @onSave
 
   render: ->
-    @showForm!
     super!
 
   /** @private */ xforms       : null

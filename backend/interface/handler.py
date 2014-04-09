@@ -77,3 +77,8 @@ class Dispatch(RESTful):
         customs = self.user.customs.get()
         customs.datastore.pending.dispatches.append(self.entity.key)
         customs.store()
+
+
+class Stakeholder(RESTful):
+
+  model = model.Stakeholder

@@ -97,10 +97,7 @@ class Model(Entity, Repository):
     last_modified = DateTimeProperty(auto_now=True)
 
     exclude = []
-
-    def __init__(self, *a, **k):
-        self.user = None
-        super(Model, self).__init__(*a, **k)
+    user = None
 
     @property
     def dict(self):
@@ -136,6 +133,12 @@ class Model(Entity, Repository):
 
     @classmethod
     def new(self, dict): return self(**self.from_dict(dict))
+
+
+class Expando(Model, Expando):
+
+    slug = StringProperty()
+    _default_indexed = False
 
 
 class ValueObject(Repository):

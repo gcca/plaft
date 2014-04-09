@@ -8,6 +8,8 @@ sharedLists = App.shared.lists
 
 OPERATION_CODE     = sharedLists.OPERATION_CODE
 OPERATION_TYPE     = sharedLists.OPERATION_TYPE
+OPERATION_DAM_CODE = sharedLists.OPERATION_DAM_CODE
+OPERATION_DAM_TYPE = sharedLists.OPERATION_DAM_TYPE
 JURISDICTIONS_CODE = sharedLists.JURISDICTIONS_CODE
 JURISDICTIONS      = sharedLists.JURISDICTIONS
 
@@ -134,13 +136,13 @@ class Reception extends Module
                 'Tipo de operación (SBS)')
       .appendTo xform
 
-    # Regime
-    xPairSelect('regime[code]',
-                'regime[name]',
-                OPERATION_CODE,
-                OPERATION_TYPE,
-                'Regimen Aduanero (DAM)')
-      .appendTo xform
+#    # Regime
+#    xPairSelect('regime[code]',
+#                'regime[name]',
+#                OPERATION_DAM_CODE,
+#                OPERATION_DAM_TYPE,
+#                'Regimen Aduanero (DAM)')
+#      .appendTo xform
 
     # Jurisdiction
     xPairSelect('jurisdiction[code]',

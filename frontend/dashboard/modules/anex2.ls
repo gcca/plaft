@@ -5,49 +5,94 @@ Module = require '../module'
 FieldType = App.builtins.Types.Field
 
 
+/**
+ * Search, find or register new stakeholder.
+ * Finding by slug attribute. Before store entity, {@code slug} is fixed.
+ * TODO(...): Find stakeholder by multi-fields criteria.
+ *
+ * @class UiStakeholder
+ * @extends View
+ */
 class Stakeholder extends App.View
 
   /** @override */
   _tagName: \form
 
   /** @override */
-  _className: gz.Css \parent-toggle
+  _className: "#{gz.Css \parent-toggle} #{gz.Css \col-md-12}"
 
   /**
    * (Event) On remove stakeholder.
+   * @private
    */
   onRemove: ~> @free!
 
-  /** @override */
-  initialize: (@_fields, @_counter) !->
+  /**
+   * (Event) On found stakeholder.
+   * @param {Model} _model
+   * @param {Object} _dto
+   * @param {Object} _options
+   * @private
+   */
+  onFindSuccess: (_model, _dto, _options) ~>
+    @render-edit!
+    @$el._fromJSON _dto
 
-  /** @private */ _fields: null
+  /**
+   * (Event) On not found stakeholder.
+   * @param {Model} _model
+   * @param {Object} _dto
+   * @param {Object} _options
+   * @private
+   */
+  onFindError: (_model, _dto, _options) ~>
+    @render-edit!
+    # TODO(...): Implement multi-fields
+    @el.query "[name=#{@_slug.0}]" .value = _model._get @_slug.0
 
-  /** @override */
-  render: ->
-    @el.html "
-      <div class='#{gz.Css \col-md-12}'>
-        <div class='#{gz.Css \col-md-11}'>
-          <span style='position: absolute;
-                       left:0;
-                       top:6px;
-                       font-size:20px;'>
-            #{@_counter}
-          </span>
-          <hr>
-        </div>
-        <div class='#{gz.Css \col-md-1}'>
-          <button type='button'
-              style='font-size:16pt'
-              class='#{gz.Css \btn}
-                   \ #{gz.Css \btn-link}
-                   \ #{gz.Css \pull-right}
-                   \ #{gz.Css \toggle}'>
-            <i class='#{gz.Css \glyphicon}
-                    \ #{gz.Css \glyphicon-remove}'></i>
+  /**
+   * (Event) On find stakeholder.
+   * @param {Object} evt
+   * @private
+   */
+  findStakeholder: (evt) ~>
+    evt.prevent!
+    # TODO(...): Implement multi-fields
+    _value = evt._target._elements.'q'._value
+    stakeholder = new App.model.Stakeholder \slug : _value
+    stakeholder.fetch do
+      _success : @onFindSuccess
+      _error   : @onFindError
+
+  /**
+   * Focus first form field.
+   */
+  focusField: !-> @el._last._first._focus!
+
+  /**
+   * Render find stakeholder form.
+   * @private
+   */
+  render-find: ->
+    @el.html @template-header! + "
+      <div class='#{gz.Css \input-group} #{gz.Css \col-md-8}'>
+        <input type='text' class='#{gz.Css \form-control}'
+            name='q' placeholder='Buscar por RUC'>
+        <span class='#{gz.Css \input-group-btn}'>
+          <button class='#{gz.Css \btn} #{gz.Css \btn-default}'>
+            &nbsp;
+            <i class='#{gz.Css \glyphicon} #{gz.Css \glyphicon-search}'></i>
           </button>
-        </div>
+        </span>
       </div>"
+    @el.onSubmit @findStakeholder
+
+  /**
+   * Render edit stakeholder form.
+   * @private
+   */
+  render-edit: ->
+    @el.html @template-header!
 
     @$ \button .0 .onClick @onRemove
 
@@ -56,9 +101,58 @@ class Stakeholder extends App.View
     fbuilder.render!
     fbuilder.free!
 
+  /**
+   * @param {!Array.<FieldOptions>} _fields
+   * @param {!Array.<string>} _slug
+   * @param {number} _counter
+   * @override
+   */
+  initialize: (@_fields, @_slug, @_counter) !->
+
+  /** @private */ _fields  : null
+  /** @private */ _slug    : null
+  /** @private */ _counter : null
+
+  /** @override */
+  render: ->
+    @render-find!
     super!
 
+  /**
+   * Template header options: counter, line (separator), close button link.
+   * @return {string}
+   * @private
+   */
+  template-header: -> "
+    <div class='#{gz.Css \col-md-11}'>
+      <span style='position: absolute;
+                   left:0;
+                   top:6px;
+                   font-size:20px;'>
+        #{@_counter}
+      </span>
+      <hr>
+    </div>
+    <div class='#{gz.Css \col-md-1}'>
+      <button type='button'
+          style='font-size:16pt'
+          class='#{gz.Css \btn}
+               \ #{gz.Css \btn-link}
+               \ #{gz.Css \pull-right}
+               \ #{gz.Css \toggle}'>
+        <i class='#{gz.Css \glyphicon}
+                \ #{gz.Css \glyphicon-remove}'></i>
+      </button>
+    </div>"
 
+/**
+ * Class for stakeholder list, needs a {@code fields} constructor parameter
+ * to send it to {@code UiStakeholder}.
+ * You may want to change the title {@code label} using a header tag: h1..h6.
+ *
+ * @class UiStakeholders
+ * @extends View
+ */
 class Stakeholders extends App.View
 
   /** @override */
@@ -74,10 +168,17 @@ class Stakeholders extends App.View
    * Add new stakeholder.
    */
   addStakeholder: !~>
-    @_container._append (Stakeholder.New @_fields, (++@_counter)).render!.el
+    stakeholder = Stakeholder.New @_fields, @_slug, ++@_counter
+    @_container._append stakeholder.render!.el
+    stakeholder.focusField!
 
-  /** @override */
-  initialize: (@_fields) !->
+  /**
+   * @param {!Array.<FieldOptions>} _fields
+   * @param {!(string|Array.<string>)} _slug To create slug to find stakeholder
+   *   from name field(s).
+   * @override
+   */
+  initialize: (@_fields, @_slug) !->
     /**
      * Container for stakeholder stacking.
      * @type {HTMLElement}
@@ -92,7 +193,15 @@ class Stakeholders extends App.View
      */
     @_counter = 0
 
+    /**
+     * Slug to find stakeholder.
+     * @type {Array.<string>}
+     * @private
+     */
+    @_slug = [@_slug] if @_slug._constructor is String
+
   /** @private */ _fields    : null
+  /** @private */ _slug      : null
   /** @private */ _container : null
   /** @private */ _counter   : null
 
@@ -524,8 +633,20 @@ _Tercero =
  */
 class Anex2 extends Module
 
+  /**
+   * (Event) On search by disptach order-number.
+   * @param {string} _query
+   * @protected
+   */
+  onSearch: (_query) ~>
+    @el.html ''
+    @dispatch = new App.model.Dispatch \order : _query
+    @dispatch.fetch do
+      _success: (_, dispatch) ~> @render-form!
+      _error: -> alert 'Número de orden no hallado: ' + _query
+
   /** @override */
-  render: ->
+  render-form: ->
     fbuilder = App.shared.shortcuts.xhtml._form.Builder.New @el
 
     fbuilder.fieldset 'Datos de identificación del RO',
@@ -535,22 +656,22 @@ class Anex2 extends Module
 
     _groups =
       * 'Declarantes'
-        Stakeholders.New _Declarante
+        Stakeholders.New _Declarante, 'f12'
         'DATOS DE IDENTIFICACIÓN DE LAS PERSONAS QUE SOLICITA O FISICAMENTE
         \ REALIZA LA OPERACIÓN EN REPRESENTACIÓN DEL CLIENTE DEL SUJETO
         \ OBLIGADO (DECLARANTE).'
       * 'Ordenantes'
-        Stakeholders.New _Ordenante
+        Stakeholders.New _Ordenante, 'f12'
         'DATOS DE IDENTIFICACIÓN DE LAS PERSONAS EN CUYOS NOMBRES SE REALIZA
         \ LA OPERACIÓN:   ORDENANTES/PROVEEDOR EXTRANJERO (INGRESO DE
         \ MERCANCÍA) / EXPORTADOR (SALIDA DE MERCANCÍA).'
       * 'Destinatario'
-        Stakeholders.New _Destinatario
+        Stakeholders.New _Destinatario, 'f12'
         'DATOS DE IDENTIFICACIÓN DE LAS PERSONAS A FAVOR DE QUIENES SE
         \ REALIZA LA OPERACIÓN IMPORTADOR (INGRESO DE MERCANCÍA) /
         \ DESTINATARIO DEL EMBARQUE (SALIDA DE MERCANCÍA).'
       * 'Terceros'
-        Stakeholders.New _Tercero
+        Stakeholders.New _Tercero, 'f12'
         'DATOS DE IDENTIFICACIÓN DEL TERCERO POR CUYO INTERMEDIO SE REALIZA
         \ LA OPERACIÓN, DE SER EL CASO.'
 

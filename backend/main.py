@@ -33,6 +33,9 @@ app = WSGIApplication([
           handler.Customs.pending_dispatches),
 
     ('/api/v1/dispatch', handler.Dispatch),
-    Route(r'/api/v1/dispatch/<id:\d+>', handler.Dispatch)
+    Route(r'/api/v1/dispatch/<id:\d+>', handler.Dispatch),
+
+    ('/api/v1/stakeholder', handler.Stakeholder),
+    Route(r'/api/v1/dispatch/<id:\d+>', handler.Stakeholder)
 
 ], debug=True)
