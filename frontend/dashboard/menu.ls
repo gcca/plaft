@@ -146,7 +146,7 @@ class Menu extends App.View
 
   /** @override */
   render: ->
-    App.dom._write ~> @el.css._font-size = '12px'
+    App.dom._write ~> @el.css._font-size = '11px'
 
     settings = new Settings
     modules  = new Modules

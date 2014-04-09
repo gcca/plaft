@@ -70,7 +70,9 @@ class Anex6 extends Module
 
     @el._last.onClick @onSave
 
+  /** @override */
   render: ->
+    @ui.desktop._search._focus!
     super!
 
   /** @private */ xforms       : null

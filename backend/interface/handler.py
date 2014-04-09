@@ -1,3 +1,6 @@
+# encoding: utf-8
+from __future__ import unicode_literals
+
 from interface import BaseHandler, RESTful, RESTfulCollection
 from domain import model
 
@@ -60,6 +63,12 @@ class Dispatch(RESTful):
 
     model         = model.Dispatch
     require_login = RESTful.methods
+
+    def _validate(self):
+        ds = model.Datastore()
+        if self.entity.declaration not in ds.pending.declarations:
+            raise model.BadValueError('La declaración %s ya fue usada.'
+                                      % self.entity.declaration.get().tracking)
 
     def _post_pre_store(self):
         self.entity.customs = self.user.customs

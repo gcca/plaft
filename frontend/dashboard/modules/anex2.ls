@@ -704,6 +704,11 @@ class Anex2 extends Module
   /** @public */ @@_caption = 'Anexo 2'
   /** @public */ @@_icon    = gz.Css \glyphicon-file
 
+  /** @override */
+  render: ->
+    @ui.desktop._search._focus!
+    super!
+
   /**
    * Fields for RO form.
    * @type {Array.<FieldOptions>}

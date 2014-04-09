@@ -11,12 +11,12 @@ from domain.c_gz import db
 def create():
     cs1 = Customs(name    = 'Cyberdine',
                   code    = '888',
-                  officer = Officer(name='Mail', code='1255'))
+                  officer = Officer(name = 'Mail', code = '1255'))
     cs1.store()
 
     cs2 = Customs(name    = 'SCharff',
                   code    = '789',
-                  officer = Officer(name='John Connor', code='1212'))
+                  officer = Officer(name = 'John Connor', code = '1212'))
     cs2.store()
 
     u1 = User(email    = 'gcca@hub.io',
@@ -25,21 +25,26 @@ def create():
     u1.store()
 
     c1 = Customer(
-        name     = 'Massive Dynamics',
-        document = Document(type='RUC', number='12345678989'),
-        social   = 'Innovation',
-        activity = 'Xploit the world',
-        legal    = 'Nina Sharp',
-        address  = 'Fringe',
-        category = 'Importador frecuente',
+        name       = 'Massive Dynamics',
+        document   = Document(type = 'RUC', number = '12345678989'),
+        social     = 'Innovation',
+        activity   = 'Xploit the world',
+        legal      = 'Nina Sharp',
+        address    = 'Fringe',
+        category   = 'Importador frecuente',
+        fiscal     = 'New York',
+        phone      = '789-4444',
+        contact    = 'Astrid Farnsworth',
+        isobliged  = 'Sí',
+        hasofficer = 'No',
         shareholders = [
             Customer.Shareholder(
-                document = Document(type='DNI',
-                                             number='12345678'),
+                document = Document(type   = 'DNI',
+                                    number = '12345678'),
                 name     = 'William Bell'),
             Customer.Shareholder(
-                document = Document(type='Carné de Extranjería',
-                                             number='123456'),
+                document = Document(type   = 'Carné de Extranjería',
+                                    number = '123456'),
                 name     = 'Walter Bishop')])
     c1.store()
 

@@ -50,7 +50,7 @@ class Reception extends Module
     else
       dispatch = new App.model.Dispatch
       dispatch._save dto, do
-        _success : !~>
+        _success : ~>
           @xgroupSave.html "
             <button type='button'
                 class='#{gz.Css \btn} #{gz.Css \btn-success}
@@ -58,8 +58,12 @@ class Reception extends Module
               Guardado
             </button>"
 
-        _error   : !->
-          alert 'ERROR: 92c0861a-934d-11e3-947e-88252caeb7e8'
+        _error   : ->
+          _error = App._global._error._get ...
+          if _error._code isnt 500
+            alert _error._json\e
+          else
+            alert 'ERROR: 92c0861a-934d-11e3-947e-88252caeb7e8'
 
   /**
    * (Event) On change form for declaration - customer.

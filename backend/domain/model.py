@@ -279,4 +279,4 @@ class Datastore(Model):
 
 
 class Stakeholder(Expando):
-    pass
+    """Involucrados en los Anexos 6 y 2."""

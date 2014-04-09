@@ -20,6 +20,13 @@ class DuplicateError(Error):
 class BadValueError(Error):
     """Raised by models when set bad values attributes. """
 
+class ERROR:
+    Error            = Error
+    StoreFailedError = StoreFailedError
+    NotFoundError    = NotFoundError
+    DuplicateError   = DuplicateError
+    BadValueError    = BadValueError
+
 
 class DateStrProperty(DateProperty):
 
@@ -85,7 +92,7 @@ class Repository(Model):
 
     filter_node = staticmethod(
         lambda prop, val: db.query.FilterNode(
-            prop, *(('=', val) if '\\' != val[0]
+            prop, *(('=', val) if not val or '\\' != val[0]
                     else ((val[1:2], val[3:]) if '\\' == val[2]
                           else ((val[1:3], val[4:]) if '\\' == val[3]
                                 else (val, None))))))

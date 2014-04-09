@@ -69,8 +69,7 @@ fieldsProto =
 Object.defineProperties HTMLInputElement::, fieldsProto
 Object.defineProperties HTMLSelectElement::, fieldsProto
 
-## Object.defineProperties HTMLInputElement::, do
-##   _checked : get : (-> @checked), set : (a) !-> @checked = a
+
 HTMLInputElement::=
   _checked:~
     (a) -> @checked = a
@@ -226,6 +225,10 @@ class BaseModel extends Backbone\Model
   \sync : -> @_sync ...
 
 
+/**
+ * _success : (model, dto, options)
+ * _error   : (model, xhr, options)
+ */
 class Model extends BaseModel
 
   @@API = '/api/v1/'

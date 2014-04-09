@@ -1,7 +1,9 @@
+# encoding: utf-8
+
 import json
 from webapp2 import RequestHandler
 
-from domain.model import Model, User
+from domain.model import Model, User, ERROR
 from infraestructure.utils import check_secure, make_secure, json_dumps, \
                                   rc_factory, ct_factory, st_factory, po, \
                                   login_required
@@ -39,7 +41,7 @@ class BaseHandler(RequestHandler):
         self.response.set_status(c)
 
     def write_error(self, e='...'):
-        self.write_json('{"e":"%s"}' % e)
+        self.write_json(u'{"e":"%s"}' % e)
 
     def write_val(self, name, val):
         val = '%s=%s; Path=/' % (name, make_secure(val))
@@ -99,6 +101,7 @@ class MetaRESTful(MetaSecurity, MetaNested): pass
 
 # (-o-) Exceptions
 class _HooksMixin(object):
+    def _validate(self): pass
     def _post_pre_store(self): pass
     def _post_post_store(self): pass
 
@@ -147,10 +150,24 @@ class RESTful(BaseHandler, _HooksMixin):
     def post(self, id=None):
         self.entity = self.model.new(self.request_dict)
         self.entity.user = self.user
-        self._post_pre_store()
-        self.entity.store()
-        self._post_post_store()
-        self.write_json('{"id":%s}' % self.entity.id)
+        try:
+            self._validate()
+        # TODO(-o-) : Abstract exception-error relation for one except statement
+        except ERROR.BadValueError as e:
+            self.status.BAD_REQUEST(e)
+        except ERROR.NotFoundError as e:
+            self.status.NOT_FOUND(e)
+        except ERROR.DuplicateError as e:
+            self.status.DUPLICATE_ENTRY(e)
+        except ERROR.StoreFailedError as e:
+            self.status.NOT_ACCEPTABLE(e)
+        except ERROR.Error as e:
+            self.status.INTERNAL_ERROR(e)
+        else:
+            self._post_pre_store()
+            self.entity.store()
+            self._post_post_store()
+            self.write_json('{"id":%s}' % self.entity.id)
 
     def put(self, id):
         entity = self.model.find(int(id))
