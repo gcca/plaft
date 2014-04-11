@@ -69,10 +69,28 @@ def create():
         jurisdiction = Dispatch.CodeName(code = '163',
                                          name = 'ILO'),
         regime       = Dispatch.CodeName(code = '10',
-                                         name = 'IMPORTACIÓN PARA EL CONSUMO')
+                                         name = 'IMPORTACIÓN PARA EL CONSUMO'),
+        numeration   = Dispatch.Numeration(type = 'Verde')
     )
     d1.store()
     cs1.datastore.pending.dispatches.append(d1.key)
+    cs1.store()
+
+    d2 = Dispatch(
+        order        = '2014-03',
+        customer     = c1.key,
+        customs      = cs1.key,
+        type         = Dispatch.CodeName(code = '001',
+                                         name = 'IMPORTACIÓN DEFINITIVA'),
+        jurisdiction = Dispatch.CodeName(code = '163',
+                                         name = 'ILO'),
+        regime       = Dispatch.CodeName(code = '10',
+                                         name = 'IMPORTACIÓN PARA EL CONSUMO'),
+        numeration   = Dispatch.Numeration(type   = 'Naranja',
+                                           number = '46')
+    )
+    d2.store()
+    cs1.datastore.pending.dispatches.append(d2.key)
     cs1.store()
 
     sh1 = Stakeholder(

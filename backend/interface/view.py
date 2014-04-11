@@ -132,7 +132,7 @@ class Dashboard(BaseHandler):
 
     @staticmethod
     def goto(self):
-        d = model.Datastore()
+        model.Datastore()
         args = 'a1: %s' % model.User.find().json
         self.write(template('dashboard', args))
 

@@ -55,31 +55,34 @@ class Numeration extends Module
   showForm: (dispatch) ->
     hstack = new Array
 
+    hstack._push '<form>'
+
     for [_name, _label, _placeholder] in FIELDS-HEADER
       hstack._push new-group _name, _label, _placeholder
 
+#    hstack._push "
+#      <div class='#{gz.Css \col-md-12}'>
+#        <h3>Detalle</h3>
+#      </div>"
+
+#    for [_name, _label, _placeholder] in FIELDS-DETAILS
+#      hstack._push new-group _name, _label, _placeholder
+
+
     hstack._push "
       <div class='#{gz.Css \col-md-12}'>
-        <h3>Detalle</h3>
-      </div>"
-
-    for [_name, _label, _placeholder] in FIELDS-DETAILS
-      hstack._push new-group _name, _label, _placeholder
+        <button class='#{gz.Css \btn}
+                     \ #{gz.Css \btn-primary}
+                     \ #{gz.Css \pull-right}'>
+          Guardar
+        </button>
+      </div></form>"
 
     @el.html hstack._join ''
 
-    ##     <div class='#{gz.Css \col-md-12}'>
-    ##       <button class='#{gz.Css \btn}
-    ##                    \ #{gz.Css \btn-primary}
-    ##                    \ #{gz.Css \pull-right}'>
-    ##         Guardar
-    ##       </button>
-    ##     </div>
-
-    ##   </form>"
-    ## @el._first
-    ##   $ .. ._fromJSON dispatch\numeration
-    ##   ..onSubmit @onSave
+    @el._first
+      $ .. ._fromJSON dispatch\numeration
+      ..onSubmit @onSave
 
   /** @private */ dispatch: null
 

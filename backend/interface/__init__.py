@@ -73,13 +73,19 @@ class BaseHandler(RequestHandler):
         return json.loads(body) if body else dict(self.request.GET)
 
 
+RESTfulCore = ['RESTful', 'RESTfulNested']
+
+
 class MetaSecurity(type):
 
     def __new__(self, n, b, dict):
-        if 'require_login' in dict:
-            base = b[0]
-            for method in dict['require_login']:
-                dict[method] = login_required(getattr(base, method))
+        if n not in RESTfulCore:
+            if 'require_login' in dict:
+                p = b[0]
+                for method in dict['require_login']:
+                    dict[method] = login_required(dict[method]
+                                                  if method in dict
+                                                  else getattr(p, method))
 
         return super(MetaSecurity, self).__new__(self, n, b, dict)
 
@@ -89,9 +95,10 @@ class MetaNested(type):
     def __new__(self, n, b, dict):
         restful = super(MetaNested, self).__new__(self, n, b, dict)
 
-        for nested in dict:
-            if getattr(dict[nested], 'isnested', None):
-                dict[nested].parent = restful
+        if n not in RESTfulCore:
+            for nested in dict:
+                if getattr(dict[nested], 'isnested', None):
+                    dict[nested].parent = restful
 
         return restful
 
@@ -114,6 +121,9 @@ class RESTfulNested(BaseHandler, _HooksMixin):
     reference = None
     isnested  = True
 
+    def get(self, id=None):
+        pass
+
     def post(self, id=None):
         parent = self.parent.model.find(int(id))
         self.entity = self.model.new(self.request_dict)
@@ -124,6 +134,12 @@ class RESTfulNested(BaseHandler, _HooksMixin):
         self._post_post_store()
         self.write_json('{"id":%s,"%s":%s}'
                         % (self.entity.id, self.reference, parent.json))
+
+    def put(self, id):
+        pass
+
+    def delete(self, id):
+        pass
 
 
 class RESTful(BaseHandler, _HooksMixin):

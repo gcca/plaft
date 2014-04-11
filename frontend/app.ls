@@ -78,7 +78,6 @@ HTMLInputElement::=
     (a) -> @placeholder = a
     -> @placeholder
 
-
 Object.defineProperties HTMLSelectElement::, do
   _selected : get : -> @selectedIndex
   _length   : get : -> @length

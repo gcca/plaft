@@ -162,7 +162,7 @@ class Stakeholders extends App.View
   _className: gz.Css \col-md-12
 
   /** @override */
-  _toJSON: -> [.._toJSON! for @$ \form]
+  _toJSON: -> [$ .. ._toJSON! for @$ \form]
 
   /**
    * Add new stakeholder.
@@ -633,6 +633,20 @@ _Tercero =
  */
 class Anex2 extends Module
 
+  /** @override */
+  _tagName: \form
+
+  /**
+   * (Event) On save Anex 2.
+   * @param {Object} evt
+   * @private
+   */
+  onSave: (evt) ~>
+    evt.prevent!
+    console.log @$el._toJSON!
+    console.log @stakeholders.0._toJSON!
+
+
   /**
    * (Event) On search by disptach order-number.
    * @param {string} _query
@@ -654,24 +668,30 @@ class Anex2 extends Module
                       'Datos a ser consigados sólo en la parte inicial de RO,
                       \ no respecto de cada operación'
 
+    @stakeholders =
+      Stakeholders.New _Declarante  , 'f12'
+      Stakeholders.New _Ordenante   , 'f12'
+      Stakeholders.New _Destinatario, 'f12'
+      Stakeholders.New _Tercero     , 'f12'
+
     _groups =
       * 'Declarantes'
-        Stakeholders.New _Declarante, 'f12'
+        @stakeholders.0
         'DATOS DE IDENTIFICACIÓN DE LAS PERSONAS QUE SOLICITA O FISICAMENTE
         \ REALIZA LA OPERACIÓN EN REPRESENTACIÓN DEL CLIENTE DEL SUJETO
         \ OBLIGADO (DECLARANTE).'
       * 'Ordenantes'
-        Stakeholders.New _Ordenante, 'f12'
+        @stakeholders.1
         'DATOS DE IDENTIFICACIÓN DE LAS PERSONAS EN CUYOS NOMBRES SE REALIZA
         \ LA OPERACIÓN:   ORDENANTES/PROVEEDOR EXTRANJERO (INGRESO DE
         \ MERCANCÍA) / EXPORTADOR (SALIDA DE MERCANCÍA).'
       * 'Destinatario'
-        Stakeholders.New _Destinatario, 'f12'
+        @stakeholders.2
         'DATOS DE IDENTIFICACIÓN DE LAS PERSONAS A FAVOR DE QUIENES SE
         \ REALIZA LA OPERACIÓN IMPORTADOR (INGRESO DE MERCANCÍA) /
         \ DESTINATARIO DEL EMBARQUE (SALIDA DE MERCANCÍA).'
       * 'Terceros'
-        Stakeholders.New _Tercero, 'f12'
+        @stakeholders.3
         'DATOS DE IDENTIFICACIÓN DEL TERCERO POR CUYO INTERMEDIO SE REALIZA
         \ LA OPERACIÓN, DE SER EL CASO.'
 
@@ -681,7 +701,7 @@ class Anex2 extends Module
       _options : ..1
       _class   : gz.Css \col-md-12
       _tip     : ..2
-      _head    : 'h4'
+      _head    : \h4
     } for _groups]
 
     fbuilder.fieldset 'Datos de identificación de los involucrados',
@@ -693,13 +713,18 @@ class Anex2 extends Module
     fbuilder.fieldset 'Datos relacionados a la descripción de la operación',
                       @fieldsDetails
 
-    fbuilder._save!
+    fbuilder._save!.onClick @onSave
 
     fbuilder.render!
     fbuilder.free!
 
     @$ '[title]' .tooltip!
-    super!
+
+#  /** @override */
+#  initialize: ->
+#    @stakeholders = null
+
+  /** @private */ stakeholders: null
 
   /** @public */ @@_caption = 'Anexo 2'
   /** @public */ @@_icon    = gz.Css \glyphicon-file

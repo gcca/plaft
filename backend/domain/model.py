@@ -228,6 +228,9 @@ class Dispatch(Model):
 
         stakeholders = StructuredProperty (Stakeholder, repeated=True)
 
+    class Anex2(Expando):
+        pass
+
     order        = StringProperty     ()
     date         = DateStrProperty    ()
     type         = StructuredProperty (CodeName)
@@ -242,6 +245,7 @@ class Dispatch(Model):
     operation    = KeyProperty        (kind='Operation')
     verifies     = BooleanProperty    (repeated=True)
     anex6        = StructuredProperty (Anex6)
+    #anex2        = StructuredProperty (Anex2)
 
 
 class Operation(Model):

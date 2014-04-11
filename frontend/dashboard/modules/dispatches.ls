@@ -29,6 +29,13 @@ class Dispatches extends Module
     else
       "&\#8212;"
 
+  isnumerated: (dispatch) ->
+    if dispatch.'numeration'
+      and dispatch.'numeration'.'number'
+      and dispatch.'numeration'.'number' isnt ''
+    then 'Sí'
+    else 'No'
+
   /**
    * @return {string}
    */
@@ -58,18 +65,19 @@ class Dispatches extends Module
             <tr>
               <th colspan='3' style='border-bottom:none'>&nbsp;</th>
               <th colspan='2' style='border-bottom:none'>Señales Alerta</th>
-              <th colspan='1' style='border-bottom:none'>Numeración DAM</th>
+              <th colspan='2' style='border-bottom:none'>Numeración DAM</th>
             </tr>
 
             <tr style='border:none'>
-              <th style='border-top:none'>\#Orden Despacho</th>
-              <th style='border-top:none'>Nombre/Razón Social</th>
+              <th style='border-top:none'>\#Orden</th>
+              <th style='border-top:none'>Cliente</th>
               <th style='border-top:none'>RUC/DNI</th>
 
               <th style='border-top:none'>Anexo 1</th>
               <th style='border-top:none'>Revisado</th>
 
               <th style='border-top:none'>Aforo</th>
+              <th style='border-top:none'>¿Numerado?</th>
             </tr>
           </thead>
           <tbody>
@@ -90,6 +98,7 @@ class Dispatches extends Module
           <td>#{@verified dispatch}</td>
 
           <td>#{@numeration dispatch}</td>
+          <td>#{@isnumerated dispatch}</td>
 
           <td class='#{gz.Css \toggle}'>#{@dropdown!}</td>"
         xtbody._append xtr

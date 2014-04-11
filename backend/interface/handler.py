@@ -38,6 +38,8 @@ class Customs(RESTful):
 
     class pending_dispatches(RESTful.Nested):
 
+        require_login = ['get']
+
         def get(self):
             customs = self.user.customs.get()
             self.render_json(customs.datastore.pending.dispatches)
