@@ -240,61 +240,82 @@ _Declarante =
 
   * _name    : 'f11'
     _label   : 'Tipo de documento'
-    _tip     : 'Tipo de documento la persona que solicita o físicamente realiza la operación (Consignar el código de acuerdo a la Tabla Nº 1)'
+    _tip     : 'Tipo de documento la persona que solicita o físicamente
+                \ realiza la operación (Consignar el código de acuerdo a
+                \ la Tabla Nº 1)'
     _type    : FieldType.kComboBox
     _options : App.shared.lists.IDENTIFICATION
 
   * _name    : 'f12'
     _label   : 'Número de documento'
-    _tip     : 'Número de documento de la persona que solicita o físicamente realiza la operación.'
+    _tip     : 'Número de documento de la persona que solicita o físicamente
+               \ realiza la operación.'
 
   * _name    : 'f13'
     _label   : 'País de emisión'
-    _tip     : 'País de emisión del documento de la persona que solicita o físicamente realiza la operación, en caso sea un documento emitido en el extranjero.'
+    _tip     : 'País de emisión del documento de la persona que solicita o
+               \ físicamente realiza la operación, en caso sea un documento
+               \ emitido en el extranjero.'
 
   * _name    : 'f14'
     _label   : 'Apellido paterno'
-    _tip     : 'Apellido paterno de la persona que solicita o físicamente realiza la operación.'
+    _tip     : 'Apellido paterno de la persona que solicita o físicamente
+               \ realiza la operación.'
 
   * _name    : 'f15'
     _label   : 'Apellido materno'
-    _tip     : 'Apellido materno de la persona que solicita o físicamente realiza la operación.'
+    _tip     : 'Apellido materno de la persona que solicita o físicamente
+               \ realiza la operación.'
 
   * _name    : 'f16'
     _label   : 'Nombres'
-    _tip     : 'Nombres de la persona que solicita o físicamente realiza la operación.'
+    _tip     : 'Nombres de la persona que solicita o físicamente realiza
+               \ la operación.'
 
   * _name    : 'f17'
     _label   : 'Nacionalidad'
-    _tip     : 'Nacionalidad de la persona que solicita o físicamente realiza la operación.'
+    _tip     : 'Nacionalidad de la persona que solicita o físicamente realiza
+               \ la operación.'
 
   * _name    : 'f18'
     _label   : 'Ocupación, oficio o profesión'
-    _tip     : 'Ocupación, oficio o profesión de la persona que solicita o físicamente realiza la operación: Consignar los códigos de acuerdo a la Tabla Nº 2'
+    _tip     : 'Ocupación, oficio o profesión de la persona que solicita o
+              \ físicamente realiza la operación: Consignar los códigos de
+              \ acuerdo a la Tabla Nº 2'
 
   * _name    : 'f19'
     _label   : 'Descripción de la ocupación'
-    _tip     : 'Descripción de la ocupación, oficio o profesión de la persona que solicita o físicamente realiza la operación en caso en el ítem anterior se haya consignado la opción otros.'
+    _tip     : 'Descripción de la ocupación, oficio o profesión de la persona
+               \ que solicita o físicamente realiza la operación en caso en
+               \ el ítem anterior se haya consignado la opción otros.'
 
   * _name    : 'f20'
     _label   : 'Código CIIU'
-    _tip     : 'Código CIIU de la ocupación de la persona que solicita o físicamente realiza la operación.'
+    _tip     : 'Código CIIU de la ocupación de la persona que solicita o
+               \ físicamente realiza la operación.'
 
   * _name    : 'f21'
     _label   : 'Cargo'
-    _tip     : 'Cargo de la persona que solicita o físicamente realiza la operación (si aplica): Consignar los códigos de acuerdo a la Tabla Nº 3'
+    _tip     : 'Cargo de la persona que solicita o físicamente realiza
+               \ la operación (si aplica): Consignar los códigos de acuerdo
+               \ a la Tabla Nº 3'
 
   * _name    : 'f22'
     _label   : 'Dirección'
-    _tip     : 'Nombre y número de la vía de la dirección de la persona que solicita o físicamente realiza la operación.'
+    _tip     : 'Nombre y número de la vía de la dirección de la persona
+               \ que solicita o físicamente realiza la operación.'
 
   * _name    : 'f23'
     _label   : 'UBIGEO'
-    _tip     : 'Código UBIGEO del Departamento, provincia y distrito de la dirección de la persona que solicita o físicamente realiza la operación: de acuerdo a la codificación vigente y publicada por el INEI'
+    _tip     : 'Código UBIGEO del Departamento, provincia y distrito de la
+               \ dirección de la persona que solicita o físicamente realiza
+               \ la operación: de acuerdo a la codificación vigente y
+               \ publicada por el INEI'
 
   * _name    : 'f24'
     _label   : 'Teléfono'
-    _tip     : 'Teléfono de la persona que solicita o físicamente realiza la operación.'
+    _tip     : 'Teléfono de la persona que solicita o físicamente realiza
+               \ la operación.'
 
 
 _Ordenante =
@@ -643,9 +664,13 @@ class Anex2 extends Module
    */
   onSave: (evt) ~>
     evt.prevent!
-    console.log @$el._toJSON!
-    console.log @stakeholders.0._toJSON!
 
+    dto = @$el._toJSON!
+    dto\stakeholders = [.._toJSON! for @stakeholders]
+
+    @dispatch.store \anex6 : dto, do
+      _success : -> alert 'Guardado'
+      _error   : -> alert 'ERROR: 7d7aa7a8-c189-11e3-b894-88252caeb7e8'
 
   /**
    * (Event) On search by disptach order-number.
@@ -724,10 +749,11 @@ class Anex2 extends Module
 #  initialize: ->
 #    @stakeholders = null
 
-  /** @private */ stakeholders: null
+  /** @private */ dispatch     : null
+  /** @private */ stakeholders : null
 
-  /** @public */ @@_caption = 'Anexo 2'
-  /** @public */ @@_icon    = gz.Css \glyphicon-file
+  /** @protected */ @@_caption = 'Anexo 2'
+  /** @protected */ @@_icon    = gz.Css \glyphicon-file
 
   /** @override */
   render: ->

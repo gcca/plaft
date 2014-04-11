@@ -263,11 +263,6 @@ NodeList::=
     .._write = fdom._write
     .._read  = fdom._read)!
 
-## Ajax events
-$ document
-  ..on \ajaxError, (_, _xhr) !->
-    window.location = '/' if _xhr\status is 403
-
 ## Global Z-U
 _
   ..zip       = ..\zip
@@ -314,3 +309,8 @@ $\fn
   .._remove      = ..\remove
   .._post        = ..\post
   .._click       = ..\click
+
+## Ajax events
+$ document
+  ..on \ajaxError, (_, _xhr) !->
+    window.location = '/' if _xhr\status is 403

@@ -1,11 +1,13 @@
 /** @modules dashboard.modules.reception */
 
-Module = require '../module'
+Module  = require '../module'
 Subform = require './reception/subform'
 
+# App local
 FieldType   = App.builtins.Types.Field
 sharedLists = App.shared.lists
 
+# Local sharedlist
 OPERATION_CODE     = sharedLists.OPERATION_CODE
 OPERATION_TYPE     = sharedLists.OPERATION_TYPE
 OPERATION_DAM_CODE = sharedLists.OPERATION_DAM_CODE
@@ -182,7 +184,9 @@ class Reception extends Module
 
     super!
 
-  @@_caption = 'Recepción'
-  @@_icon    = gz.Css \glyphicon-inbox
+  /** @protected */ @@_caption = 'Recepción'
+  /** @protected */ @@_icon    = gz.Css \glyphicon-inbox
 
+
+/** @export */
 module.exports = Reception

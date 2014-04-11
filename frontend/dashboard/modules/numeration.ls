@@ -94,9 +94,12 @@ class Numeration extends Module
   @@_caption = 'Numeración'
   @@_icon    = gz.Css \glyphicon-book
 
+
+/** @export */
 module.exports = Numeration
 
 
+# Fields
 FIELDS-HEADER =
   * 'number'
     'N&ordm; DAM'

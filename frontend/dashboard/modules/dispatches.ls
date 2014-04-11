@@ -2,17 +2,22 @@
 
 Module = require '../module'
 
+# App model local
 Customs = App.model.Customs
 
 
 /**
+ * Dispatch list to show status resume.
  * @class UiDispatches
  * @extends Module
  */
 class Dispatches extends Module
 
   /**
+   * Dispatch type color cell.
+   * @param {Dispatch} dispatch
    * @return {string}
+   * @private
    */
   numeration: (dispatch) ->
     if dispatch\numeration
@@ -29,6 +34,12 @@ class Dispatches extends Module
     else
       "&\#8212;"
 
+  /**
+   * Is "numerated" dispatch?.
+   * @param {Dispatch} dispatch
+   * @return {string}
+   * @private
+   */
   isnumerated: (dispatch) ->
     if dispatch.'numeration'
       and dispatch.'numeration'.'number'
@@ -37,7 +48,10 @@ class Dispatches extends Module
     else 'No'
 
   /**
+   * Options per dispatch.
+   * TODO(...): Close dispatch. Get CalcPage unusual and register.
    * @return {string}
+   * @private
    */
   dropdown: ->
     "<button type='button' class='#{gz.Css \btn}
@@ -48,7 +62,10 @@ class Dispatches extends Module
     </button>"
 
   /**
+   * Is verified dispatch? Based on {@code alert.verifies} attribute.
+   * @param {Dispatch} dispatch
    * @return {string}
+   * @private
    */
   verified: (dispatch) ->
     verifies = dispatch\verifies
@@ -104,7 +121,9 @@ class Dispatches extends Module
         xtbody._append xtr
     super!
 
-  @@_caption = 'Despachos'
-  @@_icon    = gz.Css \glyphicon-list
+  /** @protected */ @@_caption = 'Despachos'
+  /** @protected */ @@_icon    = gz.Css \glyphicon-list
 
+
+/** @export */
 module.exports = Dispatches
