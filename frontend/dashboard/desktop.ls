@@ -90,4 +90,6 @@ class Desktop extends App.View
     @$el._append "<div class='#{gz.Css \hidden}'></div>"
     super!
 
+
+/** @export */
 module.exports = Desktop

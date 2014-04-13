@@ -1,5 +1,6 @@
 /** @module dashboard.menu */
 
+
 /**
  * TODO(...): Base class for {@code Settings} and {@code Modules}.
  * @author cristHian Gz. (gcca)
@@ -158,4 +159,6 @@ class Menu extends App.View
 
     super!
 
+
+/** @export */
 module.exports = Menu

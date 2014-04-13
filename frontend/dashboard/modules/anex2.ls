@@ -105,17 +105,23 @@ class Stakeholder extends App.View
    * @param {!Array.<FieldOptions>} _fields
    * @param {!Array.<string>} _slug
    * @param {number} _counter
+   * @param {Object} _dto
    * @override
    */
-  initialize: (@_fields, @_slug, @_counter) !->
+  initialize: (@_fields, @_slug, @_counter, @_dto) !->
 
   /** @private */ _fields  : null
   /** @private */ _slug    : null
   /** @private */ _counter : null
+  /** @private */ _dto     : null
 
   /** @override */
   render: ->
-    @render-find!
+    if @_dto?
+      @render-edit!
+      @$el._fromJSON @_dto
+    else
+      @render-find!
     super!
 
   /**
@@ -166,19 +172,21 @@ class Stakeholders extends App.View
 
   /**
    * Add new stakeholder.
+   * @param {?Object} _dto Stakeholder DTO.
    */
-  addStakeholder: !~>
-    stakeholder = Stakeholder.New @_fields, @_slug, ++@_counter
+  addStakeholder: (_dto) ~>
+    stakeholder = Stakeholder.New @_fields, @_slug, ++@_counter, _dto
     @_container._append stakeholder.render!.el
-    stakeholder.focusField!
+    stakeholder.focusField! if not _dto?
 
   /**
    * @param {!Array.<FieldOptions>} _fields
    * @param {!(string|Array.<string>)} _slug To create slug to find stakeholder
    *   from name field(s).
+   * @param {Array.<Object>} _collection Stakeholder JSON list.
    * @override
    */
-  initialize: (@_fields, @_slug) !->
+  initialize: (@_fields, @_slug, @_collection = App._void._Array) !->
     /**
      * Container for stakeholder stacking.
      * @type {HTMLElement}
@@ -200,10 +208,11 @@ class Stakeholders extends App.View
      */
     @_slug = [@_slug] if @_slug._constructor is String
 
-  /** @private */ _fields    : null
-  /** @private */ _slug      : null
-  /** @private */ _container : null
-  /** @private */ _counter   : null
+  /** @private */ _fields     : null
+  /** @private */ _slug       : null
+  /** @private */ _collection : null
+  /** @private */ _container  : null
+  /** @private */ _counter    : null
 
   /** @override */
   render: ->
@@ -214,6 +223,9 @@ class Stakeholders extends App.View
       </button>"
     @_container = @el._first
     @el._last.onClick @addStakeholder
+
+    for _dto in @_collection then @addStakeholder _dto
+
     super!
 
 
@@ -668,7 +680,7 @@ class Anex2 extends Module
     dto = @$el._toJSON!
     dto\stakeholders = [.._toJSON! for @stakeholders]
 
-    @dispatch.store \anex6 : dto, do
+    @dispatch.store \anex2 : dto, do
       _success : -> alert 'Guardado'
       _error   : -> alert 'ERROR: 7d7aa7a8-c189-11e3-b894-88252caeb7e8'
 
@@ -681,11 +693,15 @@ class Anex2 extends Module
     @el.html ''
     @dispatch = new App.model.Dispatch \order : _query
     @dispatch.fetch do
-      _success: (_, dispatch) ~> @render-form!
+      _success: (_, dispatch) ~> @render-form dispatch
       _error: -> alert 'Número de orden no hallado: ' + _query
 
-  /** @override */
-  render-form: ->
+  /**
+   * Render Anex 2 form.
+   * @param {Object} dispatch DTO.
+   * @private
+   */
+  render-form: (dispatch) ->
     fbuilder = App.shared.shortcuts.xhtml._form.Builder.New @el
 
     fbuilder.fieldset 'Datos de identificación del RO',
@@ -693,11 +709,14 @@ class Anex2 extends Module
                       'Datos a ser consigados sólo en la parte inicial de RO,
                       \ no respecto de cada operación'
 
+    dispatchStakeholders = if dispatch.'anex2'?
+                           then dispatch.'anex2'.'stakeholders'
+                           else [void, void, void, void]
     @stakeholders =
-      Stakeholders.New _Declarante  , 'f12'
-      Stakeholders.New _Ordenante   , 'f12'
-      Stakeholders.New _Destinatario, 'f12'
-      Stakeholders.New _Tercero     , 'f12'
+      Stakeholders.New _Declarante  , 'f12', dispatchStakeholders.0
+      Stakeholders.New _Ordenante   , 'f12', dispatchStakeholders.1
+      Stakeholders.New _Destinatario, 'f12', dispatchStakeholders.2
+      Stakeholders.New _Tercero     , 'f12', dispatchStakeholders.3
 
     _groups =
       * 'Declarantes'
@@ -743,6 +762,7 @@ class Anex2 extends Module
     fbuilder.render!
     fbuilder.free!
 
+    @$el._fromJSON dispatch\anex2
     @$ '[title]' .tooltip!
 
 #  /** @override */
@@ -766,11 +786,11 @@ class Anex2 extends Module
    * @private
    */
   fieldsRO:
-    * _name  : '1'
+    * _name  : 'f1'
       _label : 'Código del sujeto obligado'
       _tip   : 'Código del sujeto obligado otorgado por la UIF.'
 
-    * _name  : '2'
+    * _name  : 'f2'
       _label : 'Código del oficial de cumplimiento'
       _tip   : 'Código del oficial de cumplimiento otorgado por la UIF.'
 
@@ -789,7 +809,7 @@ class Anex2 extends Module
    * @private
    */
   fieldsOperation:
-    * _name  : '3'
+    * _name  : 'f3'
       _label : 'Número de fila'
       _tip   : 'Número de fila: Consignar el número de secuencia
                \ correspondiente a las líneas contenidas en el RO debiendo
@@ -798,33 +818,33 @@ class Anex2 extends Module
                \ ellas, consignando en cada fila el mismo número de registro
                \ de operación.'
 
-    * _name  : '4'
+    * _name  : 'f4'
       _label : 'Número de registro de operación'
       _tip   : 'Número de registro de operación: Consignar el número de
                 \ secuencia correspondiente al registro de la operación en el
                 \ RO debiendo empezar en el número uno (1), de acuerdo al
                 \ formato siguiente: (año - número).'
 
-    * _name  : '5'
+    * _name  : 'f5'
       _label : 'Número de registro interno del sujeto obligado'
       _tip   : 'Número de registro interno del sujeto obligado para el
                 \ registro de operación: Consignar el número de la
                 \ Declaración Aduanera de Mercancías (DAM) correspondiente a
                 \ la operación que se registra.'
 
-    * _name  : '6'
+    * _name  : 'f6'
       _label : 'Modalidad de operación'
       _tip   : 'Modalidad de operación: Consignar los siguientes valores:
                \ U para operaciones individuales y M para operaciones
                \ múltiples.'
 
-    * _name  : '7'
+    * _name  : 'f7'
       _label : 'Número de operaciones'
       _tip   : 'Número de operaciones que contiene la operación múltiple:
                \ En caso se trate de una operación múltiple consignar el
                \ número de operaciones que la conforman.'
 
-    * _name  : '8'
+    * _name  : 'f8'
       _label : 'Fecha de numeración'
       _tip   : 'Fecha de la operación: Consignar la fecha de numeración
                \ de la mercancía (dd/mm/aaaa)'
@@ -835,48 +855,48 @@ class Anex2 extends Module
    * @private
    */
   fieldsDetails:
-    * _name        : '71'
+    * _name        : 'f71'
       _label       : 'Tipo de fondo'
       _tip         : 'Tipo de fondos con que se realizó la operación: consignar
                      \ el código de acuerdo a la Tabla Nº 5.'
       _type        : FieldType.kComboBox
       _options     : App.shared.lists.PAYMENT_TYPE
 
-    * _name        : '72'
+    * _name        : 'f72'
       _label       : 'Tipo de operación'
       _tip         : 'Tipo de operación: consignar el código de acuerdo a la
                      \ Tabla Nº 6: Tipos de Operación.'
       _type        : FieldType.kComboBox
       _options     : App.shared.lists.OPERATION_TYPE
 
-    * _name        : '73'
+    * _name        : 'f73'
       _label       : 'Descripción del tipo "Otros"'
       _tip         : 'Descripción del tipo de operación en caso según la tabla
                      \ de operaciones se haya consignado el código de "Otros"'
 
-    * _name        : '74'
+    * _name        : 'f74'
       _label       : 'Descripción de mercancías'
       _tip         : 'Descripción de las mercancías involucradas en
                      \ la operación.'
 
-    * _name        : '75'
+    * _name        : 'f75'
       _label       : 'Número de DAM.'
 
-    * _name        : '76'
+    * _name        : 'f76'
       _label       : 'Fecha de numeración de la DAM'
 
-    * _name        : '77'
+    * _name        : 'f77'
       _label       : 'Origen de los fondos involucrados en la operación'
 
-    * _name        : '78'
+    * _name        : 'f78'
       _label       : 'Moneda'
       _tip         : 'Moneda en que se realizó la operación (Según Codificación
                      \ ISO-4217).'
 
-    * _name        : '79'
+    * _name        : 'f79'
       _label       : 'Descripción del tipo de moneda en caso sea "Otra"'
 
-    * _name        : '80'
+    * _name        : 'f80'
       _label       : 'Monto de la operación'
       _tip         : 'Monto de la operación: Consignar el valor de la mercancía
                      \ correspondiente a la operación de comercio exterior
@@ -887,7 +907,7 @@ class Anex2 extends Module
                      \ dólares, según el tipo de cambio que la entidad tenga
                      \ vigente el día que se realizó la operación.'
 
-    * _name        : '81'
+    * _name        : 'f81'
       _label       : 'Tipo de cambio'
       _tip         : 'Tipo de cambio: consignar el tipo de cambio respecto a
                      \ la moneda nacional, en los casos en los que la
@@ -896,13 +916,13 @@ class Anex2 extends Module
                      \ la entidad tenga vigente el día que se realizó la
                      \ operación.'
 
-    * _name        : '82'
+    * _name        : 'f82'
       _label       : 'Código del país de origen'
       _tip         : 'Código de país de origen: para las operaciones
                      \ relacionadas con importación de bienes, para lo cual
                      \ deben tomar la codificación publicada por la SBS.'
 
-    * _name        : '83'
+    * _name        : 'f83'
       _label       : 'Código del país de destino'
       _tip         : 'Código de país de destino: para las operaciones
                      \ relacionadas con exportación de bienes, para lo cual

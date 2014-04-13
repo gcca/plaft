@@ -1,5 +1,6 @@
 /** @module dashboard.module */
 
+
 /**
  * Base class for modules.
  * Only for module inheritance.
@@ -31,4 +32,6 @@ class Module extends App.View
   /** @protected */ @@_caption = ''
   /** @protected */ @@_icon    = gz.Css \glyphicon-tower
 
+
+/** @export */
 module.exports = Module
