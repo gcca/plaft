@@ -4,10 +4,14 @@ FieldType         = App.builtins.Types.Field
 $htmlControlGroup = App.shared.shortcuts.$html.controlGroup
 
 
-module.exports = \
-
+/**
+ * Person customer form.
+ * @class UiPerson
+ * @extends UiBase
+ */
 class Person extends Base
 
+  /** @override */
   render: ->
     for [field, fieldClass] in _.zip FIELDS, FIELDS_CLASS
       $controlGroup = $htmlControlGroup field
@@ -18,6 +22,9 @@ class Person extends Base
 
     super!
 
+
+/** @export */
+module.exports = Person
 
 /**
  * [
@@ -65,7 +72,7 @@ FIELDS =
 
   * 'address'
     'f)'
-    'Domcilio declarado (lugar de residencia)'
+    'Domicilio declarado (lugar de residencia)'
     'Domicilio declarado (lugar de residencia).'
 
   * 'fiscal'
@@ -129,17 +136,6 @@ FIELDS =
     'Origen de los fondos'
     'El origen de los fondos, bienes u otros activos involucrados en dicha
      \ transacción.'
-    FieldType.kComboBox
-    * 'Efectivo'
-      'Cheque'
-      'Giro'
-      'Transferencia bancaria'
-      'Deposito en cuenta'
-      'Tarjeta de crédito'
-      'Bien mueble'
-      'Bien inmueble'
-      'Otro'
-      'No efectivo'
 
   * 'isobliged'
     'j)'

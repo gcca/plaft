@@ -122,6 +122,8 @@ Object.defineProperties CSSProperties::, do
   _width          : gsetter \width
   _height         : gsetter \height
   _padding        : gsetter \padding
+  _padding-left   : gsetter \paddingLeft
+  _padding-right  : gsetter \paddingRight
   _overflow       : gsetter \overflow
   _overflowX      : gsetter \overflowX
   _overflowY      : gsetter \overflowY

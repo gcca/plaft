@@ -36,6 +36,15 @@ exports <<<
       \dataType    : \json)
       ..\fail _error
 
+  _delete: (_url, _data, _success, _error) ->
+    ($\ajax do
+      \type        : \DELETE
+      \url         : _url
+      \success     : _success
+      \contentType : 'application/json'
+      \dataType    : \json)
+      ..\fail _error
+
   difference: (_attrs, _keys) ->
     _data = new Object
 

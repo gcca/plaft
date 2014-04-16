@@ -40,6 +40,8 @@ class Business extends Base
 
     super!
 
+
+/** @export */
 module.exports = Business
 
 /**
@@ -72,8 +74,6 @@ FIELDS =
     'Actividad económica principal'
     'Actividad económica principal (comercial, industrial, construcción,
      \ transporte, etc.).'
-    FieldType.kComboBox
-    App.shared.lists.ACTIVITY
 
   * null
     'd)'
@@ -123,17 +123,6 @@ FIELDS =
     'Origen de los fondos'
     'El origen de los fondos, bienes u otros activos involucrados en dicha
      \ transacción.'
-    FieldType.kComboBox
-    * 'Efectivo'
-      'Cheque'
-      'Giro'
-      'Transferencia bancaria'
-      'Deposito en cuenta'
-      'Tarjeta de crédito'
-      'Bien mueble'
-      'Bien inmueble'
-      'Otro'
-      'No efectivo'
 
   * null
     null

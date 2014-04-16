@@ -139,6 +139,17 @@ NodeList::=
         if value == node.value
           node.checked = yes
           break
+  _value:~
+    ->
+      for node in @
+        if node.checked is yes
+          return node.value
+      ''
+    !(value) ->
+      for node in @
+        if value == node.value
+          node.checked = yes
+          break
 
 ((fastdom) ->
   raf = (window.requestAnimationFrame

@@ -34,6 +34,8 @@ app = WSGIApplication([
 
     ('/api/v1/dispatch', handler.Dispatch),
     Route(r'/api/v1/dispatch/<id:\d+>', handler.Dispatch),
+    Route('/api/v1/dispatch/report/register',
+          handler.Dispatch.report_register),
 
     ('/api/v1/stakeholder', handler.Stakeholder),
     Route(r'/api/v1/dispatch/<id:\d+>', handler.Stakeholder)

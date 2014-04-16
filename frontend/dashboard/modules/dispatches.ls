@@ -50,16 +50,36 @@ class Dispatches extends Module
   /**
    * Options per dispatch.
    * TODO(...): Close dispatch. Get CalcPage unusual and register.
+   * @param {Object} dispatch
    * @return {string}
    * @private
    */
-  dropdown: ->
-    "<button type='button' class='#{gz.Css \btn}
-                               \ #{gz.Css \btn-default}
-                               \ #{gz.Css \pull-right}'>
-      <i class='#{gz.Css \glyphicon}
-              \ #{gz.Css \glyphicon-circle-arrow-down}'></i>
-    </button>"
+  dropdown: (dispatch) -> "
+    <div class='#{gz.Css \dropdown} #{gz.Css \pull-right}'>
+      <a role='button' data-toggle='dropdown' data-target='#'>
+        Opciones <span class='#{gz.Css \caret}'></span>
+      </a>
+      <ul class='#{gz.Css \dropdown-menu}'>
+        <li>
+          <a>Reporte RO</a>
+        </li>
+        <li>
+          <a>Reporte Inusual</a>
+        </li>
+        <li>
+          <a>Concluir</a>
+        </li>
+      </ul>
+    </div>"
+
+  /**
+   * (Event) On click to report operation register.
+   * @param {Object} dispatch DTO.
+   * @param {Object} evt
+   * @private
+   */
+  options-report-register: (dispatch, evt) ~~>
+    console.log 'Not-Implemented'
 
   /**
    * Is verified dispatch? Based on {@code alert.verifies} attribute.
@@ -117,8 +137,28 @@ class Dispatches extends Module
           <td>#{@numeration dispatch}</td>
           <td>#{@isnumerated dispatch}</td>
 
-          <td class='#{gz.Css \toggle}'>#{@dropdown!}</td>"
+          <td class='#{gz.Css \toggle}'>#{@dropdown dispatch}</td>"
+
+        # Options events
+        op = xtr._last._first._last._first
+        op.onClick @options-report-register dispatch
+
         xtbody._append xtr
+
+      # Operation Register options
+      xOpciones = App.dom._new \div
+        ..Class = gz.Css \col-md-12
+        ..css._padding-left = '0'
+        ..html "
+          <button class='#{gz.Css \btn} #{gz.Css \btn-default}'>
+            Exportar RO
+          </button>"
+
+      xOpciones._first.onClick ->
+        document.location = "#{App.Model.API}dispatch/report/register"
+
+      @el._append xOpciones
+
     super!
 
   /** @protected */ @@_caption = 'Despachos'

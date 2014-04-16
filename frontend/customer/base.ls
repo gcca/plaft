@@ -112,6 +112,20 @@ class Base extends App.View
     # Populate form
     @$el._fromJSON @model._attributes
 
+    # Sync isobliged and hasofficer
+    $isobliged  = @$ '[name=isobliged]'
+    $hasofficer = @$ '[name=hasofficer]' .parents \div.form-group
+
+    xisobliged = @el._elements\isobliged
+    $hasofficer._hide! if xisobliged._value isnt \Sí
+    $isobliged .on \change ->
+      if xisobliged._value is \Sí
+        $hasofficer._show!
+      else
+        $hasofficer._hide!
+
     super!
 
+
+/** @export */
 module.exports = Base

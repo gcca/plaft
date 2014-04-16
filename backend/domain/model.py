@@ -73,6 +73,14 @@ class Customer(Model):
     public       = TextProperty       ()
     domestic     = TextProperty       ()
 
+    @property
+    def isbusiness(self):
+        return len(self.document.number) == 11
+
+    @property
+    def isperson(self):
+        return not self.isbusiness
+
 
 class Declaration(Model):
     """Declaración Jurada.

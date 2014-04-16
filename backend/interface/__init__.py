@@ -28,7 +28,10 @@ class BaseHandler(RequestHandler):
         if rc: self.status[rc](ValueError('RC JSON'))
         self.write(ds)
 
-    def write_file(self, file):
+    def write_file(self, file, name=None):
+        if name:
+            self.response.headers['Content-Disposition'] = str(
+                'attachment; filename=' + name)
         self.contt = self.ct.DOWN
         self.write(file)
 

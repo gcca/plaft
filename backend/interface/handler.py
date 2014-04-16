@@ -1,6 +1,8 @@
 # encoding: utf-8
 from __future__ import unicode_literals
 
+from StringIO import StringIO
+import xlsxwriter
 from interface import BaseHandler, RESTful, RESTfulCollection
 from domain import model
 
@@ -88,6 +90,27 @@ class Dispatch(RESTful):
         customs = self.user.customs.get()
         customs.datastore.pending.dispatches.append(self.entity.key)
         customs.store()
+
+    class report_register(RESTful.Nested):
+
+        def get(self):
+            out = StringIO()
+
+            workbook = xlsxwriter.Workbook(out, {'in_memory': True})
+            worksheet = workbook.add_worksheet()
+
+            row = 0
+            col = 0
+            for  dispatch in model.Dispatch.query().fetch(600):
+                worksheet.write(row, col,     dispatch.order)
+                worksheet.write(row, col + 1, str(dispatch.created))
+                worksheet.write(row, col + 2, dispatch.type.name)
+                worksheet.write(row, col + 3, dispatch.customer.get().name)
+                row += 1
+
+            workbook.close()
+            out.seek(0)
+            self.write_file(out.read(), 'Registro de Operaciones.xlsx')
 
 
 class Stakeholder(RESTful):

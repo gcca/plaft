@@ -159,20 +159,6 @@ from reportlab.lib.units import inch
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, \
                                Table, TableStyle
 
-month_tr = {
-    1: 'Enero',
-    2: 'Febrero',
-    3: 'Marzo',
-    4: 'Abril',
-    5: 'Mayo',
-    6: 'Junio',
-    7: 'Julio',
-    8: 'Agosto',
-    9: 'Setiembre',
-    10: 'Octubre',
-    11: 'Noviembre',
-    12: 'Diciembre'
-}
 class DeclarationPDF(BaseHandler):
 
     def shareholdersList(self, shareholders):
@@ -231,6 +217,22 @@ class DeclarationPDF(BaseHandler):
 
         # story.append(Paragraph('<para align=right><b>N&ordm; ' + declaration.tracking + '</b></para>', styles["Normal"]))
         story.append(Paragraph('&nbsp;' * 140 + '<font><b>N&ordm; ' + declaration.tracking + '</b></font>', styles["Normal"]))
+        story.append(Spacer(1, 12))
+
+        title = 'Persona Jurídica' if customer.isbusiness else 'Persona Natural'
+        story.append(
+            Paragraph('&nbsp;' * 64 + '<font size=12><b>%s</b></font>' % title,
+                      styles['Normal']))
+        story.append(Spacer(1, 12))
+
+        if customer.category and 'Otros' != customer.category:
+            mull = 60 if 'Importador frecuente' == customer.category else 61
+            story.append(
+                Paragraph('&nbsp;' * mull + '<font size=12><b>%s</b></font>'
+                          % customer.category,
+                          styles['Normal']))
+            story.append(Spacer(1, 12))
+
         story.append(Spacer(1, 24))
 
         ptext = '<font size=10>%s</font>' % 'Por el presente documento, declaro bajo juramento, lo siguiente:'
@@ -347,8 +349,7 @@ class DeclarationPDF(BaseHandler):
         #story.append(Spacer(1, 96))
 
         ztime = declaration.created.utcnow() - timedelta(hours=5)
-        bgdate = ztime.strftime('%d de '
-                                + month_tr[ztime.month] + ' del %Y')
+        bgdate = ztime.strftime('%d / %m / %Y')
         bgtime = ztime.strftime('%H:%M')
 
         data = [['____________________' , 'Fecha :    ' + bgdate],
