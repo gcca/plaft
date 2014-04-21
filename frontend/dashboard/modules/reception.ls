@@ -44,6 +44,9 @@ class Reception extends Module
   onSave: (evt) !~>
     evt.prevent!
 
+    xbutton = @xgroupSave._first
+    xbutton._disabled = true
+
     dto = $ @el._first ._toJSON!
 
     if (@vdeclaration.processFields dto) is -1
@@ -59,8 +62,12 @@ class Reception extends Module
                      \ #{gz.Css \pull-right}' disabled>
               Guardado
             </button>"
+          alert 'Guardado'
+          @clean!
+          @render!
 
         _error   : ->
+          xbutton._disabled = false
           _error = App._global._error._get ...
           if _error._code isnt 500
             alert _error._json\e
@@ -123,16 +130,16 @@ class Reception extends Module
     xLineEdit 'order' 'N&ordm; Orden de despacho' .appendTo xform
 
     # Set today
-    today = new Date
-    day   = today.getDate!
-    day   = (if day < 10 then '0' else '') + day
-    month = today.getMonth! + 1
-    month = (if month < 10 then '0' else '') + month
-    year  = today.getFullYear!
+#    today = new Date
+#    day   = today.getDate!
+#    day   = (if day < 10 then '0' else '') + day
+#    month = today.getMonth! + 1
+#    month = (if month < 10 then '0' else '') + month
+#    year  = today.getFullYear!
 
-    xLineEdit 'date' 'Fecha'
-      .._last._value = "#{day}-#{month}-#{year}"
-      ..appendTo xform
+#    xLineEdit 'date' 'Fecha'
+#      .._last._value = "#{day}-#{month}-#{year}"
+#      ..appendTo xform
 
     # Operation type
     xPairSelect('type[code]',

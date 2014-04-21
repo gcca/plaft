@@ -56,10 +56,11 @@ class Dispatches extends Module
    */
   dropdown: (dispatch) -> "
     <div class='#{gz.Css \dropdown} #{gz.Css \pull-right}'>
-      <a role='button' data-toggle='dropdown' data-target='#'>
-        Opciones <span class='#{gz.Css \caret}'></span>
+      <a role='button' data-toggle='dropdown'>
+        <i class='#{gz.Css \glyphicon} #{gz.Css \glyphicon-bookmark}'></i>
+        <span class='#{gz.Css \caret}'></span>
       </a>
-      <ul class='#{gz.Css \dropdown-menu}'>
+      <ul class='#{gz.Css \dropdown-menu}' role='menu'>
         <li>
           <a>Reporte RO</a>
         </li>
@@ -100,7 +101,7 @@ class Dispatches extends Module
                     \ #{gz.Css \table-responsive}'>
           <thead>
             <tr>
-              <th colspan='3' style='border-bottom:none'>&nbsp;</th>
+              <th colspan='4' style='border-bottom:none'>&nbsp;</th>
               <th colspan='2' style='border-bottom:none'>Señales Alerta</th>
               <th colspan='2' style='border-bottom:none'>Numeración DAM</th>
             </tr>
@@ -109,6 +110,7 @@ class Dispatches extends Module
               <th style='border-top:none'>\#Orden</th>
               <th style='border-top:none'>Cliente</th>
               <th style='border-top:none'>RUC/DNI</th>
+              <th style='border-top:none'>Fecha</th>
 
               <th style='border-top:none'>Anexo 1</th>
               <th style='border-top:none'>Revisado</th>
@@ -130,6 +132,7 @@ class Dispatches extends Module
           <td>#{dispatch.'order'}</td>
           <td>#{dispatch.'customer'.'name'}</td>
           <td>#{dispatch.'customer'.'document'.'number'}</td>
+          <td>#{dispatch.'created'}</td>
 
           <td>#{[..\code for dispatch.'alerts'].join ', '}</td>
           <td>#{@verified dispatch}</td>
@@ -140,10 +143,13 @@ class Dispatches extends Module
           <td class='#{gz.Css \toggle}'>#{@dropdown dispatch}</td>"
 
         # Options events
-        op = xtr._last._first._last._first
-        op.onClick @options-report-register dispatch
+        ## op = xtr._last._first._last._first
+        ## op.onClick @options-report-register dispatch
+
+        $ xtr._last._first._first .dropdown!
 
         xtbody._append xtr
+
 
       # Operation Register options
       xOpciones = App.dom._new \div

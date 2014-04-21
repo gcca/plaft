@@ -68,9 +68,11 @@ class Dispatch(RESTful):
     model         = model.Dispatch
     require_login = RESTful.methods
 
+    # TODO(...):  batch validate for Specification class.
     def _validate(self):
         ds = model.Datastore()
-        if self.entity.declaration not in ds.pending.declarations:
+        if (self.entity.declaration
+            and self.entity.declaration not in ds.pending.declarations):
             raise model.BadValueError('La declaración %s ya fue usada.'
                                       % self.entity.declaration.get().tracking)
 

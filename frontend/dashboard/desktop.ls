@@ -56,7 +56,6 @@ class Desktop extends App.View
    */
   newCustomized: (Module) ->
     @module = Module.New!
-      ..el.Class = gz.Css \col-md-12
       ..ui.desktop._search = @_search
       @_search.setOnSearch ..onSearch
 

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from collections import Iterable
 from google.appengine.ext.ndb import *
 from google.appengine.ext import ndb as db
@@ -28,9 +28,21 @@ class ERROR:
     BadValueError    = BadValueError
 
 
+def readOnly(property):
+    return type('ReadOnly' + property.__name__, (property,),
+                { '_set_value': lambda *a: None })
+
+
+class DateProperty(DateProperty):
+    def _to_base_type(self, value):
+        value = value - timedelta(hours=5)
+        return value
+
+
 class DateStrProperty(DateProperty):
 
     def _to_base_type(self, value):
+        # TODO(...): Change to 're' for '-' and '/' support.
         if isinstance(value, basestring):
             value = (datetime(*map(int, reversed(value.split('-'))))
                      if value
@@ -100,8 +112,10 @@ class Repository(Model):
 
 class Model(Entity, Repository):
 
-    created = DateTimeProperty(auto_now_add=True)
-    last_modified = DateTimeProperty(auto_now=True)
+    ReadOnlyDateTimeProperty = readOnly(DateTimeProperty)
+
+    created = ReadOnly(DateTimeProperty(auto_now_add=True))
+    last_modified = ReadOnlyDateTimeProperty(auto_now=True)
 
     exclude = []
     user = None
@@ -109,8 +123,6 @@ class Model(Entity, Repository):
     @property
     def dict(self):
         dict = self.to_dict(exclude=self.exclude)
-        del dict['created']
-        del dict['last_modified']
         if self.key: dict['id'] = self.id
         return dict
 

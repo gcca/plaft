@@ -300,6 +300,7 @@ $\fn
   ..hide         = ..\hide
   ..post         = ..\post
   ..tooltip      = ..\tooltip
+  ..dropdown     = ..\dropdown
   .._show        = ..\show
   .._find        = ..\find
   .._append      = ..\append

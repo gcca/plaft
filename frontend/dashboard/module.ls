@@ -15,6 +15,15 @@ class Module extends App.View
   /** @override */
   _tagName: \div
 
+  /** @override */
+  _className: "#{gz.Css \col-md-12} #{gz.Css \no-select}"
+
+  /**
+   * Clean before new render.
+   * @protected
+   */
+  clean: -> @el.html ''
+
   /**
    * External desktop attributes.
    * ui: {
