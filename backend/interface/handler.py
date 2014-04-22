@@ -16,7 +16,7 @@ class Customer(RESTful):
         model     = model.Declaration
         reference = 'owner'
 
-        def _post_post_store(self):
+        def post_after_store(self):
             ds = model.Datastore()
             ds.pending.declarations.append(self.entity.key)
             ds.store()
@@ -57,7 +57,7 @@ class Declarations(RESTfulCollection):
 
     model         = model.Declaration
 
-    def _post_post_store(self):
+    def post_after_store(self):
         ds = model.Datastore()
         da.pending.declarations.append(self.entity.key)
         ds.store()
@@ -76,10 +76,10 @@ class Dispatch(RESTful):
             raise model.BadValueError('La declaración %s ya fue usada.'
                                       % self.entity.declaration.get().tracking)
 
-    def _post_pre_store(self):
+    def post_before_store(self):
         self.entity.customs = self.user.customs
 
-    def _post_post_store(self):
+    def post_after_store(self):
         declaration = self.entity.declaration
         if declaration:
             self.entity.customer = declaration.get().owner

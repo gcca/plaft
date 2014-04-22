@@ -5,7 +5,9 @@ Module = require '../module'
 FieldType = App.builtins.Types.Field
 
 
-/**
+/** ------
+ *  Anex 2
+ *  ------
  * Search, find or register new stakeholder.
  * Finding by slug attribute. Before store entity, {@code slug} is fixed.
  * TODO(...): Find stakeholder by multi-fields criteria.

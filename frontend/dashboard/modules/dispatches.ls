@@ -6,7 +6,9 @@ Module = require '../module'
 Customs = App.model.Customs
 
 
-/**
+/** ----------
+ *  Dispatches
+ *  ----------
  * Dispatch list to show status resume.
  * @class UiDispatches
  * @extends Module

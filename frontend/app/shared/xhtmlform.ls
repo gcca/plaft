@@ -94,6 +94,10 @@ class Builder extends Array implements PoolMixIn
    */
   fieldset: (_legend, _fields, _tip) -> @_push _fieldset _legend, _fields, _tip
 
+  /**
+   * Add standard save button.
+   * @return {HTMLElement}
+   */
   _save: ->
     App.dom._new \div
       ..Class = gz.Css \col-md-12
@@ -103,6 +107,13 @@ class Builder extends Array implements PoolMixIn
                 Guardar
               </button>"
       @_push ..
+
+  /**
+   * Enable tooltips.
+   * @return {Array.<HTMLElement>}
+   */
+  tooltips: ->
+    for xel in @ then $ xel .tooltip!
 
   /** @override */
   render: ->

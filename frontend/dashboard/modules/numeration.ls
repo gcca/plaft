@@ -2,25 +2,21 @@
 
 Module = require '../module'
 
-new-field = ->
-
-new-group = (_name, _label, _placeholder)->
-  "
-  <div class='#{gz.Css \form-group} #{gz.Css \col-md-6}'>
-    <label>
-      #_label
-    </label>
-    <input type='text' name='#_name' placeholder='#_placeholder'
-        class='#{gz.Css \form-control}'>
-  </div>
-  "
+FieldType = App.builtins.Types.Field
 
 
-/**
+/** ----------
+ *  Numeration
+ *  ----------
+ * Numeration module for register DAM numeration and extra data.
+ * TODO(...): This module should become a operator form for data analysis.
  * @class UiNumeration
  * @extends Module
  */
 class Numeration extends Module
+
+  /** @override */
+  _tagName: \form
 
   /**
    * (Event) On save dispatch numeration data.
@@ -29,6 +25,8 @@ class Numeration extends Module
    */
   onSave: (evt) ~>
     evt.prevent!
+    console.log \dfdmfmk
+    return
     $form = $ evt._target
     @dispatch.store \numeration : $form._toJSON!, do
       _success: -> alert 'Guardado'
@@ -53,36 +51,36 @@ class Numeration extends Module
    * @private
    */
   showForm: (dispatch) ->
-    hstack = new Array
-
-    hstack._push '<form>'
-
-    for [_name, _label, _placeholder] in FIELDS-HEADER
-      hstack._push new-group _name, _label, _placeholder
-
-#    hstack._push "
-#      <div class='#{gz.Css \col-md-12}'>
-#        <h3>Detalle</h3>
-#      </div>"
-
-#    for [_name, _label, _placeholder] in FIELDS-DETAILS
-#      hstack._push new-group _name, _label, _placeholder
-
-
-    hstack._push "
+    fbuilder = App.shared.shortcuts.html._form.Builder.New @el
+    fbuilder._push "
       <div class='#{gz.Css \col-md-12}'>
-        <button class='#{gz.Css \btn}
-                     \ #{gz.Css \btn-primary}
-                     \ #{gz.Css \pull-right}'>
-          Guardar
-        </button>
-      </div></form>"
+        <div class='#{gz.Css \col-md-2}'>
+          <label>Cliente:</label>
+        </div>
+        <div class='#{gz.Css \col-md-10}'>
+          <span>#{dispatch.'customer'.\name}</span>
+        </div>
+      </div>
+      <div class='#{gz.Css \col-md-12}'>
+        <div class='#{gz.Css \col-md-2}'>
+          <label>Persona:</label>
+        </div>
+        <div class='#{gz.Css \col-md-10}'>
+          <span>#{if dispatch.'customer'.'document'.\type is \RUC
+                  then 'Jurídica' else 'Natural'}</span>
+        </div>
+      </div>
+      <div class='#{gz.Css \col-md-12}'>
+        &nbsp;
+      </div>"
+    for _field in FIELDS-HEADER then fbuilder.field _field
+    fbuilder._save!
+    fbuilder.render!
+    fbuilder.tooltips!
+    fbuilder.free!
 
-    @el.html hstack._join ''
-
-    @el._first
-      $ .. ._fromJSON dispatch\numeration
-      ..onSubmit @onSave
+    @$el._fromJSON dispatch\numeration
+    @el.onSubmit @onSave
 
   /** @private */ dispatch: null
 
@@ -101,76 +99,80 @@ module.exports = Numeration
 
 # Fields
 FIELDS-HEADER =
-  * 'number'
-    'N&ordm; DAM'
-    'A _ 2'
-    'XXX-AAAA-RR-NNNNNN'
+  * _name  : 'number'
+    _label : 'N&ordm; DAM'
+    _tip   : 'A Casillero 2'
+#    'XXX-AAAA-RR-NNNNNN'
 
-  * 'date'
-    'Fecha numeración (dd-mm-aaaa)'
-    'A _ 2'
-    'dd/mm/aaaa'
+  * _name  : 'date'
+    _label : 'Fecha numeración (dd-mm-aaaa)'
+    _tip   : 'A Casillero 2'
+#    'dd/mm/aaaa'
 
-  * 'type'
-    'Tipo Aforo'
-    'A _ 2'
-    '1=verde, 2=naranja, 3=Rojo'
+  * _name    : 'type'
+    _label   : 'Tipo Aforo'
+    _tip     : 'A Casillero 2'
+    _type    : FieldType.kComboBox
+    _options :
+      'Verde'
+      'Naranja'
+      'Rojo'
 
-  * ''
-    'Identificación Imp/Exp'
-    'A _ 1.1'
-    'Destinación=10, Operación=001\n
-     Destinación=41, Operación=003'
+#  * ''
+#    'Identificación Imp/Exp'
+#    'A Casillero 1.1'
+#    'Destinación=10, Operación=001\n
+#     Destinación=41, Operación=003'
 
-  * ''
-    'Dirección Imp/Exp'
-    'A _ 1.3'
-    'Destinación=10, Operación=001'
+#  * ''
+#    'Dirección Imp/Exp'
+#    'A Casillero 1.3'
+#    'Destinación=10, Operación=001'
 
   ## * ''
   ##   'Moneda Transacción'
   ##   ''
   ##   'D=Dólar Automático'
 
-  * 'amount'
-    'Monto operación (FOB)'
-    'A _ 6.1'
-    'xx\'xxx,xxx.xxxx'
+  * _name  : 'amount'
+    _label : 'Monto operación (FOB)'
+    _tip   : 'A Casillero 6.1'
+#    'xx\'xxx,xxx.xxxx'
 
-  * 'exchange'
-    'Tipo cambio Venta'
-    'Fecha numeración _ 2'
-    'T/C publicado SBS xxx.xxxx'
+  * _name  : 'exchange'
+    _label : 'Tipo cambio Venta'
+    _tip   : 'Fecha numeración _ 2'
+#    'T/C publicado SBS xxx.xxxx'
 
-  * ''
-    'Total Series'
-    'A _ 7.1'
-    'Crea archivo detalle'
+#  * ''
+#    'Total Series'
+#    'A Casillero 7.1'
+#    'Crea archivo detalle'
 
-  * ''
-    'Drawback Acogimiento'
-    'A _ 7.28'
-    'Código=13, Operación=003'
+  * _name  : 'drawback'
+    _label : 'Drawback Acogimiento'
+    _tip   : 'A Casillero 7.28'
+#    'Código=13, Operación=003'
 
 FIELDS-DETAILS =
   * ''
     'Subpartida Nacional (1)'
-    'A _ 7.19'
+    'A Casillero 7.19'
     'xxxxxxxxxx'
 
   * ''
     'Subpartida Nacional (2)'
-    'A1 _ 7.19'
+    'A1 Casillero 7.19'
     'xxxxxxxxxx'
 
   * ''
     'Subpartida Nacional (3)'
-    'A1 _ 7.19'
+    'A1 Casillero 7.19'
     'xxxxxxxxxx'
 
   * ''
     'Subpartida Nacional (n)'
-    'A1 _ 7.19'
+    'A1 Casillero 7.19'
     'xxxxxxxxxx'
 
   * ''

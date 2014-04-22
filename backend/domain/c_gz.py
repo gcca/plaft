@@ -3,7 +3,7 @@ from collections import Iterable
 from google.appengine.ext.ndb import *
 from google.appengine.ext import ndb as db
 from infraestructure import utils
-
+from shared import Entity
 
 class Error(Exception):
     """Base model error type. """
@@ -28,9 +28,12 @@ class ERROR:
     BadValueError    = BadValueError
 
 
+def readOnlyPass(*_, **__): pass
+
+
 def readOnly(property):
-    return type('ReadOnly' + property.__name__, (property,),
-                { '_set_value': lambda *a: None })
+    property._set_value = readOnlyPass
+    return property
 
 
 class DateProperty(DateProperty):
@@ -54,7 +57,7 @@ class DateStrProperty(DateProperty):
 
 
 # Domain Layer
-class Entity(object):
+class Entity(Entity):
 
     @property
     def id(self): return self.key.id()
@@ -67,8 +70,8 @@ class Repository(Model):
         def __new__(self, n, b, dict):
 
             internal = {
-                '_pre_store': '_pre_put_hook',
-                '_post_store': '_post_put_hook' }
+                'before_store': '_pre_put_hook',
+                'after_store': '_post_put_hook' }
 
             for hook in internal:
                 if hook in dict:
@@ -112,10 +115,8 @@ class Repository(Model):
 
 class Model(Entity, Repository):
 
-    ReadOnlyDateTimeProperty = readOnly(DateTimeProperty)
-
-    created = ReadOnly(DateTimeProperty(auto_now_add=True))
-    last_modified = ReadOnlyDateTimeProperty(auto_now=True)
+    created = readOnly(DateTimeProperty(auto_now_add=True))
+    last_modified = readOnly(DateTimeProperty(auto_now=True))
 
     exclude = []
     user = None

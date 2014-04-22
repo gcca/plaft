@@ -7,6 +7,7 @@ Picker = require './alerts/picker'
 /** ------
  *  Alerts
  *  ------
+ * For first analysis about operation. Information from Anex 1 (Alert signals).
  * Warning: Be careful for global alert list for UiPanel and UiList.
  * @class UiAlerts
  * @extends Module
@@ -18,7 +19,7 @@ class Alerts extends Module
    * @private
    */
   onSave: ~>
-    @dispatch._save \alerts : @picker._toJSON!, do
+    @dispatch.store \alerts : @picker._toJSON!, do
       _success: -> alert 'Guardado'
       _error: -> alert 'Error: ddf09c04-a3f8-11e3-9499-88252caeb7e8'
 
@@ -26,8 +27,8 @@ class Alerts extends Module
    * (Event) Save verfied fields.
    */
   onVerifies: ~>
-    @_verifies[0] = @el.query "##{gz.Css \id-verifies-0}" ._checked
-    @_verifies[1] = @el.query "##{gz.Css \id-verifies-1}" ._checked
+    @_verifies.0 = @el.query "##{gz.Css \id-verifies-0}" ._checked
+    @_verifies.1 = @el.query "##{gz.Css \id-verifies-1}" ._checked
 
     @dispatch.store \verifies : @_verifies, do
       _success: ->
@@ -74,7 +75,7 @@ class Alerts extends Module
       ..onChange @onVerifies
 
     $button = $ "<button class='#{gz.Css \btn}
-                              \ #{gz.Css \btn-default}
+                              \ #{gz.Css \btn-primary}
                               \ #{gz.Css \pull-right}'
                      style='margin-top:1em'>
                    Guardar
@@ -87,7 +88,7 @@ class Alerts extends Module
     @$el._append $div
 
   /** @override */
-  initiliaze: !->
+  initialize: !->
     /**
      * Stack verifies fields.
      * @type {Array.<Boolean>}

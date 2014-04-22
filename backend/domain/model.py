@@ -99,7 +99,7 @@ class Declaration(Model):
     customer = StructuredProperty (Customer)
     owner    = KeyProperty        (kind=Customer)
 
-    def _pre_store(self):
+    def before_store(self):
         self.tracking = str(uuid()).upper().split('-')[0]
 
 
@@ -177,7 +177,6 @@ class Dispatch(Model):
 
     Attributes:
         order: Número de orden.
-        date: Fecha de registro.
         type: Tipo de operación.
         regime: Régimen aduanero.
         jurisdiction: Jurisdicción de aduana.
@@ -223,7 +222,6 @@ class Dispatch(Model):
         # StructuredProperty (Stakeholder, repeated=True)
 
     order        = StringProperty     ()
-    date         = DateStrProperty    ()
     type         = StructuredProperty (CodeName)
     regime       = StructuredProperty (CodeName)
     jurisdiction = StructuredProperty (CodeName)

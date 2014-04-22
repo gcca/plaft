@@ -99,13 +99,38 @@ class Builder extends Array implements PoolMixIn
   fieldset: (_legend, _fields, _tip) -> _fieldset @, _legend, _fields, _tip
 
   /**
+   * Add standard save button.
+   * TODO(...): Maybe could return random id-string for button.
+   */
+  _save: ->
+    @_push "
+      <div class='#{gz.Css \col-md-12}'>
+        <button class='#{gz.Css \btn}
+                     \ #{gz.Css \btn-primary}
+                     \ #{gz.Css \pull-right}'>
+          Guardar
+        </button>
+      </div>"
+
+  /**
+   * Enable tooltips.
+   * @return {Array.<HTMLElement>}
+   */
+  tooltips: ->
+    $ @el ._find '[title]' .tooltip!
+
+  /** @override */
+  render: -> @el.html @html!
+
+  /**
    * Html string.
    * @return {string}
    */
   html: -> @_join ''
 
   /** @override */
-  initialize: !-> @_length = 0
+  initialize: (@el) !->
+    @_length = 0
 
   implementsPool @@
 

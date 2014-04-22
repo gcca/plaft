@@ -112,8 +112,8 @@ class MetaRESTful(MetaSecurity, MetaNested): pass
 # (-o-) Exceptions
 class _HooksMixin(object):
     def _validate(self): pass
-    def _post_pre_store(self): pass
-    def _post_post_store(self): pass
+    def post_before_store(self): pass
+    def post_after_store(self): pass
 
 
 class RESTfulNested(BaseHandler, _HooksMixin):
@@ -132,9 +132,9 @@ class RESTfulNested(BaseHandler, _HooksMixin):
         self.entity = self.model.new(self.request_dict)
         self.entity.user = self.user
         setattr(self.entity, self.reference, parent.key)
-        self._post_pre_store()
+        self.post_before_store()
         self.entity.store()
-        self._post_post_store()
+        self.post_after_store()
         self.write_json('{"id":%s,"%s":%s}'
                         % (self.entity.id, self.reference, parent.json))
 
@@ -183,9 +183,9 @@ class RESTful(BaseHandler, _HooksMixin):
         except ERROR.Error as e:
             self.status.INTERNAL_ERROR(e)
         else:
-            self._post_pre_store()
+            self.post_before_store()
             self.entity.store()
-            self._post_post_store()
+            self.post_after_store()
             self.write_json('{"id":%s}' % self.entity.id)
 
     def put(self, id):

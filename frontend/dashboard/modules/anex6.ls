@@ -4,7 +4,10 @@ Module       = require '../module'
 Stakeholders = require './shared/stakeholders'
 
 
-/**
+/** ------
+ *  Anex 6
+ *  ------
+ * To report unusual operations. It needs previous work in {@code UiAlerts}.
  * @class UiAnex6
  * @extends Module
  */

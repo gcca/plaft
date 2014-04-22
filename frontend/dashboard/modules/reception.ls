@@ -3,6 +3,7 @@
 Module  = require '../module'
 Subform = require './reception/subform'
 
+
 # App local
 FieldType   = App.builtins.Types.Field
 sharedLists = App.shared.lists
@@ -29,7 +30,9 @@ xCheckBox   = formHalf.checkBox
 xSave       = App.shared.shortcuts.xhtml._form.saveButton
 
 
-/**
+/** ---------
+ *  Reception
+ *  ---------
  * Module reception for dispatch documents.
  * @class UiReception
  * @extends Module
