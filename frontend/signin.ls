@@ -101,14 +101,10 @@ document.body.innerHTML = "
     <p class='#{gz.Css \jumbotron-options}'>
       <a class='#{gz.Css \btn}
               \ #{gz.Css \btn-primary}
-              \ #{gz.Css \btn-lg}' role='button'>
-        Leer más &raquo;
-      </a>
-
-      <a class='#{gz.Css \btn}
-              \ #{gz.Css \btn-primary}
               \ #{gz.Css \btn-lg}' role='button' href='/customer'>
-        Declaración Jurada &raquo;
+        Declaración Jurada
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        &raquo;
       </a>
 
       <a class='#{gz.Css \visible-xs}'>

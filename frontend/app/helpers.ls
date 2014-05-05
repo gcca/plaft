@@ -301,6 +301,7 @@ $\fn
   ..post         = ..\post
   ..tooltip      = ..\tooltip
   ..dropdown     = ..\dropdown
+  ..modal        = ..\modal
   .._show        = ..\show
   .._find        = ..\find
   .._append      = ..\append

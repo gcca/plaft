@@ -12,12 +12,13 @@
  */
 MODULES =
   Reception    = require './modules/reception'
+  Register     = require './modules/register'
   Dispatches   = require './modules/dispatches'
-  Numeration   = require './modules/numeration'
-  Alerts       = require './modules/alerts'
-  Anex6        = require './modules/anex6'
-  Anex2        = require './modules/anex2'
   Declarations = require './modules/debug/declarations'
+#  Numeration   = r equire './modules/numeration'
+#  Alerts       = r equire './modules/alerts'
+#  Anex6        = r equire './modules/anex6'
+#  Anex2        = r equire './modules/anex2'
 
 /**
  * Setting module list.

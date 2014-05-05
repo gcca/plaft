@@ -58,6 +58,7 @@ Object.defineProperties HTMLElement::, do
   _next   : get : -> @nextElementSibling
 
   _disabled : get : (-> @disabled), set : (x) -> @disabled = x
+  _id : get : (-> @id), set : (x) -> @id = x
 
 Object.defineProperties HTMLFormElement::, do
   _elements: get: -> @elements
@@ -82,6 +83,11 @@ HTMLButtonElement::=
   _disabled:~
     (a) -> @disabled = a
     -> @disabled
+
+HTMLAnchorElement::=
+  _target:~
+    (a) -> @target = a
+    -> @target
 
 Object.defineProperties HTMLSelectElement::, do
   _selected : get : -> @selectedIndex
@@ -129,12 +135,18 @@ Object.defineProperties CSSProperties::, do
   _padding        : gsetter \padding
   _padding-left   : gsetter \paddingLeft
   _padding-right  : gsetter \paddingRight
+  _padding-bottom : gsetter \paddingBottom
+  _padding-top    : gsetter \paddingTop
+  _margin-left    : gsetter \marginLeft
+  _margin-right   : gsetter \marginRight
   _overflow       : gsetter \overflow
   _overflowX      : gsetter \overflowX
   _overflowY      : gsetter \overflowY
   _border         : gsetter \border
   _border-radius  : gsetter \borderRadius
   _font-size      : gsetter \fontSize
+  _display        : gsetter \display
+  _text-align     : gsetter \textAlign
 
 
 ## Global Backbone
@@ -184,7 +196,14 @@ class View extends Backbone\View implements FreePoolMixIn
     @initialize.apply @, &
     @'delegateEvents'!
 
-  initialize: !-> @el.html null
+  inner: (c) !->
+    if c._constructor is String
+      @el.html c
+    else
+      @el.html null
+      @el._append c
+
+  initialize: !->
 
   # Const
   ::render  = ::\render
@@ -325,6 +344,7 @@ App <<<
     _Object   : new Object
     _Function : new Function
   _history   : history
+  widget     : require './app/widget'
 
 App.model = require './app/model'
 

@@ -9,12 +9,12 @@ FieldType   = App.builtins.Types.Field
 sharedLists = App.shared.lists
 
 # Local sharedlist
-OPERATION_CODE     = sharedLists.OPERATION_CODE
-OPERATION_TYPE     = sharedLists.OPERATION_TYPE
-OPERATION_DAM_CODE = sharedLists.OPERATION_DAM_CODE
-OPERATION_DAM_TYPE = sharedLists.OPERATION_DAM_TYPE
-JURISDICTIONS_CODE = sharedLists.JURISDICTIONS_CODE
-JURISDICTIONS      = sharedLists.JURISDICTIONS
+OPERATION_DAM_CODE   = sharedLists.OPERATION_DAM_CODE
+OPERATION_DAM_TYPE   = sharedLists.OPERATION_DAM_TYPE
+OPERATION_MATCH_CODE = sharedLists.OPERATION_MATCH_CODE
+OPERATION_MATCH_TYPE = sharedLists.OPERATION_MATCH_TYPE
+JURISDICTIONS_CODE   = sharedLists.JURISDICTIONS_CODE
+JURISDICTIONS        = sharedLists.JURISDICTIONS
 
 isCtrlV = App.shared._event.isCtrlV
 
@@ -51,6 +51,10 @@ class Reception extends Module
     xbutton._disabled = true
 
     dto = $ @el._first ._toJSON!
+    i = OPERATION_DAM_CODE._index dto.'regime'.\code
+    dto\type =
+      \code : OPERATION_MATCH_CODE[i]
+      \name : OPERATION_MATCH_TYPE[i]
 
     if (@vdeclaration.processFields dto) is -1
       alert 'No se ha buscado la Declaración o el Cliente'
@@ -132,33 +136,13 @@ class Reception extends Module
 
     xLineEdit 'order' 'N&ordm; Orden de despacho' .appendTo xform
 
-    # Set today
-#    today = new Date
-#    day   = today.getDate!
-#    day   = (if day < 10 then '0' else '') + day
-#    month = today.getMonth! + 1
-#    month = (if month < 10 then '0' else '') + month
-#    year  = today.getFullYear!
-
-#    xLineEdit 'date' 'Fecha'
-#      .._last._value = "#{day}-#{month}-#{year}"
-#      ..appendTo xform
-
     # Operation type
-    xPairSelect('type[code]',
-                'type[name]',
-                OPERATION_CODE,
-                OPERATION_TYPE,
+    xPairSelect('regime[code]',
+                'regime[name]',
+                OPERATION_DAM_CODE,
+                OPERATION_DAM_TYPE,
                 'Tipo de operación (SBS)')
       .appendTo xform
-
-#    # Regime
-#    xPairSelect('regime[code]',
-#                'regime[name]',
-#                OPERATION_DAM_CODE,
-#                OPERATION_DAM_TYPE,
-#                'Regimen Aduanero (DAM)')
-#      .appendTo xform
 
     # Jurisdiction
     xPairSelect('jurisdiction[code]',

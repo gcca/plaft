@@ -6,7 +6,9 @@ Business = require './customer/business'
 Person   = require './customer/person'
 
 
-/**
+/** --------
+ *  Customer
+ *  --------
  * Customer main view.
  * @class UiCustomer
  * @extends View
@@ -55,6 +57,7 @@ class Customer extends App.View
    */
   showForm: (customer) !~>
     # Set "customerClass" by valid "documentNumber"
+    @xButtonSave.Class._remove gz.Css \hidden
     customerClass = if customer.isBusiness then Business
                     else if customer.isPerson then Person
                     else null
@@ -63,6 +66,7 @@ class Customer extends App.View
     @$body._append uiCustomer.render!.el
 
   /** @private */ $body       : null
+  /** @private */ xButtonSave : null
 
   /** @override */
   render: ->
@@ -73,10 +77,11 @@ class Customer extends App.View
 
     # Attributes
     @$body       = @$ "##{gz.Css \id-body}"
+    @xButtonSave = @el.query "##{gz.Css \id-save}"
 
     # Get focus
     $formSearch.0._elements.0._focus!
-    $ ($formSearch._find \input) .tooltip!
+    $ ($formSearch._find \input) .tooltip \placement : gz.Css \bottom
 
     query = App.storage.local.\q
     if query?
@@ -91,7 +96,7 @@ class Customer extends App.View
    */
   template: gzc.Jade '''
     //- HEADER
-    header.navbar.navbar-inverse.navbar-fixed-top.navbar-top-min(role="banner")
+    header.navbar.navbar-inverse.navbar-fixed-top(role="banner")
       .container
         .navbar-header
           button.navbar-toggle(type="button",
@@ -102,17 +107,20 @@ class Customer extends App.View
             span.icon-bar
             span.icon-bar
           a.navbar-brand(href="/") PLAFTsw
-        nav.collapse.navbar-collapse#id-navbar-collapse(role="navigation")
-          ul.nav.navbar-nav
-           li
-             a
-          ul.nav.navbar-nav.navbar-right
-           li
-             a
+        //- nav.collapse.navbar-collapse#id-navbar-collapse(role="navigation")
+        form.navbar-form.navbar-left.navbar-input-group(role="search")#id-search
+          .form-group
+            input.form-control(type="text", placeholder="RUC o DNI",
+                               title="Para buscar Personas Jurídicas, ingresar RUC. Para Personas Naturales, el DNI.")
+            button.btn.btn-default
+              i.glyphicon.glyphicon-search
+              | &nbsp;
+        form.navbar-form.navbar-right(role="save")
+           button.btn.btn-primary.hidden#id-save(form="{Css id-form-declaration}") Generar DJ
 
     //- BODY
     .container.app-container
-      .row
+      //- .row
         .col-md-8
         .col-md-4
           form.form-inline(role="form")#id-search
@@ -123,7 +131,7 @@ class Customer extends App.View
                 button.btn.btn-default
                   i.glyphicon.glyphicon-search
                   | &nbsp;
-        .col-md-12#id-body
+      .col-md-12#id-body
 
     //- FOOTER
     - var aStyle = "padding-top:40px;";

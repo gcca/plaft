@@ -206,27 +206,27 @@ class DeclarationPDF(BaseHandler):
 
 
         story.append(
-            Paragraph('&nbsp;' * 70 + '<font size=12><b>ANEXO N&ordm;5</b></font>',
+            Paragraph('&nbsp;' * 61 + '<font size=12><b>ANEXO N&ordm;5</b></font>',
                       styles['Normal']))
         story.append(Spacer(1, 12))
         story.append(
-            Paragraph('&nbsp;' * 33 + '<font size=12><b>Declaración Jurada de Conocimiento del Cliente</b></font>',
+            Paragraph('&nbsp;' * 24 + '<font size=12><b>Declaración Jurada de Conocimiento del Cliente</b></font>',
                       styles['Normal']))
         story.append(Spacer(1, -10))
 
 
         # story.append(Paragraph('<para align=right><b>N&ordm; ' + declaration.tracking + '</b></para>', styles["Normal"]))
-        story.append(Paragraph('&nbsp;' * 140 + '<font><b>N&ordm; ' + declaration.tracking + '</b></font>', styles["Normal"]))
+        story.append(Paragraph('&nbsp;' * 132 + '<font><b>N&ordm; ' + declaration.tracking + '</b></font>', styles["Normal"]))
         story.append(Spacer(1, 12))
 
         title = 'Persona Jurídica' if customer.isbusiness else 'Persona Natural'
         story.append(
-            Paragraph('&nbsp;' * 64 + '<font size=12><b>%s</b></font>' % title,
+            Paragraph('&nbsp;' * 56 + '<font size=12><b>%s</b></font>' % title,
                       styles['Normal']))
         story.append(Spacer(1, 12))
 
         if customer.category and 'Otros' != customer.category:
-            mull = 60 if 'Importador frecuente' == customer.category else 61
+            mull = 50 if 'Importador frecuente' == customer.category else 52
             story.append(
                 Paragraph('&nbsp;' * mull + '<font size=12><b>%s</b></font>'
                           % customer.category,
@@ -335,7 +335,7 @@ class DeclarationPDF(BaseHandler):
             ]
 
             + ([
-                ['\nk) Identificación del tercero, sea persona natural (nombres y apellidos) o persona jurídica\n    (razón o denominación social) por cuyo intermedio se realiza la operación:', ''],
+                ['\nk) Identificación del tercero,  sea  persona  natural (nombres  y  apellidos) o persona\n    jurídica (razón o denominación social) por cuyo intermedio se realiza la operación:', ''],
                 ['    ' + (declaration.third if declaration.third else '-')]
             ]))
 
@@ -343,10 +343,15 @@ class DeclarationPDF(BaseHandler):
         story.append(table)
         story.append(Spacer(1, 24))
 
-        ptext = '<font size=10>Afirmo y ratifico todo lo manifestado en la presente declaración jurada, en señal de lo cual la firmo, en la fecha que se indica:</font>'
+        ptext = '<font size=10>Afirmo y ratifico todo lo manifestado en la presente declaración jurada, en señal de lo cual</font>'
         story.append(Paragraph(ptext, styles["Justify"]))
-        story.append(Spacer(1, 64))
-        #story.append(Spacer(1, 96))
+        story.append(Spacer(1, 1))
+
+        story.append(Paragraph('<font size=10>la firmo, en la fecha que se indica:</font>', styles["Justify"]))
+        story.append(Spacer(1, 69))
+
+
+
 
         ztime = declaration.created.utcnow() - timedelta(hours=5)
         bgdate = ztime.strftime('%d / %m / %Y')

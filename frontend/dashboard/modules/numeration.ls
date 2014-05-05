@@ -25,8 +25,6 @@ class Numeration extends Module
    */
   onSave: (evt) ~>
     evt.prevent!
-    console.log \dfdmfmk
-    return
     $form = $ evt._target
     @dispatch.store \numeration : $form._toJSON!, do
       _success: -> alert 'Guardado'

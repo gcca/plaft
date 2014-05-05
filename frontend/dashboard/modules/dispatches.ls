@@ -10,6 +10,7 @@ Customs = App.model.Customs
  *  Dispatches
  *  ----------
  * Dispatch list to show status resume.
+ * TODO(...): Base class to create tables. Tables: dynamic ordering by column.
  * @class UiDispatches
  * @extends Module
  */
@@ -153,7 +154,13 @@ class Dispatches extends Module
         xtbody._append xtr
 
 
-      # Operation Register options
+      # Options for operation register
+      # ------------------------------
+      # TODO(...): Create widget bar or something similar for option views.
+
+      # * Operation Register options
+      # TODO(...): Create widget for separated button and combobox
+      #   for filters by year-month.
       xOpciones = App.dom._new \div
         ..Class = gz.Css \col-md-12
         ..css._padding-left = '0'

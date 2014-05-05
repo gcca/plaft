@@ -136,3 +136,13 @@ exports._form =
 
 exports._event =
   isCtrlV: (evt) -> evt._ctrlKey and evt._keyCode is 86
+
+
+exports._datetime =
+  _now : ->
+    today = new Date
+    day   = today.getDate!
+    day   = (if day < 10 then '0' else '') + day
+    month = today.getMonth! + 1
+    month = (if month < 10 then '0' else '') + month
+    year  = today.getFullYear!
