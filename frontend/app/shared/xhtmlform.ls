@@ -81,7 +81,7 @@ class Builder extends Array implements PoolMixIn
   /**
    * Push field string.
    * @param {FieldOptions} _options
-   * @return {string}
+   * @return {HTMLElement}
    */
   field: (_options) -> @_push _field _options
 
@@ -90,7 +90,7 @@ class Builder extends Array implements PoolMixIn
    * @param {string} _legend
    * @param {Array.<FieldOptions>} _fields
    * @param {?string} _tip
-   * @return {string}
+   * @return {HTMLElement}
    */
   fieldset: (_legend, _fields, _tip) -> @_push _fieldset _legend, _fields, _tip
 
@@ -117,6 +117,7 @@ class Builder extends Array implements PoolMixIn
 
   /** @override */
   render: ->
+    @el.html null
     for x in @ then @el._append x
     @
 

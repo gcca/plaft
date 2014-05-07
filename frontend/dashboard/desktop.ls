@@ -73,13 +73,10 @@ class Desktop extends App.View
     @$el.html "
       <ol class='#{gz.Css \breadcrumb} #{gz.Css \col-md-8}'>
         <li>
-          <a href='#'>Despachos</a>
-        </li>
-        <li>
-          <a href='#'>Edición</a>
-        </li>
-        <li class='active'>
-          Alertas
+          <a>
+            <i class='#{gz.Css \glyphicon} #{gz.Css \glyphicon-home}'></i>
+            &nbsp;
+          </a>
         </li>
       </ol>"
 

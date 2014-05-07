@@ -279,11 +279,13 @@ _
   ..zip       = ..\zip
   ..pick      = ..\pick
   ..uniqueId  = ..\uniqueId
+  ..invert    = ..\invert
   .._pick     = ..\pick
   .._uniqueId = ..\uniqueId
   .._zip      = ..\zip
   .._extend   = ..extend
   .._all      = ..all
+  .._invert   = ..\invert
 
 $\fn
   ..html         = ..\html
@@ -302,6 +304,7 @@ $\fn
   ..tooltip      = ..\tooltip
   ..dropdown     = ..\dropdown
   ..modal        = ..\modal
+  ..typeahead    = ..\typeahead
   .._show        = ..\show
   .._find        = ..\find
   .._append      = ..\append

@@ -82,6 +82,78 @@ class Modal extends App.View
     kSmall : gz.Css \modal-sm
 
 
+/**
+ * Typeahead text field.
+ * @class UiTypeahead
+ * @extends View
+ */
+class Typeahead extends App.View
+
+  /**
+   * DOM element.
+   * @type {string}
+   * @private
+   */
+  _tagName: \input
+
+  /**
+   *
+   */
+  onCursorChanged: (_callback)-> @$el.on 'typeahead:cursorchanged', _callback
+
+  onClosed: (_callback)-> @$el.on 'typeahead:closed', _callback
+
+
+  Bh = Bloodhound
+
+  /** @override */
+  initialize: (@options) !->
+    ## next = @$el.next!
+    ## isNext = next.get 0
+    ## next.remove! if isNext
+    ## @$el.after next if isNext
+
+  _enable: ->
+    options = @options
+    _.invert options._source
+      _tokens  = ..[@@Source.kTokens]
+      _display = ..[@@Source.kDisplay]
+
+    bloodhound = new Bh do
+      \datumTokenizer : Bh.'tokenizers'.'obj'.'whitespace' _tokens
+      \queryTokenizer : Bh.'tokenizers'.'whitespace',
+      \local : options._collection
+    bloodhound.'initialize'!
+
+    @$el.typeahead (
+        \hint : true
+        \highlight : true
+        \minLength : 0), (
+        \name       : 'c-gz'
+        \displayKey : _display
+        \source     : bloodhound.'ttAdapter'!
+        \templates  :
+          \empty      : "
+            <div class='#{gz.Css \empty-message}'>
+              &nbsp;&nbsp; No se encontraron coincidencias.
+            </div>"
+          \suggestion : options._template)
+
+
+  /**
+   * Flag to data source.
+   */
+  @@Source =
+    kTokens  : 1
+    kDisplay : 2
+
+  /**
+   * Bloodhound for source.
+   */
+  @@Bloudhound = Bloodhound
+
+
 /** @export */
 exports <<<
-  Modal : Modal
+  Modal     : Modal
+  Typeahead : Typeahead

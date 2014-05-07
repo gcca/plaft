@@ -129,24 +129,26 @@ CSSProperties = CSS2Properties if CSS2Properties?
 CSSProperties = CSSStyleDeclaration if CSSStyleDeclaration?
 gsetter = (n) -> get: (-> @[n]), set: (a) !-> @[n] = a
 Object.defineProperties CSSProperties::, do
-  _margin-bottom  : gsetter \marginBottom
-  _width          : gsetter \width
-  _height         : gsetter \height
-  _padding        : gsetter \padding
-  _padding-left   : gsetter \paddingLeft
-  _padding-right  : gsetter \paddingRight
-  _padding-bottom : gsetter \paddingBottom
-  _padding-top    : gsetter \paddingTop
-  _margin-left    : gsetter \marginLeft
-  _margin-right   : gsetter \marginRight
-  _overflow       : gsetter \overflow
-  _overflowX      : gsetter \overflowX
-  _overflowY      : gsetter \overflowY
-  _border         : gsetter \border
-  _border-radius  : gsetter \borderRadius
-  _font-size      : gsetter \fontSize
-  _display        : gsetter \display
-  _text-align     : gsetter \textAlign
+  _margin-bottom             : gsetter \marginBottom
+  _width                     : gsetter \width
+  _height                    : gsetter \height
+  _padding                   : gsetter \padding
+  _padding-left              : gsetter \paddingLeft
+  _padding-right             : gsetter \paddingRight
+  _padding-bottom            : gsetter \paddingBottom
+  _padding-top               : gsetter \paddingTop
+  _margin-left               : gsetter \marginLeft
+  _margin-right              : gsetter \marginRight
+  _overflow                  : gsetter \overflow
+  _overflowX                 : gsetter \overflowX
+  _overflowY                 : gsetter \overflowY
+  _border                    : gsetter \border
+  _border-radius             : gsetter \borderRadius
+  _border-top-left-radius    : gsetter \borderTopLeftRadius
+  _border-bottom-left-radius : gsetter \borderBottomLeftRadius
+  _font-size                 : gsetter \fontSize
+  _display                   : gsetter \display
+  _text-align                : gsetter \textAlign
 
 
 ## Global Backbone
@@ -187,7 +189,8 @@ class View extends Backbone\View implements FreePoolMixIn
     @\el     = @el if @el?
     @\cid = _.uniqueId 'cris-gz'
     if options.el?
-      options.\el = options.el
+      ## options.\el = options.el
+      @\el = options.el
       delete! options.el
     _._extend @, (_.pick options, viewOpts)
     @'_ensureElement'!
@@ -195,6 +198,14 @@ class View extends Backbone\View implements FreePoolMixIn
     @el  = @\el
     @initialize.apply @, &
     @'delegateEvents'!
+
+  ## el:~
+  ##   -> @\el
+  ##   (a) -> @\el = a
+
+  ## $el:~
+  ##   -> @\$el
+  ##   (a) -> @\$el = a
 
   inner: (c) !->
     if c._constructor is String
