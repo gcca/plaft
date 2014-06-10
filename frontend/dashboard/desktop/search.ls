@@ -67,10 +67,31 @@ class Search extends App.View
           <button class='#{gz.Css \btn} #{gz.Css \btn-default}'>
             &nbsp;
             <i class='#{gz.Css \glyphicon} #{gz.Css \glyphicon-search}'></i>
+            &nbsp;
           </button>
+          <button type='button'
+              class='#{gz.Css \btn}
+                   \ #{gz.Css \btn-default}
+                   \ #{gz.Css \dropdown-toggle}'
+              data-toggle='dropdown' tabindex='-1'>
+            &nbsp;
+            <span class='#{gz.Css \caret}'></span>
+            <span class='#{gz.Css \sr-only}'>gz</span>
+            &nbsp;
+          </button>
+          <ul class='#{gz.Css \dropdown-menu} #{gz.Css \pull-right}'
+              role='menu'>
+            <li><a href=''>Nuevo</a></li>
+            <li><a href=''>Eliminar</a></li>
+            <li><a href=''>Otras opcines</a></li>
+            <li class='#{gz.Css \divider}'></li>
+            <li><a href='/signout'>Salir</a></li>
+          </ul>
         </span>
       </div>"
     @_xinput = @el.query \input
     super!
 
+
+/** @export */
 module.exports = Search

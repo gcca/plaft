@@ -69,6 +69,12 @@ class formToObject
         @forEach DOMchilds,
                  (child) -> result[keys].push child.value if DOMchilds
         return
+      if domNode.name.endsWith '[]'
+        list = result[keys.0]
+        list ?= []
+        list.push value
+        return result[keys] = list
+
       result[keys] = value
     if keys.length > 1
       result[keys.0] = {} if not result[keys.0]
@@ -107,9 +113,9 @@ $\fn
       e = es[i]
       if e?
         if e.type is \checkbox
-          e.checked = v
+          e._checked = v
         else
-          e.value = v
+          e._value = v
     ## for e in es
     ##   as = e.name.replace /]/g, '' .split \[
     ##   v = d

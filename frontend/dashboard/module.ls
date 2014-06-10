@@ -1,7 +1,9 @@
 /** @module dashboard.module */
 
 
-/**
+/** ------
+ *  Module
+ *  ------
  * Base class for modules.
  * Only for module inheritance.
  *
@@ -25,6 +27,12 @@ class Module extends App.View
   clean: -> @el.html ''
 
   /**
+   * Focus the first field to input.
+   * @public
+   */
+  focus-first-field: ->
+
+  /**
    * External desktop attributes.
    * ui: {
    *   desktop: {
@@ -37,6 +45,9 @@ class Module extends App.View
     desktop:
       _search     : null
       breadcrumbs : null
+      _reload     : null
+      push-sub    : null
+      pop-sub     : null
 
   /** @protected */ @@_caption = ''
   /** @protected */ @@_icon    = gz.Css \glyphicon-tower

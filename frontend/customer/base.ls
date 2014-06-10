@@ -47,6 +47,7 @@ class Base extends App.View
       _success: ~>
         # Create declaration
         @model.newDeclaration dtoDeclaration, (declaration) ~>
+          window.\kmll = @model.\id
           a = new PDFModal declarationId: declaration.\id
           a.render!
 
@@ -92,7 +93,7 @@ class Base extends App.View
 
     # Sync isobliged and hasofficer
     $isobliged  = @$ '[name=isobliged]'
-    $hasofficer = @$ '[name=hasofficer]' .parents \div.form-group
+    $hasofficer = @$ '[name=hasofficer]' .parents "div.#{gz.Css \form-group}"
 
     xisobliged = @el._elements\isobliged
     $hasofficer._hide! if xisobliged._value isnt \Sí
@@ -101,6 +102,29 @@ class Base extends App.View
         $hasofficer._show!
       else
         $hasofficer._hide!
+
+    # Customize sensitive fields
+    @$ '[name=source]' ._parent!
+      ..addClass gz.Css \has-warning
+      ..addClass gz.Css \has-feedback
+      .._append "<span class='#{gz.Css \glyphicon}
+                            \ #{gz.Css \glyphicon-warning-sign}
+                            \ #{gz.Css \form-control-feedback}'></span>"
+
+    @$ '[name=third]' ._parent!
+      ..addClass gz.Css \has-warning
+      ..addClass gz.Css \has-feedback
+      .._append "<span class='#{gz.Css \glyphicon}
+                            \ #{gz.Css \glyphicon-warning-sign}
+                            \ #{gz.Css \form-control-feedback}'></span>"
+
+    @$ '[name=isobliged]' .parents "div.#{gz.Css \form-group}"
+      ..addClass gz.Css \has-warning
+      ..addClass gz.Css \has-feedback
+
+    @$ '[name=hasofficer]' .parents "div.#{gz.Css \form-group}"
+      ..addClass gz.Css \has-warning
+      ..addClass gz.Css \has-feedback
 
     super!
 

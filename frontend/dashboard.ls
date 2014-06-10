@@ -127,3 +127,5 @@ class Dashboard extends App.View
 ## $ \form ._last! ._find \button .click!
 
 ## $ ".#{gz.Css \glyphicon-file}" ._last! ._parent! .click!
+
+$ ('.' + gz.Css \glyphicon-book) ._parent! .click!

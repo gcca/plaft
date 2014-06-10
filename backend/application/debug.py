@@ -106,6 +106,23 @@ def create():
     )
     sh1.put()
 
+    d3 = Dispatch(
+        order        = '2014-04',
+        customer     = c2.key,
+        customs      = cs1.key,
+        type         = Dispatch.CodeName(code = '001',
+                                         name = 'IMPORTACIÓN DEFINITIVA'),
+        jurisdiction = Dispatch.CodeName(code = '163',
+                                         name = 'ILO'),
+        regime       = Dispatch.CodeName(code = '10',
+                                         name = 'IMPORTACIÓN PARA EL CONSUMO'),
+        numeration   = Dispatch.Numeration(type   = 'Rojo',
+                                           number = '789-ABC')
+    )
+    d3.store()
+    cs1.datastore.pending.dispatches.append(d3.key)
+    cs1.store()
+
 
 class Debug(BaseHandler):
 

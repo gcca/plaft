@@ -207,7 +207,12 @@ a { cursor: pointer }
   &:hover .toggle {
     visibility: visible;
   }
+
+  .sibling:focus + .toggle {
+    visibility: visible;
+  }
 }  // .parent-toggle
+
 
 .no-select {
   -webkit-user-select: none;
@@ -220,6 +225,8 @@ a { cursor: pointer }
 // id
 .id-none {filter:none;}
 
+// event
+.on-key-enter-shift-control {filter:none;}
 
 // Form
 .check-yesno + i:before {
@@ -283,6 +290,12 @@ a { cursor: pointer }
     }
   }
 }
+
+.has-feedback .form-control-feedback {
+  top: 24px;
+  right: 12px;
+}
+
 
 // GTypeahead
 .tt-suggestions, .tt-dataset {filter:none}

@@ -95,6 +95,18 @@ class Dispatches extends Module
     verifies = dispatch\verifies
     if verifies._length and _._all verifies then 'Sí' else 'No'
 
+  /**
+   * Ensure dispatch data consistence.
+   * @param {Dispatch} dispatch
+   * @private
+   */
+  ensure: (dispatch) ->
+    if not dispatch.'customer'?
+      dispatch.'customer' =
+        \name     : 'ERROR'
+        \document :
+          \number : 'ERROR'
+
   /** @override */
   render: ->
     Customs.pending.dispatches (dispatches) !~>
@@ -129,6 +141,8 @@ class Dispatches extends Module
       xtbody = @el.query \tbody
 
       for dispatch in dispatches
+        @ensure dispatch
+
         xtr = App.dom.newel \tr
           ..Class = gz.Css \parent-toggle
         xtr.html "
@@ -164,10 +178,9 @@ class Dispatches extends Module
       xOpciones = App.dom._new \div
         ..Class = gz.Css \col-md-12
         ..css._padding-left = '0'
-        ..html "
-          <button class='#{gz.Css \btn} #{gz.Css \btn-default}'>
-            Exportar RO
-          </button>"
+        ..html "<button class='#{gz.Css \btn} #{gz.Css \btn-default}'>
+                  Exportar RO
+                </button>"
 
       xOpciones._first.onClick ->
         document.location = "#{App.Model.API}dispatch/report/register"

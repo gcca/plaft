@@ -28,18 +28,12 @@ class ERROR:
     BadValueError    = BadValueError
 
 
-def readOnlyPass(*_, **__): pass
+def readOnlyPass(*__, **_): pass
 
 
 def readOnly(property):
     property._set_value = readOnlyPass
     return property
-
-
-class DateProperty(DateProperty):
-    def _to_base_type(self, value):
-        value = value - timedelta(hours=5)
-        return value
 
 
 class DateStrProperty(DateProperty):
@@ -49,11 +43,16 @@ class DateStrProperty(DateProperty):
         if isinstance(value, basestring):
             value = (datetime(*map(int, reversed(value.split('-'))))
                      if value
-                     else datetime.now())
+                     else self._now())
         return value
 
     def _from_base_type(self, value):
         return value.strftime('%d-%m-%Y') if value else None
+
+
+class DateProperty(DateProperty):
+    def _to_base_type(self, value):
+        return value - timedelta(hours=5)
 
 
 # Domain Layer
@@ -138,10 +137,17 @@ class Model(Entity, Repository):
         for property in _properties:
             if property in dict:
                 prop_type = _properties[property]
-                if type(prop_type) is KeyProperty:
-                    value = dict[property]
+                dtype = type(prop_type)
+                value = dict[property]
+                if dtype is KeyProperty:
                     if value is None: continue
                     value = Key(prop_type._kind, value)
+                elif dtype is StructuredProperty:
+                    svalue = {}
+                    for sprop in prop_type._modelclass._properties:
+                        if sprop in value:
+                            svalue[sprop] = value[sprop]
+                    value = svalue
                 else:
                     value = dict[property]
                 properties.update({property: value})

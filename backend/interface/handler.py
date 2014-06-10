@@ -44,7 +44,10 @@ class Customs(RESTful):
 
         def get(self):
             customs = self.user.customs.get()
-            self.render_json(customs.datastore.pending.dispatches)
+            dispatches = customs.datastore.pending.dispatches
+            dispatches = sorted([d.get() for d in dispatches],
+                                key=lambda d: d.created, reverse=True)
+            self.render_json(dispatches)
 
 
 class Declaration(RESTful):
@@ -57,10 +60,11 @@ class Declarations(RESTfulCollection):
 
     model         = model.Declaration
 
-    def post_after_store(self):
-        ds = model.Datastore()
-        da.pending.declarations.append(self.entity.key)
-        ds.store()
+    # WARNING: Commented by change on register module.
+    # def post_after_store(self):
+    #     ds = model.Datastore()
+    #     da.pending.declarations.append(self.entity.key)
+    #     ds.store()
 
 
 class Dispatch(RESTful):
@@ -69,12 +73,13 @@ class Dispatch(RESTful):
     require_login = RESTful.methods
 
     # TODO(...):  batch validate for Specification class.
-    def _validate(self):
-        ds = model.Datastore()
-        if (self.entity.declaration
-            and self.entity.declaration not in ds.pending.declarations):
-            raise model.BadValueError('La declaración %s ya fue usada.'
-                                      % self.entity.declaration.get().tracking)
+    # WARNING: Commented by change on register module.
+    # def _validate(self):
+    #     ds = model.Datastore()
+    #     if (self.entity.declaration
+    #         and self.entity.declaration not in ds.pending.declarations):
+    #         raise model.BadValueError('La declaración %s ya fue usada.'
+    #                                   % self.entity.declaration.get().tracking)
 
     def post_before_store(self):
         self.entity.customs = self.user.customs
@@ -85,9 +90,10 @@ class Dispatch(RESTful):
             self.entity.customer = declaration.get().owner
             self.entity.store()
 
-            ds = model.Datastore()
-            ds.pending.declarations.remove(declaration)
-            ds.store()
+            # WARNING: Commented by change on register module.
+            # ds = model.Datastore()
+            # ds.pending.declarations.remove(declaration)
+            # ds.store()
 
         customs = self.user.customs.get()
         customs.datastore.pending.dispatches.append(self.entity.key)

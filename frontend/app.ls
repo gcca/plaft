@@ -33,17 +33,18 @@ document
 
 HTMLElement::
   HTMLElement::=
-    _append  : ..appendChild
-    appendTo : (a)  -> a.appendChild @
-    html     : (a) !-> @innerHTML = a
-    _focus   : ..focus
-    query    : ..querySelector
-    queryAll : ..querySelectorAll
-    onClick  : (e) !-> @onclick  = e
-    onSubmit : (e) !-> @onsubmit = e
-    onChange : (e) !-> @onchange = e
-    onKeyUp  : (e) !-> @onkeyup  = e
-    addEvent :     !-> @addEventListener ...
+    _append    : ..appendChild
+    appendTo   : (a)  -> a.appendChild @
+    html       : (a) !-> @innerHTML = a
+    _focus     : ..focus
+    query      : ..querySelector
+    queryAll   : ..querySelectorAll
+    onClick    : (e) !-> @onclick     = e
+    onDblClick : (e) !-> @ondblclick  = e
+    onSubmit   : (e) !-> @onsubmit    = e
+    onChange   : (e) !-> @onchange    = e
+    onKeyUp    : (e) !-> @onkeyup     = e
+    addEvent   :     !-> @addEventListener ...
 
 Object.defineProperties HTMLElement::, do
   css: get : -> @style
@@ -165,7 +166,7 @@ FreePoolMixIn =
 
 PoolMixIn =
   free: !-> @_constructor.pool.free @
-implementsPool = (_self) -> _._extend _self, NewPoolMixIn
+implements-pool = (_self) -> _._extend _self, NewPoolMixIn
 
 viewOpts =
   model      : null
@@ -199,13 +200,17 @@ class View extends Backbone\View implements FreePoolMixIn
     @initialize.apply @, &
     @'delegateEvents'!
 
-  ## el:~
-  ##   -> @\el
-  ##   (a) -> @\el = a
+  # Const
+  ::render  = ::\render
+  ::on      = ::\on
+  ::off     = ::\off
+  ::trigger = ::\trigger
+  ::_remove = ::\remove
+  ::$       = ::\$
 
-  ## $el:~
-  ##   -> @\$el
-  ##   (a) -> @\$el = a
+  clean: -> @el.html ''
+
+  prepare: !-> @el.html ''
 
   inner: (c) !->
     if c._constructor is String
@@ -214,15 +219,7 @@ class View extends Backbone\View implements FreePoolMixIn
       @el.html null
       @el._append c
 
-  initialize: !->
-
-  # Const
-  ::render  = ::\render
-  ::on      = ::\on
-  ::off     = ::\off
-  ::trigger = ::\trigger
-  ::_remove = ::\remove
-  ::$       = ::\$
+  initialize: !-> @el.html ''
 
   _._extend @@, NewPoolMixIn
 
@@ -247,6 +244,7 @@ class BaseModel extends Backbone\Model
   ::off     = ::\off
   ::trigger = ::\trigger
   ::_remove = ::\remove
+  ::isNew   = ::\isNew
 
   flatten: -> App.internals.flatten @_attributes
 
@@ -291,8 +289,17 @@ class Model extends BaseModel
     super keys, \success : opts._success, \error : opts._error
 
   store: (_data, opts = App._void._Object) ->
-     App.internals._put "#{@@API}#{@urlRoot}/#{@id}", _data,
-                         opts._success, opts._error
+    if @isNew!
+      req = App.internals._post
+      uri = "#{@@API}#{@urlRoot}"
+      opts_success = (_entity) ~>
+        @\set \id _entity\id
+        opts._success ...
+    else
+      req = App.internals._put
+      uri = "#{@@API}#{@urlRoot}/#{@id}"
+      opts_success = opts._success
+    req uri, _data, opts_success, opts._error
 
 
 class BaseCollection extends Backbone\Collection
@@ -354,6 +361,7 @@ App <<<
     _Array    : new Array
     _Object   : new Object
     _Function : new Function
+    _submit   : (e) !-> e.prevent!
   _history   : history
   widget     : require './app/widget'
 

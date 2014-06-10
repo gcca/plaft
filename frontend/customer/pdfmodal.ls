@@ -61,8 +61,16 @@ class PDFModal extends App.widget.Modal
         .._padding-top    = '6px'
 
     App.dom._write ~> @m_body.css._padding = '0'
-    @m_body.html "<iframe src='/declaration/#{@declarationId}/pdf'
-                      style='border:none;width:100%;height:80%'></iframe>"
+
+    isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0
+    isFirefox = typeof InstallTrigger isnt \undefined
+    isChrome = !!window.chrome && !isOpera;
+
+    declarationUrl = "/declaration/#{@declarationId}/pdf"
+    if not (isFirefox or isChrome)
+      declarationUrl = "/static/pdfjs/web/viewer.html?file=#declarationUrl"
+    @m_body.html "<iframe src='#declarationUrl'
+                          style='border:none;width:100%;height:80%'></iframe>"
 
     @_show!
     super!

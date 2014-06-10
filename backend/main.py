@@ -26,6 +26,8 @@ app = WSGIApplication([
     Route(r'/api/v1/user/<id:\d+>', handler.User),
 
     ('/api/v1/declaration', handler.Declaration),
+    # tmp
+    Route(r'/api/v1/declaration/<id:\d+>', handler.Declaration),
     ('/api/v1/declarations', handler.Declarations),
 
     ('/api/v1/customs', handler.Customs),

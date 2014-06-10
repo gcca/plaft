@@ -47,8 +47,9 @@ class BaseHandler(RequestHandler):
         self.write_json(u'{"e":"%s"}' % e)
 
     def write_val(self, name, val):
-        val = '%s=%s; Path=/' % (name, make_secure(val))
-        self.response.headers.add_header('Set-Cookie', val)
+        # val = '%s=%s; Path=/' % (name, make_secure(val))
+        # self.response.headers.add_header('Set-Cookie', val)
+        self.response.set_cookie(name, make_secure(val), path='/')
 
     def read_val(self, name):
         val = self.request.cookies.get(name)

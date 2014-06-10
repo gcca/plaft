@@ -112,8 +112,32 @@ class Builder extends Array implements PoolMixIn
    * Enable tooltips.
    * @return {Array.<HTMLElement>}
    */
-  tooltips: ->
-    for xel in @ then $ xel .tooltip!
+  tooltips: -> for xel in @ then $ xel .tooltip!
+
+  /**
+   * Render option field list for simple form.
+   * @param {HTMLElement} el
+   * @param {Array.<Options>} fields
+   * @public
+   */
+  @@render-list = (el, fields) ->
+    fbuilder = App.shared.shortcuts.xhtml._form.Builder.New el
+    for _field in fields then fbuilder.field _field
+    fbuilder.render!
+    fbuilder.free!
+
+  /**
+   * Render option field list for simple form with button save.
+   * @param {HTMLElement} el
+   * @param {Array.<Options>} fields
+   * @public
+   */
+  @@render-list.with-save = (el, fields) ->
+    fbuilder = App.shared.shortcuts.xhtml._form.Builder.New el
+    for _field in fields then fbuilder.field _field
+    fbuilder._save!
+    fbuilder.render!
+    fbuilder.free!
 
   /** @override */
   render: ->

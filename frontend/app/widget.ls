@@ -17,6 +17,12 @@ class Modal extends App.View
   _show: !-> @$el.modal @_options._modal
 
   /**
+   * Hide modal.
+   * @public
+   */
+  _hide: !-> @$el.modal \hide
+
+  /**
    * Set basic header with title and close button.
    * @protected
    */
@@ -97,12 +103,16 @@ class Typeahead extends App.View
   _tagName: \input
 
   /**
-   *
+   * (Event) On cursor changed.
+   * @param {Function} _callback
    */
   onCursorChanged: (_callback)-> @$el.on 'typeahead:cursorchanged', _callback
 
+  /**
+   * (Event) On closed choices.
+   * @param {Function} _callback
+   */
   onClosed: (_callback)-> @$el.on 'typeahead:closed', _callback
-
 
   Bh = Bloodhound
 
@@ -111,9 +121,14 @@ class Typeahead extends App.View
     ## next = @$el.next!
     ## isNext = next.get 0
     ## next.remove! if isNext
+    ##
     ## @$el.after next if isNext
 
-  _enable: ->
+  /**
+   * Enable typeahead over {@code HTMLElement}.
+   * @override
+   */
+  render: ->
     options = @options
     _.invert options._source
       _tokens  = ..[@@Source.kTokens]
@@ -138,7 +153,6 @@ class Typeahead extends App.View
               &nbsp;&nbsp; No se encontraron coincidencias.
             </div>"
           \suggestion : options._template)
-
 
   /**
    * Flag to data source.

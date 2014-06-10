@@ -57,7 +57,8 @@ exports.shortcuts =
 
       | fieldType is FieldType.kLineEdit or not fieldType  => $ "
         <div class='#{gz.Css \form-group}'>
-          <label data-toggle='tooltip' title='#fieldTip'>
+          <label data-toggle='tooltip' title='#fieldTip'
+                 class='#{gz.Css \control-label}'>
             <b>#fieldBullet</b>
             &nbsp;
             <span style='font-weight:normal'>#fieldLabel</span>
@@ -69,7 +70,8 @@ exports.shortcuts =
         html = new Array
         html._push "
           <div class='#{gz.Css \form-group}'>
-            <label data-toggle='tooltip' title='#fieldTip'>
+            <label data-toggle='tooltip' title='#fieldTip'
+                   class='#{gz.Css \control-label}'>
               <b>#fieldBullet</b>
               &nbsp;
               <span style='font-weight:normal'>#fieldLabel</span>
@@ -85,7 +87,8 @@ exports.shortcuts =
         html._push "
           <div class='#{gz.Css \form-group}'>
             <label data-toggle='tooltip' title='#fieldTip'
-                style='margin-right:4em;'>
+                style='margin-right:4em;'
+                class='#{gz.Css \control-label}'>
               <b>#fieldBullet</b>
               &nbsp;
               <span style='font-weight:normal'>#fieldLabel</span>
@@ -94,7 +97,8 @@ exports.shortcuts =
         for fieldOption in fieldParams.0
           html._push "
             <div class='#{gz.Css \radio-inline}'>
-              <label style='font-weight:normal'>
+              <label style='font-weight:normal'
+                     class='#{gz.Css \control-label}'>
                 <input type='radio' name='#fieldName' value='#fieldOption'>
                 #fieldOption
               </label>

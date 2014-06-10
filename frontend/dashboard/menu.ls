@@ -11,12 +11,13 @@
  * To register new main modules.
  */
 MODULES =
-  Reception    = require './modules/reception'
   Register     = require './modules/register'
-  Dispatches   = require './modules/dispatches'
+  Numeration   = require './modules/numeration'
   Declarations = require './modules/debug/declarations'
 #  Numeration   = r equire './modules/numeration'
+#  Dispatches   = r equire './modules/dispatches'
 #  Alerts       = r equire './modules/alerts'
+#  Reception    = r equire './modules/reception'
 #  Anex6        = r equire './modules/anex6'
 #  Anex2        = r equire './modules/anex2'
 
@@ -106,6 +107,7 @@ class Modules extends App.View
 
 /**
  * Menu for setting and main modules.
+ * TODO(...): Support roles.
  * @class UiMenu
  * @extends View
  */

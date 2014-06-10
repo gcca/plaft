@@ -23,13 +23,17 @@ Search = require './desktop/search'
  * To doesn't write validation for null module.
  * @private
  */
-VOID-MODULE = free: ->
-
+VOID-MODULE =
+  free : ->
+  el   :
+    _next : null
+    css   : _display : 'none'
 
 /** ----------
  *  Ui Desktop
  *  ----------
  * To manage and show modules. Add interaction with {@code UiSearch}.
+ * Sub-modules working module stacking collection.
  * @class UiDesktop
  * @extends View
  */
@@ -44,10 +48,39 @@ class Desktop extends App.View
   /**
    * Set current module. Can be used like an event.
    * @param {Object} Module Base module class.
+   * @protected
    */
-  changeModule: (Module) !~>
-    @module.free!
+  changeModule: (@Module) !~>
+    @clean-current-module!
     @$el._append (@newCustomized Module).render!.el
+    @module.focus-first-field!
+
+  /**
+   * Clean current module and sub-modules.
+   * @private
+   * @see @changeModule
+   */
+  clean-current-module: ->
+    _sub = @module.el._next
+    while _sub?
+      _tmp = _sub
+      _sub = _sub._next
+      $ _tmp ._remove!
+
+    _sub = @breadcrumb._first._next
+    while _sub?
+      _tmp = _sub
+      _sub = _sub._next
+      $ _tmp ._remove!
+
+    @module.el.css._display = ''
+    @module.free!
+
+  /**
+   * Reload current module.
+   * @protected
+   */
+  _reload: ~> @changeModule @Module
 
   /**
    * Add customized properties to constructed module.
@@ -56,29 +89,149 @@ class Desktop extends App.View
    */
   newCustomized: (Module) ->
     @module = Module.New!
-      ..ui.desktop._search = @_search
+      ..ui.desktop
+        .._search  = @_search
+        .._reload  = @_reload
+        ..push-sub = @push-sub
+        ..pop-sub  = @pop-sub
       @_search.setOnSearch ..onSearch
+      ..clean!
+      @root-breadcrumb ..
+
+  /**
+   * Push sub-module. Show sub-module on desktop.
+   * @param {Module::} _Module
+   * @param {Object} _options
+   * @public
+   */
+  push-sub: (_Module, _options = null) ~>
+    ## $ @el._last ._hide!
+    @breadcrumb-current._module.$el._hide!
+
+    _module = _Module.New _options
+      ..el.css._display = '' # Hack: Must be in sub-module constructor
+    @el._append _module.render!.el
+
+    @push-breadcrumb _module
+
+  /**
+   * Pop sub-module. Hide sub-module on desktop.
+   * @public
+   */
+  pop-sub: ~>
+
+  /**
+   * Push breadcrumb title-link.
+   * @param {Module} _module
+   * @private
+   */
+  push-breadcrumb: (_module) ->
+    # Clean
+    _li = @breadcrumb-current._next
+    while _li?
+      _li._module.free!
+      _aux = _li
+      _li = _li._next
+      $ _aux ._remove!
+
+    # Push
+    _li = App.dom._new \li
+      ..Class = gz.Css \active
+      ..html "#{_module._constructor._caption}"
+      .._module = _module
+    @breadcrumb._append _li
+
+    @breadcrumb-current
+      ..Class = ''
+      ..html "<a>#{..innerHTML}</a>"
+      .._first.onClick @breadcrumb-change
+    @breadcrumb-current = _li
+
+  breadcrumb-change: (evt) ~>
+    @breadcrumb-current
+      ..Class = ''
+      ..html "<a>#{..innerHTML}</a>"
+      .._first.onClick @breadcrumb-change
+      .._module.$el._hide!
+    @breadcrumb-current = evt._target._parent
+      ..Class = gz.Css \active
+      ..html .._first.innerHTML
+      .._module.$el._show!
+
+  /**
+   * Pop breadcrumb title-link.
+   * @private
+   */
+  pop-breadcrumb: ->
+
+  /**
+   * Set root breadcrumb title-link.
+   * @param {Module} _module
+   * @private
+   */
+  root-breadcrumb: (_module) ->
+    @breadcrumb-current = @breadcrumb._first
+      ..Class = gz.Css \active
+      ..html "<i class='#{gz.Css \glyphicon} #{gz.Css \glyphicon-home}'></i>
+              &nbsp;"
+      .._module = _module
 
   /** @override */
-  initialize: !-> @module = VOID-MODULE
+  initialize: !->
+    /**
+     * Pseudo-module with {@code free} void function. To match with
+     * module interface and avoid {@code if} structure when change
+     * current module on desktop.
+     * @type {Object}
+     */
+    @module = VOID-MODULE
+
+    /**
+     * Used when need to reload the current module.
+     * @see _reload
+     * @type {Object?}
+     */
+    @Module = null
 
   /**
    * Current module.
+   * @type {Object}
    * @private
    */
   module: VOID-MODULE
+
+  /**
+   * Current Module.
+   * @type {Object?}
+   * @private
+   */
+  Module: null
+
+  /**
+   * Breadcrumb.
+   * @type {HTMLElement}
+   * @private
+   */
+  breadcrumb: null
+
+  /**
+   * Breadcrumb currently active.
+   * @type {HTMLElement}
+   * @private
+   */
+  breadcrumb-current: null
 
   /** @override */
   render: ->
     @$el.html "
       <ol class='#{gz.Css \breadcrumb} #{gz.Css \col-md-8}'>
-        <li>
-          <a>
-            <i class='#{gz.Css \glyphicon} #{gz.Css \glyphicon-home}'></i>
-            &nbsp;
-          </a>
+        <li class='#{gz.Css \active}'>
+          <i class='#{gz.Css \glyphicon} #{gz.Css \glyphicon-home}'></i>
+          &nbsp;
         </li>
       </ol>"
+
+    @breadcrumb = @el._first
 
     @_search = new Search
     @$el._append @_search.render!.el

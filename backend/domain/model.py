@@ -210,6 +210,7 @@ class Dispatch(Model):
         type     = TextProperty    ()
         amount   = TextProperty    ()
         exchange = TextProperty    ()
+        items    = TextProperty    (repeated=True)
 
     class Anex6(Expando):
 
