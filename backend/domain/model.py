@@ -210,7 +210,10 @@ class Dispatch(Model):
         type     = TextProperty    ()
         amount   = TextProperty    ()
         exchange = TextProperty    ()
+        currency = TextProperty    ()
         items    = TextProperty    (repeated=True)
+        supplier = JsonProperty    ()
+        importer = JsonProperty    ()
 
     class Anex6(Expando):
 

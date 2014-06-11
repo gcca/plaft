@@ -5,8 +5,6 @@ Module = require '../../module'
 FieldType = App.builtins.Types.Field
 
 
-
-
 /**
  * Item for shareholder list.
  * @class UiProductItem
@@ -106,13 +104,6 @@ class ProductList extends App.View
     super!
 
 
-
-
-
-
-
-
-
 /** --------------
  *  NumerationEdit
  *  --------------
@@ -132,10 +123,13 @@ class NumerationEdit extends Module
    * @private
    */
   onSave: (evt) ~>
-    console.log \guardado
-    ## @dispatch.store \numeration : @$el._toJSON!, do
-    ##   _success: -> alert 'Guardado'
-    ##   _error: -> alert 'ERROR: 010dbe9c-a584-11e3-8bb0-88252caeb7e8'
+    dto = $ @main-form ._toJSON!
+      ..\supplier = $ @supplier-form ._toJSON!
+      ..\importer = $ @importer-form ._toJSON!
+
+    @dispatch.store \numeration : dto, do
+      _success: -> alert 'Guardado'
+      _error: -> alert 'ERROR: 010dbe9c-a584-11e3-8bb0-88252caeb7e8'
 
   /**
    * Show form for dispatch numeration.
@@ -236,6 +230,7 @@ class NumerationEdit extends Module
     fbuilder.render!
     fbuilder.tooltips!
     fbuilder.free!
+    @main-form = _form
 
     $ _form ._fromJSON dispatch\numeration
     _form.onSubmit App._void._submit  # @onSave
@@ -243,7 +238,7 @@ class NumerationEdit extends Module
     @el._append header_form
     @el._append _form
 
-    @addStakeholderForm!
+    @addStakeholderForm dispatch
 
     @$ '[title]' .tooltip!
 
@@ -263,34 +258,75 @@ class NumerationEdit extends Module
    * Stakeholder form creation and appended to module.
    * TODO(...): Currently only manage 2 inner forms. Implement to manage
    *   'n' inner forms. (Hint: Two columns by 'n/2' rows.)
+   * @param {Object} dispatch
+   * @see @showForm
    * @private
    */
-  addStakeholderForm: ->
+  addStakeholderForm: (dispatch) ->
     customer = new App.model.Customer @dispatch._get \customer
-    innerforms = if customer.isBusiness
-                 then @templates-business!
-                 else @templates-person!
 
-    stakeholdersHtml = "
-      <div class='#{gz.Css \col-md-12}'><hr></div>
-      <div class='#{gz.Css \col-md-6}'>
-        #{innerforms.0}
-      </div>"
+    if customer.isBusiness
+      supplier-fields = @stakeholder-business-supplier-fields
+      importer-fields = @stakeholder-business-importer-fields
+    else
+      supplier-fields = @stakeholder-person-supplier-importer-fields
+      importer-fields = @stakeholder-person-supplier-importer-fields
 
-    if innerforms._length is 2
-      stakeholdersHtml += "
-        <div class='#{gz.Css \col-md-6}'>
-          #{innerforms.1}
-        </div>"
+    separation-section = App.dom._new \div
+      ..Class = gz.Css \col-md-12
+      ..html '<hr>'
 
-    @$el._append stakeholdersHtml
+    form-supplier = @get-stakeholder-form 'Datos proveedor'  supplier-fields
+    form-importer = @get-stakeholder-form 'Datos importador' importer-fields
+    @supplier-form = form-supplier
+    @importer-form = form-importer
+
+    $ form-supplier ._fromJSON dispatch'numeration'\supplier
+    $ form-importer ._fromJSON dispatch\customer
+
+    if customer.isPerson  # Extra procedure for splitted person name
+      _names = dispatch'customer''name'.split ' '
+      if _names._length > 2
+        [..._names, _father, _mother] = _names
+      else if _names._length is 2
+        [_names, _father] = _names
+      else
+        _names = []
+        _father = _mother = ''
+      form-importer._elements'surname_father'._value = _father
+      form-importer._elements'surname_mother'._value = _mother
+      form-importer._elements'names'._value          = _names._join ' '
+
+    @el._append separation-section
+    @el._append form-supplier
+    @el._append form-importer
+
+  /**
+   * Create supplier-importer busines-person stakeholder form.
+   * @param {string} _legend
+   * @param Array.<Options> stakeholder-fields
+   * @see @addStakeholderForm
+   */
+  get-stakeholder-form: (_legend, stakeholder-fields) ->
+    _form = App.dom._new \form
+      ..Class = gz.Css \col-md-6
+
+    fbuilder = App.shared.shortcuts.xhtml._form.Builder.New _form
+    fbuilder.fieldset _legend, stakeholder-fields
+    fbuilder.render!
+    fbuilder.free!
+
+    _form
 
   /** @override */
   initialize: ({dto}) ->
     @dispatch = new App.model.Dispatch dto
     super!
 
-  /** @private */ dispatch: null
+  /** @private */ dispatch      : null
+  /** @private */ main-form     : null
+  /** @private */ supplier-form : null
+  /** @private */ importer-form : null
 
   /** @override */
   render: ->
@@ -301,348 +337,130 @@ class NumerationEdit extends Module
   /** @protected */ @@_icon    = gz.Css \glyphicon-book
 
   /**
-   * Templates for business stakeholders.
-   * @return Array.<string>
+   * Fields for business supplier stakeholder.
+   * @type Array.<Options>
    * @see @addStakeholderForm
    * @private
    */
-  templates-business: ->
-    form-supplier = App.dom._new \form
-    fbuilder = App.shared.shortcuts.xhtml._form.Builder.New form-supplier
-    fbuilder._fieldset
-    fbuilder.render!
-    fbuilder.tooltips!
-    fbuilder.free!
+  stakeholder-business-supplier-fields:
+    * _name  : 'name'
+      _label : 'Razón social'
+      _class : gz.Css \col-md-12
 
-    _supplier = "
-      <form>
-        <fieldset>
-          <legend>Datos proveedor</legend>
+    * _name  : 'object'
+      _label : 'Objeto social'
+      _class : gz.Css \col-md-12
 
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              Razón social
-            </label>
-            <input type='text' class='#{gz.Css \form-control}' name='name'>
-          </div>
+    * _name  : 'address'
+      _label : 'Nombre y N&ordm; via dirección'
+      _class : gz.Css \col-md-12
 
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              Objeto social
-            </label>
-            <input type='text' class='#{gz.Css \form-control}' name='object'>
-          </div>
-
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              Nombre y N&ordm; via dirección
-            </label>
-            <input type='text' class='#{gz.Css \form-control}' name='address'>
-          </div>
-
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              Teléfono de la persona
-            </label>
-            <input type='text' class='#{gz.Css \form-control}' name='phone'>
-          </div>
-        </fieldset>
-      </form>"
-
-    _importer = "
-      <form>
-        <fieldset>
-          <legend>Datos de importador</legend>
-
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              Razón social
-            </label>
-            <input type='text' class='#{gz.Css \form-control}' name='name'>
-          </div>
-
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              Objeto social
-            </label>
-            <input type='text' class='#{gz.Css \form-control}' name='object'>
-          </div>
-
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              Nombre y N&ordm; via dirección
-            </label>
-            <input type='text' class='#{gz.Css \form-control}' name='address'>
-          </div>
-
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              Teléfono de la persona
-            </label>
-            <input type='text' class='#{gz.Css \form-control}' name='phone'>
-          </div>
-
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              RUC
-            </label>
-            <input type='text' class='#{gz.Css \form-control}' name='number'>
-          </div>
-
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              Actividad económica principal
-            </label>
-            <input type='text' class='#{gz.Css \form-control}' name='activity'>
-          </div>
-
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              Código país origen
-            </label>
-            <select class='#{gz.Css \form-control}' name='country'>
-              <option>PE</option>
-            </select>
-          </div>
-        </fieldset>
-      </form>"
-
-    [_supplier, _importer]
+    * _name  : 'phone'
+      _label : 'Teléfono de la persona'
+      _class : gz.Css \col-md-12
 
   /**
-   * Templates for person stakeholders.
-   * @return Array.<string>
+   * Fields for business importer stakeholder.
+   * @type Array.<Options>
    * @see @addStakeholderForm
    * @private
    */
-  templates-person: ->
-    _supplier = "
-      <form>
-        <fieldset>
-          <legend>Datos proveedor</legend>
+  stakeholder-business-importer-fields:
+    * _name  : 'name'
+      _label : 'Razón social'
+      _class : gz.Css \col-md-12
 
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              Tipo documento
-            </label>
-            <input type='text' class='#{gz.Css \form-control}'
-                name='document[type]'>
-          </div>
+    * _name  : 'object'
+      _label : 'Objeto social'
+      _class : gz.Css \col-md-12
 
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              N&ordm; Documento identidad
-            </label>
-            <input type='text' class='#{gz.Css \form-control}'
-                name='document[number]'>
-          </div>
+    * _name  : 'address'
+      _label : 'Nombre y N&ordm; via dirección'
+      _class : gz.Css \col-md-12
 
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              Condición residencia
-            </label>
-            <input type='text' class='#{gz.Css \form-control}'
-                name='residence'>
-          </div>
+    * _name  : 'phone'
+      _label : 'Teléfono de la persona'
+      _class : gz.Css \col-md-12
 
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              País emisión documento
-            </label>
-            <input type='text' class='#{gz.Css \form-control}' name='issuance'>
-          </div>
+    * _name  : 'document[number]'
+      _label : 'RUC'
+      _class : gz.Css \col-md-12
 
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              Persona PEP
-            </label>
-            <input type='text' class='#{gz.Css \form-control}' name='pep'>
-          </div>
+    * _name  : 'activity'
+      _label : 'Actividad económica principal'
+      _class : gz.Css \col-md-12
 
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              PEP Cargo público
-            </label>
-            <input type='text' class='#{gz.Css \form-control}'
-                name='pep_office'>
-          </div>
+    * _name  : 'country'
+      _label : 'Código país origen'
+      _class : gz.Css \col-md-12
+      _type  : FieldType.kComboBox
+      _options : ['PE']
 
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              Apellido paterno
-            </label>
-            <input type='text' class='#{gz.Css \form-control}'
-                name='surname_father'>
-          </div>
+  /**
+   * Fields for person supplier-importer stakeholder.
+   * @type Array.<Options>
+   * @see @addStakeholderForm
+   * @private
+   */
+  stakeholder-person-supplier-importer-fields:
+    * _name  : 'document[type]'
+      _label : 'Tipo documento'
+      _class : gz.Css \col-md-12
+      _type  : FieldType.kComboBox
+      _options : App.shared.lists.IDENTIFICATION
 
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              Apellido materno
-            </label>
-            <input type='text' class='#{gz.Css \form-control}'
-                name='surname_mother'>
-          </div>
+    * _name  : 'document[number]'
+      _label : 'N&ordm; Documento identidad'
+      _class : gz.Css \col-md-12
 
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              Nombres
-            </label>
-            <input type='text' class='#{gz.Css \form-control}' name='name'>
-          </div>
+    * _name  : 'residence'
+      _label : 'Condición residencia'
+      _class : gz.Css \col-md-12
 
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              Nacionalidad
-            </label>
-            <input type='text' class='#{gz.Css \form-control}'
-                name='nationality'>
-          </div>
+    * _name  : 'issuance'
+      _label : 'País emisión documento'
+      _class : gz.Css \col-md-12
 
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              Fecha nacimiento
-            </label>
-            <input type='text' class='#{gz.Css \form-control}' name='birthday'>
-          </div>
+    * _name  : 'pep'
+      _label : 'Persona PEP'
+      _class : gz.Css \col-md-12
 
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              Ocupación, oficio
-            </label>
-            <input type='text' class='#{gz.Css \form-control}' name='activity'>
-          </div>
+    * _name  : 'pep_office'
+      _label : 'PEP Cargo público'
+      _class : gz.Css \col-md-12
 
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              Empleador/Dependiente
-            </label>
-            <input type='text' class='#{gz.Css \form-control}' name='employer'>
-          </div>
+    * _name  : 'surname_father'
+      _label : 'Apellido paterno'
+      _class : gz.Css \col-md-12
 
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              Ingreso promedio/Dependendiente
-            </label>
-            <input type='text' class='#{gz.Css \form-control}'
-                name='mean_income'>
-          </div>
-        </fieldset>
-      </form>"
+    * _name  : 'surname_mother'
+      _label : 'Apellido materno'
+      _class : gz.Css \col-md-12
 
-    _importer = "
-      <form>
-        <fieldset>
-          <legend>Datos importador</legend>
+    * _name  : 'names'
+      _label : 'Nombres'
+      _class : gz.Css \col-md-12
 
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              Tipo documento
-            </label>
-            <input type='text' class='#{gz.Css \form-control}'
-                name='document[type]'>
-          </div>
+    * _name  : 'nationality'
+      _label : 'Nacionalidad'
+      _class : gz.Css \col-md-12
 
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              N&ordm; Documento identidad
-            </label>
-            <input type='text' class='#{gz.Css \form-control}'
-                name='document[number]'>
-          </div>
+    * _name  : 'birthday'
+      _label : 'Fecha nacimiento'
+      _class : gz.Css \col-md-12
 
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              Condición residencia
-            </label>
-            <input type='text' class='#{gz.Css \form-control}'
-                name='residence'>
-          </div>
+    * _name  : 'activity'
+      _label : 'Ocupación, oficio'
+      _class : gz.Css \col-md-12
 
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              País emisión documento
-            </label>
-            <input type='text' class='#{gz.Css \form-control}' name='issuance'>
-          </div>
+    * _name  : 'employer'
+      _label : 'Empleador/Dependiente'
+      _class : gz.Css \col-md-12
 
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              Persona PEP
-            </label>
-            <input type='text' class='#{gz.Css \form-control}' name='pep'>
-          </div>
+    * _name  : 'mean-income'
+      _label : 'Ingreso promedio/Dependiente'
+      _class : gz.Css \col-md-12
 
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              PEP Cargo público
-            </label>
-            <input type='text' class='#{gz.Css \form-control}'
-                name='pep_office'>
-          </div>
-
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              Apellido paterno
-            </label>
-            <input type='text' class='#{gz.Css \form-control}'
-                name='surname_father'>
-          </div>
-
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              Apellido materno
-            </label>
-            <input type='text' class='#{gz.Css \form-control}'
-                name='surname_mother'>
-          </div>
-
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              Nombres
-            </label>
-            <input type='text' class='#{gz.Css \form-control}' name='name'>
-          </div>
-
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              Nacionalidad
-            </label>
-            <input type='text' class='#{gz.Css \form-control}'
-                name='nationality'>
-          </div>
-
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              Fecha nacimiento
-            </label>
-            <input type='text' class='#{gz.Css \form-control}' name='birthday'>
-          </div>
-
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              Ocupación, oficio
-            </label>
-            <input type='text' class='#{gz.Css \form-control}' name='activity'>
-          </div>
-
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              Empleador/Dependiente
-            </label>
-            <input type='text' class='#{gz.Css \form-control}' name='employer'>
-          </div>
-
-          <div class='#{gz.Css \form-group}'>
-            <label>
-              Ingreso promedio/Dependendiente
-            </label>
-            <input type='text' class='#{gz.Css \form-control}'
-                name='mean_income'>
-          </div>
-        </fieldset>
-      </form>"
-
-    [_supplier, _importer]
 
 /** @export */
 module.exports = NumerationEdit
@@ -687,7 +505,6 @@ FIELDS-HEADER =
     _label       : 'Tipo Cambio'
     _tip         : 'Fecha numeración _ 2'
 #    'T/C publicado SBS xxx.xxxx'
-
 
   * _name        : 'soles'
     _label       : 'N. Soles S/.'

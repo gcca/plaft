@@ -2,6 +2,7 @@
 
 
 Module = require '../module'
+NumerationEdit = require './numeration/numeration-edit'
 
 Customs = App.model.Customs
 
@@ -41,10 +42,20 @@ class MainTable extends App.View
       _tr.append _td
     _tr
 
+  /**
+   * (Event) On row double click.
+   * @param {Object} evt
+   * @private
+   */
   onRowDoubleClicked: (evt) ~>
     @itemDoubleClicked evt._target._item
 
-  itemDoubleClicked: ->
+  /**
+   * Event on row double click. Use in derived classes.
+   * @parma {Model} _item
+   * @protected
+   */
+  itemDoubleClicked: (_item) ->
 
   /**
    * Customize row thead.
@@ -99,14 +110,19 @@ class MainTable extends App.View
     super!
 
 
-NumerationEdit = require './numeration/numeration-edit'
-
+/**
+ * Table for numeration module dispatch list.
+ * @class UiNumerationTable
+ * @extends MainTable
+ */
 class NumerationTable extends MainTable
 
+  /** @override */
   itemDoubleClicked: (dispatch) ->
     numeration = @options._numeration
     numeration.ui.desktop.push-sub NumerationEdit, dto : dispatch
 
+  /** @override */
   _header: -> "
     <tr>
       <th>N&ordm; Orden</th>
@@ -128,6 +144,7 @@ class NumerationTable extends MainTable
       <th>Firmado</th>
     </tr>"
 
+
 /** ----------
  *  Numeration
  *  ----------
@@ -137,8 +154,8 @@ class NumerationTable extends MainTable
  */
 class Numeration extends Module
 
-  @@_caption = 'Lista de operaciones numeradas'
-  @@_icon    = gz.Css \glyphicon-book
+  /** @private */ @@_caption = 'Lista de operaciones numeradas'
+  /** @private */ @@_icon    = gz.Css \glyphicon-book
 
   /**
    * Dispatch type color cell.
@@ -148,16 +165,16 @@ class Numeration extends Module
    */
   numeration-type: (dispatch) ->
     if dispatch\numeration
-      "<span class='#{gz.Css \label} #{gz.Css \label}-
+      "<div class='#{gz.Css \label} #{gz.Css \label}-
         #{if dispatch.'numeration'.'type' is \Verde
             gz.Css \success
           else if dispatch.'numeration'.'type' is \Naranja
             gz.Css \warning
           else if dispatch.'numeration'.'type' is \Rojo
             gz.Css \danger
-         }'>
+         }' style='display:block'>
         #{dispatch.'numeration'.'type'}
-      </span>"
+      </div>"
     else
       "&\#8212;"
 

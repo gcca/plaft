@@ -58,6 +58,16 @@ def create():
     )
     c2.store()
 
+    c3 = Customer(
+        name     = 'Cristhian Alberto Gonzales Castillo',
+        document = Document(type='DNI', number='12345678'),
+        activity = 'Ing. Software',
+        address  = 'Atrás del mar',
+        phone    = '666-5555',
+        nationality = 'Peruana'
+    )
+    c3.store()
+
     ds = Datastore()
 
     d1 = Dispatch(
@@ -123,6 +133,22 @@ def create():
     cs1.datastore.pending.dispatches.append(d3.key)
     cs1.store()
 
+    d4 = Dispatch(
+        order        = '2014-05',
+        customer     = c3.key,
+        customs      = cs1.key,
+        type         = Dispatch.CodeName(code = '001',
+                                         name = 'IMPORTACIÓN DEFINITIVA'),
+        jurisdiction = Dispatch.CodeName(code = '163',
+                                         name = 'ILO'),
+        regime       = Dispatch.CodeName(code = '10',
+                                         name = 'IMPORTACIÓN PARA EL CONSUMO'),
+        numeration   = Dispatch.Numeration(type   = 'Verde',
+                                           number = 'XYZ-999')
+    )
+    d4.store()
+    cs1.datastore.pending.dispatches.append(d4.key)
+    cs1.store()
 
 class Debug(BaseHandler):
 

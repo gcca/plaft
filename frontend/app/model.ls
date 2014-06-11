@@ -22,17 +22,17 @@ class Customer extends App.Model
 
   /**
    * Is business?
-   * @type {boolean}
+   * @return boolean
    * @public
    */
-  isBusiness :~ -> @_attributes.'document'.'number'._length is 11
+  isBusiness:~ -> @_attributes.'document'.'number'._length is 11
 
   /**
    * Is business?
-   * @type {boolean}
+   * @return boolean
    * @public
    */
-  isPerson   :~ -> not @isBusiness
+  isPerson:~ -> not @isBusiness
 
   /**
    * Create new declaration from customer.
