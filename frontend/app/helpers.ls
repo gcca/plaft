@@ -69,7 +69,7 @@ class formToObject
         @forEach DOMchilds,
                  (child) -> result[keys].push child.value if DOMchilds
         return
-      if domNode.name.endsWith '[]'
+      if domNode.name.\endsWith '[]'
         list = result[keys.0]
         list ?= []
         list.push value
@@ -311,6 +311,7 @@ $\fn
   ..dropdown     = ..\dropdown
   ..modal        = ..\modal
   ..typeahead    = ..\typeahead
+  ..tab          = ..\tab
   .._show        = ..\show
   .._find        = ..\find
   .._append      = ..\append

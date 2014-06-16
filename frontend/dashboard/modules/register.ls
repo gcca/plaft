@@ -2,6 +2,8 @@
 
 Module = require '../module'
 
+Anex5 = require './register/anex5'
+
 FieldType = App.builtins.Types.Field
 sharedLists = App.shared.lists
 
@@ -123,78 +125,78 @@ class CodeNameField extends App.View
 
 
 
-class DModal extends App.widget.Modal
+## class DModal extends App.widget.Modal
 
-  /** @override */
-  render: ->
-    header-title = App.widget.Modal._title 'Declaración Jurada'
+##   /** @override */
+##   render: ->
+##     header-title = App.widget.Modal._title 'Declaración Jurada'
 
-    ## button-left = App.dom._new \button
-    ##   .._type = \button
-    ##   ..Class = gz.Css \close
-    ##   ..Class = "#{gz.Css \btn} #{gz.Css \btn-default} #{gz.Css \pull-left}"
-    ##   ..html 'Nuevo'
+##     ## button-left = App.dom._new \button
+##     ##   .._type = \button
+##     ##   ..Class = gz.Css \close
+##     ##   ..Class = "#{gz.Css \btn} #{gz.Css \btn-default} #{gz.Css \pull-left}"
+##     ##   ..html 'Nuevo'
 
-    ## button-right = App.dom._new \a
-    ##   ..Class   = "#{gz.Css \btn} #{gz.Css \btn-primary} #{gz.Css \pull-right}"
-    ##   ..html 'x'
+##     ## button-right = App.dom._new \a
+##     ##   ..Class   = "#{gz.Css \btn} #{gz.Css \btn-primary} #{gz.Css \pull-right}"
+##     ##   ..html 'x'
 
-    _left = App.dom._new \div
-      ..Class = gz.Css \col-md-3
-      ..html "<button type='button'
-                      class='close'
-                      data-dismiss='modal'
-                      style='font-size:33px;float:left'>&times;</button>"
-      ## .._append button-left
+##     _left = App.dom._new \div
+##       ..Class = gz.Css \col-md-3
+##       ..html "<button type='button'
+##                       class='#{gz.Css \close}'
+##                       data-dismiss='modal'
+##                       style='font-size:33px;float:left'>&times;</button>"
+##       ## .._append button-left
 
-    _center = App.dom._new \div
-      ..Class = gz.Css \col-md-6
-      .._append header-title
+##     _center = App.dom._new \div
+##       ..Class = gz.Css \col-md-6
+##       .._append header-title
 
-    _right = App.dom._new \div
-      ..Class = gz.Css \col-md-3
-      ## .._append button-right
+##     _right = App.dom._new \div
+##       ..Class = gz.Css \col-md-3
+##       ## .._append button-right
 
-    _row = App.dom._new \div
-      ..Class = gz.Css \col-md-12
-      .._append _left
-      .._append _center
-      .._append _right
+##     _row = App.dom._new \div
+##       ..Class = gz.Css \col-md-12
+##       .._append _left
+##       .._append _center
+##       .._append _right
 
-    @m_header.Class._add gz.Css \row
-    @m_header._append _row
-    App.dom._write ~>
-      _center.css
-        .._text-align  = 'center'
-        .._padding-top = '4px'
+##     @m_header.Class._add gz.Css \row
+##     @m_header._append _row
+##     App.dom._write ~>
+##       _center.css
+##         .._text-align  = 'center'
+##         .._padding-top = '4px'
 
-      _left.css._padding-left = '0'
-      _right.css._padding-right = '0'
+##       _left.css._padding-left = '0'
+##       _right.css._padding-right = '0'
 
-      _row.css
-        .._padding-left  = '0'
-        .._padding-right = '0'
+##       _row.css
+##         .._padding-left  = '0'
+##         .._padding-right = '0'
 
-      @m_header.css
-        .._margin-left    = '0'
-        .._margin-right   = '0'
-        .._padding-bottom = '4px'
-        .._padding-top    = '6px'
+##       @m_header.css
+##         .._margin-left    = '0'
+##         .._margin-right   = '0'
+##         .._padding-bottom = '4px'
+##         .._padding-top    = '6px'
 
-    App.dom._write ~> @m_body.css._padding = '0'
-    @m_body.html "<iframe src='/customer'
-                      style='border:none;width:100%;height:81%'></iframe>"
+##     App.dom._write ~> @m_body.css._padding = '0'
+##     @m_body.html "<iframe src='/customer'
+##                       style='border:none;width:100%;height:81%'></iframe>"
 
-    @m_dialog.css._width = '96%'
+##     @m_dialog.css._width = '96%'
 
-    @_show!
-    super!
+##     @_show!
+##     super!
 
-  /** @override */
-  initialize: !->
-    super do
-      _type  : App.widget.Modal.Type.kLarge
-      _modal : \backdrop : \static
+##   /** @override */
+##   initialize: !->
+##     super do
+##       _type  : App.widget.Modal.Type.kLarge
+##       _modal : \backdrop : \static
 
 
 
@@ -208,6 +210,44 @@ class DModal extends App.widget.Modal
  * @extends Module
  */
 class Register extends Module
+
+  onSearch: (_query) ~>
+    @anex5._search _query
+
+  /** @protected */ @@_caption = 'Ingreso de Operación'
+  /** @protected */ @@_icon    = gz.Css \glyphicon-file
+
+  /** @override */
+  render: ->
+    @el.html "
+      <ul class='nav nav-tabs'>
+        <li>
+          <a href='\#mes' data-toggle='tab' class='#{gz.Css \active}'>
+            Anexo 5
+          </a>
+        </li>
+        <li><a href='\#set' data-toggle='tab'>Registro</a></li>
+      </ul>
+
+      <div class='#{gz.Css \tab-content}'>
+        <div id='mes' class='#{gz.Css \tab-pane} #{gz.Css \active}'>
+        </div>
+
+        <div id='set' class='#{gz.Css \tab-pane}'>
+        </div>
+      </div>
+    "
+
+    @anex5 = new Anex5 ui-search: @ui.desktop._search
+    @el._last._first._append @anex5.render!.el
+    @el._last._last._append (new Foo).render!.el
+
+    @$ 'a:first' .tab \show
+    super!
+
+
+
+class Foo extends App.View
 
   /** @override */
   _tagName: \form
@@ -276,9 +316,6 @@ class Register extends Module
   /** @private */ _fields        : null
   /** @private */ declarationId  : null
 
-  /** @protected */ @@_caption = 'Ingreso de Operación'
-  /** @protected */ @@_icon    = gz.Css \glyphicon-file
-
   /** @override */
   render: ->
     /**
@@ -330,42 +367,44 @@ class Register extends Module
                      \ #{gz.Css \pull-right}'>Declaración Jurada</button>"
       .._first.onClick @onSave
       .._first._next.onClick ~> @ui.desktop._reload!
-      .._last.onClick ~>
+      ## .._last.onClick ~>
 
-        @el._last
-          .._first
-            ..Class._remove gz.Css \hide
-            .._next.Class._remove gz.Css \hide
-          ## .._last.Class._add gz.Css \hide
+      ##   @el._last
+      ##     .._first
+      ##       ..Class._remove gz.Css \hide
+      ##       .._next.Class._remove gz.Css \hide
+      ##     ## .._last.Class._add gz.Css \hide
 
-        m = new DModal
-        ## m.$el.on \hidden.bs.modal, (e) ->
-        ##   console.log 'ehi-mdl'
+      ##   m = new DModal
+      ##   ## m.$el.on \hidden.bs.modal, (e) ->
+      ##   ##   console.log 'ehi-mdl'
 
-        getBtnSave = ~>
-          ifrm = m.el.query \iframe
-          (setTimeout getBtnSave, 200; return) if not ifrm?
-          (setTimeout getBtnSave, 200; return) if not ifrm.contentDocument?
+      ##   getBtnSave = ~>
+      ##     ifrm = m.el.query \iframe
+      ##     (setTimeout getBtnSave, 200; return) if not ifrm?
+      ##     (setTimeout getBtnSave, 200; return) if not ifrm.contentDocument?
 
-          btn = ifrm.contentDocument.query "##{gz.Css \id-save}"
-          setTimeout getBtnSave, 200 if not btn?
+      ##     ## btn = ifrm.contentDocument.querySelector "##{gz.Css \id-save}"
+      ##     btn = ifrm.contentDocument.querySelector '.xxD'
+      ##     setTimeout getBtnSave, 200 if not btn?
 
-          btn.addEventListener \click ~>
-            getHdr = ~>
-              hdr = ifrm.contentDocument.query ".#{gz.Css \modal-header}"
-              (setTimeout getHdr, 200; return) if not hdr?
-              a = hdr.query "a.#{gz.Css \pull-left}"
-              (setTimeout getHdr, 200; return) if not a?
-              a\href = ''
-              a.html 'Cerrar'
-              a.onClick ~>
-                m._hide!
-                @declarationId = parseInt ((hdr._first._last._first.\href).slice 34, 50)
-                @iwun = ifrm.contentWindow\kmll
-            getHdr!
+      ##     btn.addEventListener \click ~>
+      ##       getHdr = ~>
+      ##         hdr = ifrm.contentDocument.querySelector(
+      ##           ".#{gz.Css \modal-header}")
+      ##         (setTimeout getHdr, 200; return) if not hdr?
+      ##         a = hdr.query "a.#{gz.Css \pull-left}"
+      ##         (setTimeout getHdr, 200; return) if not a?
+      ##         a\href = ''
+      ##         a.html 'Cerrar'
+      ##         a.onClick ~>
+      ##           m._hide!
+      ##           @declarationId = parseInt ((hdr._first._last._first.\href).slice 34, 50)
+      ##           @iwun = ifrm.contentWindow\kmll
+      ##       getHdr!
 
-        m.render!
-        m.el.query \iframe .\onload = getBtnSave
+      ##   m.render!
+      ##   #m.el.query \iframe .\onload = getBtnSave
     super!
 
 

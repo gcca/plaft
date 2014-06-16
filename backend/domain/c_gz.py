@@ -142,7 +142,7 @@ class Model(Entity, Repository):
                 if dtype is KeyProperty:
                     if value is None: continue
                     value = Key(prop_type._kind, value)
-                elif dtype is StructuredProperty:
+                elif dtype is StructuredProperty and not type(value) is list:
                     svalue = {}
                     for sprop in prop_type._modelclass._properties:
                         if sprop in value:

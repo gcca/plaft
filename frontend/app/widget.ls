@@ -29,7 +29,7 @@ class Modal extends App.View
   basicHeader: !->
     @m_header._append @@_title @m_title
     $ @m_header ._append "<button type='button'
-                                  class='close'
+                                  class='#{gz.Css \close}'
                                   data-dismiss='modal'>
                             &times;
                           </button>"

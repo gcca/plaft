@@ -113,19 +113,4 @@ class Dashboard extends App.View
     tHeader + tBody + tFooter
 
 (new Dashboard).render!
-## $ ".#{gz.Css \glyphicon-inbox}" ._parent! .click!
-## $ 'input[type=checkbox]' .click!
-## $ 'input' .last! .val '12345678989'
-## $ 'input' .last! .parent! .children! .last! .children! .click!
-
-## $ ".#{gz.Css \glyphicon-check}" ._parent! .click!
-## $ 'input' .val '2014-02'
-## $ 'button' .click!
-
-## $ ".#{gz.Css \glyphicon-file}" ._first! ._parent! .click!
-## $ \input ._last! .val '13'
-## $ \form ._last! ._find \button .click!
-
-## $ ".#{gz.Css \glyphicon-file}" ._last! ._parent! .click!
-
-$ ('.' + gz.Css \glyphicon-book) ._parent! .click!
+$ ('.' + gz.Css \glyphicon-file) ._parent! .click!

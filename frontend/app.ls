@@ -227,10 +227,10 @@ class View extends Backbone\View implements FreePoolMixIn
 class BaseModel extends Backbone\Model
 
   (_, o = new Object) ->
-    @_parent? = o._parent
-    @\urlRoot = @urlRoot
+    @_parent?  = o._parent
+    @\urlRoot  = @urlRoot
+    @\defaults = @defaults
     super ...
-    @_attributes = @attributes
 
   ::fetch   = ::\fetch
   ::_fetch  = ::\fetch
@@ -246,12 +246,16 @@ class BaseModel extends Backbone\Model
   ::_remove = ::\remove
   ::isNew   = ::\isNew
 
-  flatten: -> App.internals.flatten @_attributes
+  flatten: -> App.internals.flatten @\attributes
 
   _clean: (o) ->
     for k of o
       if o[k]? and o[k]._constructor is Object and o[k].'id'
         delete! o[k]
+
+  _attributes:~
+    -> @\attributes
+    (a) -> @\attributes = a
 
   _id:~ -> @id
 

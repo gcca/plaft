@@ -34,6 +34,8 @@ VOID-MODULE =
  *  ----------
  * To manage and show modules. Add interaction with {@code UiSearch}.
  * Sub-modules working module stacking collection.
+ * TODO(...): Pop methods maybe don't need implementation. They are write only
+ *   for naming convention.
  * @class UiDesktop
  * @extends View
  */
@@ -91,6 +93,7 @@ class Desktop extends App.View
     @module = Module.New!
       ..ui.desktop
         .._search  = @_search
+        ..search-focus = @search-focus
         .._reload  = @_reload
         ..push-sub = @push-sub
         ..pop-sub  = @pop-sub
@@ -147,6 +150,11 @@ class Desktop extends App.View
       .._first.onClick @breadcrumb-change
     @breadcrumb-current = _li
 
+  /**
+   * (Event) Change between modules referenced by breadcrumb item.
+   * @param {Object} evt
+   * @private
+   */
   breadcrumb-change: (evt) ~>
     @breadcrumb-current
       ..Class = ''

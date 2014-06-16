@@ -113,6 +113,14 @@ class Dispatch extends App.Model
   /** @override */
   urlRoot: 'dispatch'
 
+  defaults:
+    \numeration :
+      \supplier : null
+      \importer : null
+    \customer :
+      \name : null
+      \document :
+        \tracking : null
 
 /** -----------
  *  Stakeholder

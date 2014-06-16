@@ -116,7 +116,7 @@ class Customer extends App.View
               i.glyphicon.glyphicon-search
               | &nbsp;
         form.navbar-form.navbar-right(role="save")
-           button.btn.btn-primary.hidden#id-save(form="{Css id-form-declaration}") Generar DJ
+           button.btn.btn-primary.hidden.xxD#id-save(form="{Css id-form-declaration}") Generar DJ
 
     //- BODY
     .container.app-container

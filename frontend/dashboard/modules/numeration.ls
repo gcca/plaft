@@ -164,7 +164,7 @@ class Numeration extends Module
    * @private
    */
   numeration-type: (dispatch) ->
-    if dispatch\numeration
+    if dispatch'numeration'?
       "<div class='#{gz.Css \label} #{gz.Css \label}-
         #{if dispatch.'numeration'.'type' is \Verde
             gz.Css \success
@@ -186,14 +186,14 @@ class Numeration extends Module
         _collection : dispatches
         _getRow     : (d) ~> [
           d\order
-          d'regime'\code
-          d'jurisdiction'\code
-          d'customer'\name
-          d'numeration'\number
-          d'numeration'\date
+          if d'regime'? then d'regime'\code else '-'
+          if d'jurisdiction'? then d'jurisdiction'\code else '-'
+          if d'customer'? then d'customer'\name else '-'
+          if d'numeration'? then d'numeration'\number else '-'
+          if d'numeration'? then d'numeration'\date else '-'
           @numeration-type d
           if d'declaration'? then d'declaration'\tracking else '-'
-          d'numeration'\signed]
+          if d'numeration'? then d'numeration'\signed else '-']
       @el._append nt.render!.el
     super!
 
