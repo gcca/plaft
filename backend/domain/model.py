@@ -72,6 +72,7 @@ class Customer(Model):
     domestic     = TextProperty       ()
     public       = TextProperty       ()
     domestic     = TextProperty       ()
+    emitter      = TextProperty       ()
 
     @property
     def isbusiness(self):
@@ -100,7 +101,8 @@ class Declaration(Model):
     owner    = KeyProperty        (kind=Customer)
 
     def before_store(self):
-        self.tracking = str(uuid()).upper().split('-')[0]
+        if not self.tracking:
+            self.tracking = str(uuid()).upper().split('-')[0]
 
 
 class Officer(ValueObject):
@@ -273,3 +275,6 @@ class Datastore(Model):
         declarations = KeyProperty(kind=Declaration, repeated=True)
 
     pending = StructuredProperty (_Meta, default=_Meta())
+
+
+# vim: ts=4:sw=4:sts=4:et

@@ -104,8 +104,8 @@ class Alerts extends Module
     @ui.desktop._search._focus!
     super!
 
-  @@_caption = 'Alertas'
-  @@_icon    = gz.Css \glyphicon-check
+  /** @protected */ @@_caption = 'Alertas'
+  /** @protected */ @@_icon    = gz.Css \glyphicon-check
 
   /**
    * Template for dispatch data.
@@ -203,4 +203,9 @@ class Alerts extends Module
 
     </form>"
 
+
+/** @export */
 module.exports = Alerts
+
+
+# vim: ts=2 sw=2 sts=2 et:

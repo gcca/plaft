@@ -49,6 +49,13 @@ class Search extends App.View
    */
   _focus: !-> @_xinput._focus!
 
+  /**
+   * Do query.
+   * @param {string} _query
+   * @public
+   */
+  query: (_query) -> @internalOnSearch _query
+
   /** @override */
   initialize: !->
     @$el.attr 'role' 'form'
@@ -81,11 +88,9 @@ class Search extends App.View
           </button>
           <ul class='#{gz.Css \dropdown-menu} #{gz.Css \pull-right}'
               role='menu'>
-            <li><a href=''>Nuevo</a></li>
-            <li><a href=''>Eliminar</a></li>
-            <li><a href=''>Otras opcines</a></li>
             <li class='#{gz.Css \divider}'></li>
             <li><a href='/signout'>Salir</a></li>
+            <li class='#{gz.Css \divider}'></li>
           </ul>
         </span>
       </div>"
@@ -95,3 +100,6 @@ class Search extends App.View
 
 /** @export */
 module.exports = Search
+
+
+# vim: ts=2 sw=2 sts=2 et:

@@ -1,5 +1,8 @@
 exports <<<
-  Enum : class Enum
+  Serializable:
+    _toJSON: -> @$el._toJSON!
+
+  Enum: class Enum
     (objKeys, i = 0) ->
       Object.getOwnPropertyNames objKeys .forEach (prop) !~>
         objKeys[prop] = ++i
@@ -7,7 +10,7 @@ exports <<<
           Object.getOwnPropertyDescriptor objKeys, prop
       Object.freeze @
 
-  Types :
+  Types:
     Field : new Enum do
       kLineEdit   : null
       kComboBox   : null
@@ -38,7 +41,7 @@ exports <<<
       _class       : null
       _head        : null
 
-  Pool : class Pool
+  Pool: class Pool
     (objects) ->
       @queue = new Array
       @objects = object
@@ -58,7 +61,7 @@ exports <<<
       @queue.push fn
       @call!
 
-  ObjectPool : class ObjectPool
+  ObjectPool: class ObjectPool
     (Cls) ->
       @cls = Cls
       @metrics = new Object
@@ -91,3 +94,6 @@ exports <<<
     _clearMetrics: (allocated) !->
       @metrics.totalalloc = allocated || 0
       @metrics.totalfree = 0
+
+
+# vim: ts=2 sw=2 sts=2 et:

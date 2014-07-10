@@ -11,12 +11,12 @@
  * To register new main modules.
  */
 MODULES =
-  Register     = require './modules/register'
-  Numeration   = require './modules/numeration'
-  Declarations = require './modules/debug/declarations'
+  Register          = require './modules/register'
+  CustomerKnowledge = require './modules/customer-knowledge'
+  Numeration        = require './modules/numeration'
+  Declarations      = require './modules/debug/declarations'
 #  Numeration   = r equire './modules/numeration'
 #  Dispatches   = r equire './modules/dispatches'
-#  Alerts       = r equire './modules/alerts'
 #  Reception    = r equire './modules/reception'
 #  Anex6        = r equire './modules/anex6'
 #  Anex2        = r equire './modules/anex2'
@@ -165,3 +165,6 @@ class Menu extends App.View
 
 /** @export */
 module.exports = Menu
+
+
+# vim: ts=2 sw=2 sts=2 et:

@@ -44,6 +44,7 @@ HTMLElement::
     onSubmit   : (e) !-> @onsubmit    = e
     onChange   : (e) !-> @onchange    = e
     onKeyUp    : (e) !-> @onkeyup     = e
+    onBlur     : (e) !-> @onblur      = e
     addEvent   :     !-> @addEventListener ...
 
 Object.defineProperties HTMLElement::, do
@@ -187,7 +188,8 @@ class View extends Backbone\View implements FreePoolMixIn
     @\render = @render
     @\tagName = @_tagName
     @\className = @_className
-    @\el     = @el if @el?
+    @\id = @_id
+    @\el = @el if @el?
     @\cid = _.uniqueId 'cris-gz'
     if options.el?
       ## options.\el = options.el
@@ -257,7 +259,7 @@ class BaseModel extends Backbone\Model
     -> @\attributes
     (a) -> @\attributes = a
 
-  _id:~ -> @id
+  _id:~ -> @\id
 
   \url  : -> @_url ...
   \sync : -> @_sync ...
@@ -366,6 +368,7 @@ App <<<
     _Object   : new Object
     _Function : new Function
     _submit   : (e) !-> e.prevent!
+    _View     : free : ->
   _history   : history
   widget     : require './app/widget'
 

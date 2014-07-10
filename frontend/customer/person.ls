@@ -70,6 +70,12 @@ FIELDS =
     'Nacionalidad'
     'Nacionalidad.'
 
+  * 'emitter'
+    ''
+    'País de emisión'
+    'País de emisión del documento de identidad (pasaporte o carné de
+     \ extranjería).'
+
   * 'address'
     'f)'
     'Domicilio declarado (lugar de residencia)'
@@ -130,12 +136,16 @@ FIELDS =
     'Cargo o función pública que desempeña o que haya desempeñado en los
      \ últimos dos (2) años, en el Perú o en el extranjero, indicando el
      \ nombre del organismo público u organización internacional.'
+    FieldType.kComboBox
+    App.shared.lists.JOB_TITLE
 
   * 'source'
     'm)'
     'Origen de los fondos'
     'El origen de los fondos, bienes u otros activos involucrados en dicha
      \ transacción.'
+    FieldType.kComboBox
+    App.shared.lists.SOURCE_TYPE
 
   * 'isobliged'
     'j)'
@@ -164,6 +174,7 @@ FIELDS_CLASS =
   gz.Css \col-md-6
   gz.Css \col-md-3
   gz.Css \col-md-3
+  gz.Css \col-md-6
   gz.Css \col-md-6
   gz.Css \col-md-6
   gz.Css \col-md-6

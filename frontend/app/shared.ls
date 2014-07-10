@@ -87,7 +87,6 @@ exports.shortcuts =
         html._push "
           <div class='#{gz.Css \form-group}'>
             <label data-toggle='tooltip' title='#fieldTip'
-                style='margin-right:4em;'
                 class='#{gz.Css \control-label}'>
               <b>#fieldBullet</b>
               &nbsp;

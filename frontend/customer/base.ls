@@ -5,6 +5,7 @@ PDFModal = require './pdfmodal'
 
 /**
  * Base for Busines and Person customer form.
+ * TODO(...): onSave deprecated.
  * @class UiBase
  * @extends View
  */
@@ -35,53 +36,71 @@ class Base extends App.View
       .._disabled = on
       ..html "Guardado"
       ..Class = "#{gz.Css \btn} #{gz.Css \btn-success}"
+      $ .._parent ._append "
+        <a href='/customer' class='#{gz.Css \btn} #{gz.Css \btn-default}'
+            style='margin-left:1em'>
+          Nuevo
+        </a>"
 
     # Save customer data
+    [dtoCustomer, dtoDeclaration] = @customer-declaration-dto!
+    @model._save dtoCustomer, do
+      _success: ~>
+        # Create declaration
+        @model.newDeclaration dtoDeclaration, @show-pdfmodal
+      _error: ->
+        alert 'ERROR: ae1323e8-884c-11e3-96e1-88252caeb7e8'
+
+  /**
+   * Show declaration PDF modal.
+   * @param {Object} declaration
+   * @protected
+   */
+  show-pdfmodal: (declaration) ~>
+    (new PDFModal declarationId: declaration\id).render!
+
+  /**
+   * Get customer and declaration dto's.
+   * @return Array.<Object, Object>
+   * @public
+   */
+  customer-declaration-dto: ->
     dtoCustomer    = @_toJSON!
     dtoDeclaration =
       third  : delete dtoCustomer.\third
       source : delete dtoCustomer.\source
+    [dtoCustomer, dtoDeclaration]
 
-    @model._save dtoCustomer, do
-
-      _success: ~>
-        # Create declaration
-        @model.newDeclaration dtoDeclaration, (declaration) ~>
-          window.\kmll = @model.\id
-          a = new PDFModal declarationId: declaration.\id
-          a.render!
-
-      _error: ->
-        alert 'ERROR: ae1323e8-884c-11e3-96e1-88252caeb7e8'
 
   /** @override */
   initialize: !->
     @el._id = gz.Css \id-form-declaration
     @el.onsubmit = @onSave
-    @el.html "
-      <div class='#{gz.Css \col-md-12}'>
+    super!
+    #@el.html "
+      #<div class='#{gz.Css \col-md-12}'>
 
-        <div class='#{gz.Css \form-group} #{gz.Css \col-md-4}'>
-          <label class='#{gz.Css \radio-inline}'>
-            <input type='radio' name='category' value='Importador frecuente'>
-            \ Importador Frecuente
-          </label>
-        </div>
+        #<div class='#{gz.Css \form-group} #{gz.Css \col-md-4}'>
+          #<label class='#{gz.Css \radio-inline}'>
+            #<input type='radio' name='category' value='Importador frecuente'>
+            #\ Importador Frecuente
+          #</label>
+        #</div>
 
-        <div class='#{gz.Css \form-group} #{gz.Css \col-md-4}'>
-          <label class='#{gz.Css \radio-inline}'>
-            <input type='radio' name='category' value='Buen contribuyente'>
-            \ Buen Contribuyente
-          </label>
-        </div>
+        #<div class='#{gz.Css \form-group} #{gz.Css \col-md-4}'>
+          #<label class='#{gz.Css \radio-inline}'>
+            #<input type='radio' name='category' value='Buen contribuyente'>
+            #\ Buen Contribuyente
+          #</label>
+        #</div>
 
-        <div class='#{gz.Css \form-group} #{gz.Css \col-md-4}'>
-          <label class='#{gz.Css \radio-inline}'>
-            <input type='radio' name='category' value='Otros'> Otros
-          </label>
-        </div>
+        #<div class='#{gz.Css \form-group} #{gz.Css \col-md-4}'>
+          #<label class='#{gz.Css \radio-inline}'>
+            #<input type='radio' name='category' value='Otros'> Otros
+          #</label>
+        #</div>
 
-      </div>"
+      #</div>"
 
   /** @private */
   customer : null
@@ -131,3 +150,6 @@ class Base extends App.View
 
 /** @export */
 module.exports = Base
+
+
+# vim: ts=2 sw=2 sts=2 et:

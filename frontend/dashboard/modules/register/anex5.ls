@@ -1,57 +1,60 @@
-class Anex5 extends App.View
+/** @module dashboard.modules.register */
 
-  /**
-   * (Event) Get focus to search. Use global search tool.
-   * @private
-   */
-  search-focus: ~> @ui-search._focus!
+CustomerPerson   = require '../../../customer/person'
+CustomerBusiness = require '../../../customer/business'
 
-  /**
-   * Search customer by document number.
-   * @param {string} _query
-   * @public
-   */
-  _search: (_query) ->
-    @customer = new App.model.Customer \document : \number : _query
-    @customer.fetch do
-      _success: (customer) ->
 
-      _error: -> alert 'ERROR ... --'
-
-  /**
-   * Show customer form by type of customer: business or person.
-   * @param {Customer} customer
-   * @private
-   */
-  show-form: (@customer) ->
-    formClass = if @customer.isBusiness?
-                 th
-    @customer
+/** ------
+ *  Anex 5
+ *  ------
+ * TODO(...): Remove old module customer. Move modules for customer, business
+ *   and person, here.
+ * @class UiAnex5
+ * @extends View
+ */
+class Anex5 extends App.View implements App.builtins.Serializable
 
   /** @override */
-  initialize: ({@ui-search}) !->
-    /**
-     * Current customer for dispatch.
-     * @type {Model}
-     * @private
-     */
-    @customer = null
+  _toJSON: -> @ui-customer._toJSON!
 
-  /** @private */ ui-search : null
-  /** @private */ customer  : null
+  /**
+   * Get customer and declaration dto's.
+   * @return Array.<Object, Object>
+   * @public
+   */
+  customer-declaration-dto: -> @ui-customer.customer-declaration-dto!
+
+  /** @override */
+  initialize: ({@customer}) !-> super!
+
+  /**
+   * Current customer for dispatch.
+   * @type {Model}
+   * @protected
+   */
+  customer: null
+
+  /**
+   * Customer view for business or person.
+   * @type {View}
+   * @protected
+   */
+  ui-customer: null
 
   /** @override */
   render: ->
-    @el.html "
-      <button type='button'
-              class='#{gz.Css \btn}
-                   \ #{gz.Css \btn-info}'>
-        <span class='#{gz.Css \glyphicon}
-                   \ #{gz.Css \glyphicon-search}'></span> Buscar
-      </button>"
-    @el._first.onClick @search-focus
+    UiCustomer = if @customer.isBusiness then CustomerBusiness
+                 else if @customer.isPerson then CustomerPerson
+                 else null
+
+    @ui-customer = UiCustomer.New model: @customer
+    @inner @ui-customer.render!.el
+
     super!
 
 
 /** @export */
 module.exports = Anex5
+
+
+# vim: ts=2 sw=2 sts=2 et:

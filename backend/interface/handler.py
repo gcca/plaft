@@ -79,7 +79,7 @@ class Dispatch(RESTful):
     #     if (self.entity.declaration
     #         and self.entity.declaration not in ds.pending.declarations):
     #         raise model.BadValueError('La declaración %s ya fue usada.'
-    #                                   % self.entity.declaration.get().tracking)
+    #           % self.entity.declaration.get().tracking)
 
     def post_before_store(self):
         self.entity.customs = self.user.customs
@@ -98,6 +98,30 @@ class Dispatch(RESTful):
         customs = self.user.customs.get()
         customs.datastore.pending.dispatches.append(self.entity.key)
         customs.store()
+
+    class register(RESTful.Nested):
+
+        def post(self):
+
+            dict = self.request_dict
+
+            declaration = model.Declaration.new(dict['declaration'])
+            dispatch = model.Dispatch.new(dict['dispatch'])
+
+            customer = model.Customer.query(model.Customer.document.number ==
+                declaration.customer.document.number).get()
+
+            declaration.owner = customer.key
+            dispatch.customer = customer.key
+
+            declaration.store()
+            dispatch.store()
+
+            customs = self.user.customs.get()
+            customs.datastore.pending.dispatches.append(dispatch.key)
+            customs.store()
+
+            self.write_json('{}')
 
     class report_register(RESTful.Nested):
 
@@ -123,4 +147,7 @@ class Dispatch(RESTful):
 
 class Stakeholder(RESTful):
 
-  model = model.Stakeholder
+    model = model.Stakeholder
+
+
+# vim: ts=4 sw=4 sts=4 et:

@@ -35,6 +35,7 @@ app = WSGIApplication([
           handler.Customs.pending_dispatches),
 
     ('/api/v1/dispatch', handler.Dispatch),
+    ('/api/v1/dispatch/register', handler.Dispatch.register),
     Route(r'/api/v1/dispatch/<id:\d+>', handler.Dispatch),
     Route('/api/v1/dispatch/report/register',
           handler.Dispatch.report_register),
@@ -43,3 +44,6 @@ app = WSGIApplication([
     Route(r'/api/v1/dispatch/<id:\d+>', handler.Stakeholder)
 
 ], debug=True)
+
+
+# vim: ts=4:sw=4:sts=4:et

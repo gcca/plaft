@@ -69,7 +69,7 @@ class formToObject
         @forEach DOMchilds,
                  (child) -> result[keys].push child.value if DOMchilds
         return
-      if domNode.name.\endsWith '[]'
+      if domNode.name.endsWith '[]'
         list = result[keys.0]
         list ?= []
         list.push value
@@ -131,6 +131,47 @@ $\fn
 # Maintain while HTML5 - bind not implemented (on testing)
 (Function::bind = ->
   ((s, t, p) -> -> s.apply t, p)(@, [].shift.apply(&), &)) if not (->).bind
+
+# Maintain while ECMA 6
+if not String::endsWith
+  (->
+    defineProperty = (->
+      try
+        object = {}
+        $defineProperty = Object.defineProperties
+        result = ($defineProperty object, []) && $defineProperty
+      catch
+      result)!
+    toString = {}.toString
+    endsWith = (search) ->
+      throw TypeError! if not this?
+      string = String this
+      if search && (toString.call search) is '[object RegExp]' then throw TypeError!
+      stringLength = string.length
+      searchString = String search
+      searchLength = searchString.length
+      pos = stringLength
+      if &length > 1
+        position = &.1
+        if position isnt ``undefined``
+          pos = if position then Number position else 0
+          pos = 0 if not (pos is pos)
+      end = Math.min (Math.max pos, 0), stringLength
+      start = end - searchLength
+      if start < 0 then return false
+      index = -1
+      while ++index < searchLength
+        if not ((string.charCodeAt start + index) is searchString.charCodeAt index) then return false
+      true
+    if defineProperty
+      defineProperty String.prototype, do
+        endsWith: {
+          value: endsWith
+          configurable: true
+          writable: true
+        }
+    else
+      String::endsWith = endsWith)!
 
 # Maintain while HTML5 - RadioNodeList not implemented yet
 NodeList::=

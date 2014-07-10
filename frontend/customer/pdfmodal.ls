@@ -13,8 +13,10 @@ class PDFModal extends App.widget.Modal
 
     button-left = App.dom._new \a
       ..Class = "#{gz.Css \btn} #{gz.Css \btn-default} #{gz.Css \pull-left}"
-      ..href  = '/customer'
-      ..html 'Nuevo'
+      ..'dataset'\dismiss = 'modal'
+      ..html "<button type='button' class='#{gz.Css \close}'>
+                &times;
+              </button>"
 
     button-right = App.dom._new \a
       ..Class   = "#{gz.Css \btn} #{gz.Css \btn-primary} #{gz.Css \pull-right}"
@@ -86,3 +88,6 @@ class PDFModal extends App.widget.Modal
 
 /** @export */
 module.exports = PDFModal
+
+
+# vim: ts=2 sw=2 sts=2 et:

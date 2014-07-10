@@ -171,3 +171,6 @@ class Typeahead extends App.View
 exports <<<
   Modal     : Modal
   Typeahead : Typeahead
+
+
+# vim: ts=2:sw=2:sts=2:et

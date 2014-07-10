@@ -123,6 +123,8 @@ FIELDS =
     'Origen de los fondos'
     'El origen de los fondos, bienes u otros activos involucrados en dicha
      \ transacción.'
+    FieldType.kComboBox
+    App.shared.lists.SOURCE_TYPE
 
   * null
     null

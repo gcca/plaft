@@ -202,3 +202,6 @@ class Singleton(Repository.MetaRepository):
         if self._instance is None:
             self._instance = super(MetaModel, self).__call__(*a, **k)
         return self._instance
+
+
+# vim: ts=4:sw=4:sts=4:et

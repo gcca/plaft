@@ -56,6 +56,7 @@ class Desktop extends App.View
     @clean-current-module!
     @$el._append (@newCustomized Module).render!.el
     @module.focus-first-field!
+    @_search._focus! if @_search-get-focus
 
   /**
    * Clean current module and sub-modules.
@@ -82,7 +83,7 @@ class Desktop extends App.View
    * Reload current module.
    * @protected
    */
-  _reload: ~> @changeModule @Module
+  _reload: -> @changeModule @Module
 
   /**
    * Add customized properties to constructed module.
@@ -91,15 +92,15 @@ class Desktop extends App.View
    */
   newCustomized: (Module) ->
     @module = Module.New!
-      ..ui.desktop
-        .._search  = @_search
-        ..search-focus = @search-focus
-        .._reload  = @_reload
-        ..push-sub = @push-sub
-        ..pop-sub  = @pop-sub
+      ..ui.desktop = @
       @_search.setOnSearch ..onSearch
       ..clean!
       @root-breadcrumb ..
+        ## .._search       = @_search
+        ## .._search-focus = @_search-focus
+        ## .._reload       = @_reload
+        ## ..push-sub      = @push-sub
+        ## ..pop-sub       = @pop-sub
 
   /**
    * Push sub-module. Show sub-module on desktop.
@@ -107,7 +108,7 @@ class Desktop extends App.View
    * @param {Object} _options
    * @public
    */
-  push-sub: (_Module, _options = null) ~>
+  push-sub: (_Module, _options = null) ->
     ## $ @el._last ._hide!
     @breadcrumb-current._module.$el._hide!
 
@@ -121,7 +122,7 @@ class Desktop extends App.View
    * Pop sub-module. Hide sub-module on desktop.
    * @public
    */
-  pop-sub: ~>
+  pop-sub: ->
 
   /**
    * Push breadcrumb title-link.
@@ -184,6 +185,12 @@ class Desktop extends App.View
               &nbsp;"
       .._module = _module
 
+  /**
+   * Search gets focos after load module.
+   * @public
+   */
+  _search-focus: -> @_search-get-focus = true
+
   /** @override */
   initialize: !->
     /**
@@ -228,6 +235,8 @@ class Desktop extends App.View
    * @private
    */
   breadcrumb-current: null
+
+  /** @private */ _search-get-focus: null
 
   /** @override */
   render: ->

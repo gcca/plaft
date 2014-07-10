@@ -7,6 +7,10 @@
  *   XMLHttpRequest xhr Object
  */
 
+voidCodeName =
+  \code : null
+  \name : null
+
 
 /** --------
  *  Customer
@@ -45,6 +49,8 @@ class Customer extends App.Model
       \third    : _data.third
       \source   : _data.source
       \customer : @_attributes
+      \tracking : _data.tracking
+      \owner    : _data.owner
 
     App.internals._post "#{@@API}customer/#{@_id}/declaration",
                         dto,
@@ -113,14 +119,22 @@ class Dispatch extends App.Model
   /** @override */
   urlRoot: 'dispatch'
 
+  /** @override */
   defaults:
-    \numeration :
+    \regime       : voidCodeName
+    \jurisdiction : voidCodeName
+    \numeration   :
+      \order    : null
+      \signed   : null
       \supplier : null
       \importer : null
-    \customer :
-      \name : null
-      \document :
-        \tracking : null
+    \customer     :
+      \name     : null
+      \document : voidCodeName
+    \declaration  :
+      \tracking : null
+      \signed   : null
+
 
 /** -----------
  *  Stakeholder
@@ -143,3 +157,6 @@ exports <<<
   Declaration : Declaration
   Dispatch    : Dispatch
   Stakeholder : Stakeholder
+
+
+# vim: ts=2 sw=2 sts=2 et:

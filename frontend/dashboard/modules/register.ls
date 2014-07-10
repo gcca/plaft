@@ -2,203 +2,9 @@
 
 Module = require '../module'
 
-Anex5 = require './register/anex5'
-
-FieldType = App.builtins.Types.Field
-sharedLists = App.shared.lists
-
-# Local sharedlist
-OPERATION_DAM_CODE   = sharedLists.OPERATION_DAM_CODE
-OPERATION_MATCH_CODE = sharedLists.OPERATION_MATCH_CODE
-OPERATION_MATCH_TYPE = sharedLists.OPERATION_MATCH_TYPE
-
-
-/** -------------
- *  CodeNameField
- *  -------------
- * Widget field to manage relation between name and code text.
- * @class UiCodeNameField
- * @extends View
- */
-class CodeNameField extends App.View
-
-  /** @override */
-  _tagName: \div
-
-  /** @override */
-  _className: "#{gz.Css \input-group} #{gz.Css \field-codename}"
-
-  /**
-   * (Event) On change input value.
-   * @param {Object} evt
-   * @private
-   */
-  changeCode: (evt) ~> @_span.html @_hidden._value
-
-  /**
-   * (Event) On change cursor for name.
-   * @param {Event} _
-   * @param {Object} _data Same data from collection.
-   * @private
-   */
-  changeName: (_, _data) ~>
-    @_span.html _data._code
-    @_hidden._value = _data._code
-
-  /**
-   * (Event) On change value from number.
-   * @private
-   */
-  changeValue: ~>
-    _value = @_input._value
-    if _value._match /\d+/
-      i = @_code._index _value
-      if i is -1
-        @_input._value = 'Código inválido'
-        @_span.html '000'
-        @_hidden._value = '000'
-      else
-        @_input._value = @_name[i]
-        @_span.html _value
-        @_hidden._value = _value
-
-  /**
-   * @param {Object.<Array.<string>, Array.<string>, string>}
-   * @override
-   */
-  initialize: ({@_code, @_name, @_field}) !->
-
-  /** @private */ _field  : null
-  /** @private */ _code   : null
-  /** @private */ _name   : null
-  /** @private */ _input  : null
-  /** @private */ _span   : null
-  /** @private */ _hdiden : null
-
-  /** @override */
-  render: ->
-    @_input = App.dom._new \input
-      .._type = \text
-      .._name = "#{@_field}[name]"
-      ..Class = gz.Css \form-control
-
-    @_span = App.dom._new \span
-      ..Class = gz.Css \input-group-addon
-      ..html '000'
-
-    @_hidden = App.dom._new \input
-      .._type = \hidden
-      .._name = "#{@_field}[code]"
-
-    # Hack
-    App.internals.defnps @_hidden, do
-      _value:
-        get: -> @value
-        set: (a) ->  @value = a ; $ @ .trigger \change
-
-    @el._append @_hidden
-    @el._append @_input
-    @el._append @_span
-
-    (new App.widget.Typeahead do
-      el          : @_input
-      _source     :
-        _display : App.widget.Typeahead.Source.kDisplay
-        _tokens  : App.widget.Typeahead.Source.kTokens
-      _limit      : 9
-      _collection : [{
-        _name    : n, \
-        _code    : c, \
-        _display : n, \
-        _tokens  : n + ' ' + c } \
-        for [n, c] in _.zip @_name, @_code]
-      _template   : (p) -> "
-        <p style='float:right;font-style:italic;margin-left:1em'>#{p._code}</p>
-        <p style='font-size:14px;text-align:justify'>#{p._name}</p>")
-      ..onCursorChanged @changeName
-      ..onClosed @changeValue
-      ..render!
-    @_hidden.onChange @changeCode
-
-    super!
-
-
-
-
-## class DModal extends App.widget.Modal
-
-##   /** @override */
-##   render: ->
-##     header-title = App.widget.Modal._title 'Declaración Jurada'
-
-##     ## button-left = App.dom._new \button
-##     ##   .._type = \button
-##     ##   ..Class = gz.Css \close
-##     ##   ..Class = "#{gz.Css \btn} #{gz.Css \btn-default} #{gz.Css \pull-left}"
-##     ##   ..html 'Nuevo'
-
-##     ## button-right = App.dom._new \a
-##     ##   ..Class   = "#{gz.Css \btn} #{gz.Css \btn-primary} #{gz.Css \pull-right}"
-##     ##   ..html 'x'
-
-##     _left = App.dom._new \div
-##       ..Class = gz.Css \col-md-3
-##       ..html "<button type='button'
-##                       class='#{gz.Css \close}'
-##                       data-dismiss='modal'
-##                       style='font-size:33px;float:left'>&times;</button>"
-##       ## .._append button-left
-
-##     _center = App.dom._new \div
-##       ..Class = gz.Css \col-md-6
-##       .._append header-title
-
-##     _right = App.dom._new \div
-##       ..Class = gz.Css \col-md-3
-##       ## .._append button-right
-
-##     _row = App.dom._new \div
-##       ..Class = gz.Css \col-md-12
-##       .._append _left
-##       .._append _center
-##       .._append _right
-
-##     @m_header.Class._add gz.Css \row
-##     @m_header._append _row
-##     App.dom._write ~>
-##       _center.css
-##         .._text-align  = 'center'
-##         .._padding-top = '4px'
-
-##       _left.css._padding-left = '0'
-##       _right.css._padding-right = '0'
-
-##       _row.css
-##         .._padding-left  = '0'
-##         .._padding-right = '0'
-
-##       @m_header.css
-##         .._margin-left    = '0'
-##         .._margin-right   = '0'
-##         .._padding-bottom = '4px'
-##         .._padding-top    = '6px'
-
-##     App.dom._write ~> @m_body.css._padding = '0'
-##     @m_body.html "<iframe src='/customer'
-##                       style='border:none;width:100%;height:81%'></iframe>"
-
-##     @m_dialog.css._width = '96%'
-
-##     @_show!
-##     super!
-
-##   /** @override */
-##   initialize: !->
-##     super do
-##       _type  : App.widget.Modal.Type.kLarge
-##       _modal : \backdrop : \static
-
-
+Anex5       = require './register/anex5'
+Order       = require './register/order'
+Stakeholder = require './register/stakeholder'
 
 
 /** --------
@@ -206,207 +12,310 @@ class CodeNameField extends App.View
  *  --------
  * Create and edit dispatch register. Further, is possible create a edit
  * declarations.
+ * TODO(...): Currently create and update processes aren't integreated. This
+ *   feature needs register module use the same attributes (customer, dispatch
+ *   declaration) when search and save. Also the modules {@code UiAnex5} and
+ *   {@code Order} will change. Remove {@code current-method} attribute and
+ *   Enum {@code MethodType} for methods
  * @class UiRegister
  * @extends Module
  */
 class Register extends Module
 
-  onSearch: (_query) ~>
-    @anex5._search _query
-
-  /** @protected */ @@_caption = 'Ingreso de Operación'
-  /** @protected */ @@_icon    = gz.Css \glyphicon-file
+  /** @override */
+  _id: gz.Css \id-accordion
 
   /** @override */
-  render: ->
-    @el.html "
-      <ul class='nav nav-tabs'>
-        <li>
-          <a href='\#mes' data-toggle='tab' class='#{gz.Css \active}'>
-            Anexo 5
-          </a>
-        </li>
-        <li><a href='\#set' data-toggle='tab'>Registro</a></li>
-      </ul>
-
-      <div class='#{gz.Css \tab-content}'>
-        <div id='mes' class='#{gz.Css \tab-pane} #{gz.Css \active}'>
-        </div>
-
-        <div id='set' class='#{gz.Css \tab-pane}'>
-        </div>
-      </div>
-    "
-
-    @anex5 = new Anex5 ui-search: @ui.desktop._search
-    @el._last._first._append @anex5.render!.el
-    @el._last._last._append (new Foo).render!.el
-
-    @$ 'a:first' .tab \show
-    super!
-
-
-
-class Foo extends App.View
-
-  /** @override */
-  _tagName: \form
-
-  /** @override */
-  _className : "#{Module::_className} #{gz.Css \row}"
+  _className: gz.Css \panel-group
 
   /** @override */
   free: ->
-    ## @_fields.1._options.free!
-    ## @_fields.2._options.free!
+    @ui-declaration.free!
+    @ui-dispatch.free!
+    @ui-stakeholder.free!
     super!
 
-  /** @override */
-  focus-first-field: -> @el.query \input ._focus!
-
   /**
-   * (Event) On search by disptach order-number.
+   * (Event) On search by document number to create new dispatch or by order
+   *   number to edit dispatch.
    * @param {string} _query
-   * @private
+   * @protected
    */
   onSearch: (_query) ~>
-    @dispatch = new App.model.Dispatch \order : _query
-    @dispatch.fetch do
-      _success: (_, dispatch) ~>
-        @render!
-        @el._last
-          .._first
-            ..Class._remove gz.Css \hide
-            .._next.Class._remove gz.Css \hide
-        @$el._fromJSON dispatch
-      _error: -> alert 'Número de orden no hallado: ' + _query
+    if /^\d+$/ is _query  # create
+      if _query._length is 8 or _query._length is 11
+        @customer = new App.model.Customer \document : \number : _query
+        @customer.fetch do
+          _success: (customer) ~>
+            @current-method = @MethodType.kCreate
+            @render-register customer
+          _error: ~> @render-register @customer
+      else
+        alert '(Error) Número de identificación incorrecto: ' + _query
+
+    else  # update
+      @dispatch = new App.model.Dispatch \order : _query
+      @dispatch.fetch do
+        _success: (_, dto) ~>
+          @current-method = @MethodType.kUpdate
+
+          @declaration = new App.model.Declaration dto\declaration
+          @customer    = new App.model.Customer dto'declaration'\customer
+
+          @render-register @customer
+          @render-query-pdf!
+          @ui-declaration.ui-customer.$el._fromJSON dto\declaration
+          @ui-dispatch.$el._fromJSON dto
+
+        _error: ~> alert 'El despacho (' + _query + ') no existe'
 
   /**
-   * (Event) On save dispatch data.
-   * @param {Object} evt
+   * Add button to show PDF declaration for current dispatch.
    * @private
    */
+  render-query-pdf: ->
+    $btn = $ "
+      <button type='button'
+          class='#{gz.Css \btn} #{gz.Css \btn-info} #{gz.Css \pull-right}'
+          style='height:24px;margin:-4px 0;padding:2px 8px;font-size:12px'>
+        PDF <i class='#{gz.Css \glyphicon} #{gz.Css \glyphicon-bookmark}'></i>
+      </button>"
+    $btn.on \click ~> @ui-declaration.ui-customer.show-pdfmodal @declaration
+    $ @el._first._first._first ._append $btn
+
+  /**
+   * (Event) On save data from declaration and dispatch views.
+   * @param {Event} evt
+   * @protected
+   */
   onSave: (evt) ~>
-    ## evt.prevent!
+    order-value = @ui-dispatch.el._elements'order'._value
 
-    dto = @$el._toJSON!
-    i = OPERATION_DAM_CODE._index dto.'regime'.\code
-    dto\type =
-      \code : OPERATION_MATCH_CODE[i]
-      \name : OPERATION_MATCH_TYPE[i]
+    if order-value is ''
+      alert 'Alerta: Número de orden incorrecto.'
 
-    dto\declaration = @declarationId if @declarationId?
-    dto\customer = @iwun if @iwun?
+    else
+      [dtoCustomer, dtoDeclaration] = @ui-declaration.customer-declaration-dto!
 
-    @dispatch.store dto, do
-      _success: -> alert 'Guardado'
-      _error: -> alert 'ERROR: ea243004-d93f-11e3-8c62-88252caeb7e8'
+      _s = ->
+        alert 'Guardado.'
 
-  /** @override */
-  initialize: ->
-    /**
-     * To create o edit dispatch.
-     * @type {Model}
-     * @private
-     */
-    @dispatch = new App.model.Dispatch
-    @el.onSubmit App._void._submit
+      _e = ->
+        alert 'ERROR: No se pudo guardar el despacho.'
 
-  /** @private */ dispatch       : null
-  /** @private */ _fields        : null
-  /** @private */ declarationId  : null
+      dtoDispatch = @ui-dispatch.$el._toJSON!
+      dtoDeclaration.\tracking = order-value
+      dtoDeclaration.\customer = dtoCustomer
+
+      dto =
+        \declaration : dtoDeclaration
+#        \customer    : dtoCustomer
+        \dispatch    : dtoDispatch
+
+      App.internals._post "/api/v1/dispatch/register", dto, _s
+
+#      if @current-method is @MethodType.kCreate
+#      then @onSaveTo = @onSaveToCreate
+#      else if @current-method is @MethodType.kUpdate
+#      then @onSaveTo = @onSaveToUpdate
+
+#      if @onSaveTo?
+#        @onSaveTo evt, order-value, dtoCustomer, dtoDeclaration
+#      else
+#        alert 'ERROR: a3bdc496-f7e3-11e3-9831-88252caeb7e8'
+
+  /**
+   * On save event to update declaration or dispatch.
+   * @param {Event} evt
+   * @param {string} order-value
+   * @param {Object} dtoCustomer
+   * @param {Object} dtoDeclaration
+   * @private
+   */
+  onSaveToUpdate: (evt, order-value, dtoCustomer, dtoDeclaration) ->
+    dtoDispatch = @ui-dispatch.$el._toJSON!
+
+    dtoDeclaration <<<
+      \customer : dtoCustomer
+      \tracking : order-value
+
+    @declaration.store dtoDeclaration, do
+      _success: ~>
+        @dispatch.store dtoDispatch, do
+          _success: -> alert 'Guardado'
+          _error: -> alert 'ERROR: b14db278-f7e9-11e3-bc7f-88252caeb7e8'
+      _error: -> alert 'ERROR: b6877800-f7e9-11e3-bc7f-88252caeb7e8'
+
+  /**
+   * On save event to create new declaration and dispatch.
+   * @param {Event} evt
+   * @param {string} order-value
+   * @param {Object} dtoCustomer
+   * @param {Object} dtoDeclaration
+   * @private
+   */
+  onSaveToCreate: (evt, order-value, dtoCustomer, dtoDeclaration) ->
+    @customer._save dtoCustomer, do
+
+      _success: (customer) ~>
+        # Realtion data between {dispatch ~ declaration ~ customer}
+        dtoDeclaration.tracking = order-value
+        dtoDeclaration.owner    = customer._id
+
+        # Create declaration
+        @customer.newDeclaration dtoDeclaration, (declaration) ~>
+          @ui-dispatch.on (gz.Css \on-stored), ~>
+            @ui.desktop._search.query order-value
+          @ui-dispatch.declarationId = declaration\id
+          @ui-dispatch.onSave evt
+          @ui-declaration.ui-customer.show-pdfmodal declaration
+
+      _error: ->
+        alert 'ERROR: ae1325f9-884c-11e3-96e1-88252caeb7e8'
+
+  /**
+   * Add new form panel.
+   * @param {HTMLElement} _el Element to be added.
+   * @param {string} _title
+   * @param {string} _sid Name ID to identify panel-content.
+   * @private
+   * @see render-register
+   */
+  add-panel: (_el, _title, _sid) ->
+    $panel = $ "
+      <div class='#{gz.Css \panel} #{gz.Css \panel-default}'>
+        <div class='#{gz.Css \panel-heading}'>
+          <h4 class='#{gz.Css \panel-title}'>
+            <a data-toggle='#{gz.Css \collapse}'
+                data-parent='##{gz.Css \id-accordion}'
+                href='##{gz.Css \id-collapse}-#_sid'>
+              #_title
+            </a>
+          </h4>
+        </div>
+        <div id='#{gz.Css \id-collapse}-#_sid' class='#{gz.Css \panel-collapse}
+                                                  \ #{gz.Css \collapse}
+                                                  \ #{gz.Css \in}'>
+          <div class='#{gz.Css \panel-body}'></div>
+        </div>
+      </div>"
+    $panel.0
+      .._last._first._append _el
+      @el._append ..
+
+  /**
+   * (Event) On type operation change.
+   * @param {Event} evt
+   * @private
+   * @see render-register
+   */
+  on-operation-change: (evt) ~>
+    sharedLists = App.shared.lists
+    i = sharedLists.OPERATION_DAM_TYPE._index evt._target._value
+    io-class = sharedLists.OPERATION_MATCH_CLASS[i]
+    @ui-stakeholder.render(@customer,
+                           io-class,
+                           @stakeholder-panel.customer-type._checked)
+
+  /**
+   */
+  on-stakeholder-customer-type-change: ~>
+    sharedLists = App.shared.lists
+    regime-name = @el.query 'input[name=regime\\[name\\]]'
+    i = sharedLists.OPERATION_DAM_TYPE._index regime-name._value
+    io-class = sharedLists.OPERATION_MATCH_CLASS[i]
+    @ui-stakeholder.render(@customer,
+                           io-class,
+                           @stakeholder-panel.customer-type._checked)
+
+  /**
+   * Render form view for declaration and dispatch.
+   * @param {Customer} customer
+   * @private
+   */
+  render-register: (customer) ->
+    @clean!
+
+    # Sub-views
+    @ui-declaration = Anex5.New customer: customer
+    @ui-dispatch    = Order.New!
+    @ui-stakeholder = Stakeholder.New customer : customer
+
+    @ui-dispatch.on (gz.Css \on-operation-change), @on-operation-change
+
+    # Add panels
+    @add-panel(@ui-declaration.render!.el,
+               'Anexo 5: Declaración Jurada', gz.Css \one)
+    @add-panel(@ui-dispatch.render!.el,
+               'Datos de despacho', gz.Css \two)
+
+    @stakeholder-panel = @add-panel(@ui-stakeholder.el,
+                                   'Involucrados', gz.Css \three)
+    _span = App.dom._new \span
+      ..Class = gz.Css \pull-right
+      ..html "
+        <input type='checkbox'>
+        &nbsp; ¿Persona jurídica?"
+      ..onChange @on-stakeholder-customer-type-change
+    @stakeholder-panel._first._first._append _span
+    @stakeholder-panel.customer-type = _span._first
+
+    # Save button
+    @$el._append "
+      <div class='#{gz.Css \col-md-12} #{gz.Css \form-group}'
+          style='padding-right:0'>
+        <button type='button'
+            style='margin-top:2em'
+            class='#{gz.Css \btn}
+                 \ #{gz.Css \btn-primary}
+                 \ #{gz.Css \pull-right}'>
+          Guardar
+        </button>
+      </div>"
+
+    @el._last._first.onClick @onSave
+
+    @$ ".#{gz.Css \tt-input}"  # Hack to panel and typeahead
+      ..on \focus (evt) ->
+        $ evt._target .parents ".#{gz.Css \panel-default}"
+          .css \overflow \visible
+      ..on \blur (evt) ->
+        $ evt._target .parents ".#{gz.Css \panel-default}"
+          .css \overflow \hidden
+
+  /** @protected */ @@_caption = 'Ingreso Operaciones - Anexo 5'
+  /** @protected */ @@_icon    = gz.Css \glyphicon-file
+
+  /** @private */ ui-declaration : App._void._View
+  /** @private */ ui-dispatch    : App._void._View
+  /** @private */ ui-stakeholder : App._void._View
+
+  /** @private */ stakeholder-panel : null
+
+  /** @private */ customer    : null
+  /** @private */ dispatch    : null
+  /** @private */ declaration : null
+
+  /** @private */ current-method : null
+  /** @private */ onSaveTo       : null
+
+  /**
+   * Method type to identify if user going to create or update a dispatch.
+   * @type Enum
+   * @private
+   */
+  MethodType: new App.builtins.Enum do
+    kCreate : null
+    kUpdate : null
 
   /** @override */
   render: ->
-    /**
-     * Fields
-     * @type {Array.<Options>}
-     * @private
-     */
-    @_fields =
-      * _name    : 'order'
-        _label   : 'N&ordm; Orden de despacho'
-
-      * _name    : 'regime'
-        _label   : 'Tipo de operación'
-        _type    : FieldType.kView
-        _options : new CodeNameField do
-                     _code  : App.shared.lists.OPERATION_DAM_CODE
-                     _name  : App.shared.lists.OPERATION_DAM_TYPE
-                     _field : 'regime'
-
-      * _name    : 'jurisdiction'
-        _label   : 'Aduana Despacho'
-        _type    : FieldType.kView
-        _options : new CodeNameField do
-                     _code : App.shared.lists.JURISDICTIONS_CODE
-                     _name : App.shared.lists.JURISDICTIONS
-                     _field : 'jurisdiction'
-
-      * _name    : 'third'
-        _label   : 'Identificación del tercero'
-
-    App.shared.shortcuts.xhtml._form.Builder.render-list.with-save @el,
-                                                                   @_fields
-
-    @el._last
-      ..html "
-        <button class='#{gz.Css \btn}
-                     \ #{gz.Css \btn-primary}
-                     \ #{gz.Css \pull-right}
-                     \ #{gz.Css \hide}'
-                style='margin-left:12px'>Guardar</button>
-        <button class='#{gz.Css \btn}
-                     \ #{gz.Css \btn-default}
-                     \ #{gz.Css \pull-right}
-                     \ #{gz.Css \hide}'
-                style='margin-left:12px'>Nuevo</button>
-        <button type='button'
-                class='#{gz.Css \btn}
-                     \ #{gz.Css \btn-default}
-                     \ #{gz.Css \pull-right}'>Declaración Jurada</button>"
-      .._first.onClick @onSave
-      .._first._next.onClick ~> @ui.desktop._reload!
-      ## .._last.onClick ~>
-
-      ##   @el._last
-      ##     .._first
-      ##       ..Class._remove gz.Css \hide
-      ##       .._next.Class._remove gz.Css \hide
-      ##     ## .._last.Class._add gz.Css \hide
-
-      ##   m = new DModal
-      ##   ## m.$el.on \hidden.bs.modal, (e) ->
-      ##   ##   console.log 'ehi-mdl'
-
-      ##   getBtnSave = ~>
-      ##     ifrm = m.el.query \iframe
-      ##     (setTimeout getBtnSave, 200; return) if not ifrm?
-      ##     (setTimeout getBtnSave, 200; return) if not ifrm.contentDocument?
-
-      ##     ## btn = ifrm.contentDocument.querySelector "##{gz.Css \id-save}"
-      ##     btn = ifrm.contentDocument.querySelector '.xxD'
-      ##     setTimeout getBtnSave, 200 if not btn?
-
-      ##     btn.addEventListener \click ~>
-      ##       getHdr = ~>
-      ##         hdr = ifrm.contentDocument.querySelector(
-      ##           ".#{gz.Css \modal-header}")
-      ##         (setTimeout getHdr, 200; return) if not hdr?
-      ##         a = hdr.query "a.#{gz.Css \pull-left}"
-      ##         (setTimeout getHdr, 200; return) if not a?
-      ##         a\href = ''
-      ##         a.html 'Cerrar'
-      ##         a.onClick ~>
-      ##           m._hide!
-      ##           @declarationId = parseInt ((hdr._first._last._first.\href).slice 34, 50)
-      ##           @iwun = ifrm.contentWindow\kmll
-      ##       getHdr!
-
-      ##   m.render!
-      ##   #m.el.query \iframe .\onload = getBtnSave
+    @ui.desktop._search-focus!
     super!
 
 
 /** @export */
 module.exports = Register
+
+
+# vim: ts=2 sw=2 sts=2 et:

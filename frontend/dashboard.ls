@@ -1,5 +1,5 @@
 /**
- * @module dashboard.
+ * @module dashboard
  * Main view for user dashboard.
  */
 
@@ -15,7 +15,9 @@ Menu    = require './dashboard/menu'
 Desktop = require './dashboard/desktop'
 
 
-/**
+/** ---------
+ *  Dashboard
+ *  ---------
  * User dashboard view.
  * @class UiDashboard
  * @extends View
@@ -113,4 +115,33 @@ class Dashboard extends App.View
     tHeader + tBody + tFooter
 
 (new Dashboard).render!
+
+# !!! Temporal to list complete module names.
+$ "ul.#{gz.Css \nav-stacked}"
+  ..append "
+    <li>
+      <a>
+        <i class='#{gz.Css \glyphicon} #{gz.Css \glyphicon-compressed}'></i>
+        &nbsp; Identificación Operaciones sospechosas - Anexo 6
+      </a>
+    </li>"
+  ..append "
+    <li>
+      <a>
+        <i class='#{gz.Css \glyphicon} #{gz.Css \glyphicon-plane}'></i>
+        &nbsp; Registro de Operaciones - Anexo 2
+      </a>
+    </li>"
+  ..append "
+    <li>
+      <a>
+        <i class='#{gz.Css \glyphicon} #{gz.Css \glyphicon-qrcode}'></i>
+        &nbsp; Estadística Anual
+      </a>
+    </li>"
+
 $ ('.' + gz.Css \glyphicon-file) ._parent! .click!
+$ 'input[placeholder=Buscar]' .val '12345678989'
+$ ".#{gz.Css \glyphicon-search}" ._parent! .click!
+
+# vim: ts=2 sw=2 sts=2 et:
